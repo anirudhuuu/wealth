@@ -1,12 +1,16 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { AppLayoutClient } from "@/components/layout/app-layout-client"
+import { AppLayoutClient } from "@/components/layout/app-layout-client";
+import type { Metadata } from "next";
+import type React from "react";
 
 export const metadata: Metadata = {
   title: "Settings - Expense Tracker",
   description: "Manage your account settings",
-}
+};
 
-export default function SettingsLayout({ children }: { children: React.ReactNode }) {
-  return <AppLayoutClient>{children}</AppLayoutClient>
+export default function SettingsLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <AppLayoutClient>{children}</AppLayoutClient>;
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,9 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { createClient } from "@/lib/supabase/client";
 import { Wallet } from "lucide-react";
-import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false);
