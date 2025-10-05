@@ -1,21 +1,27 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { LayoutDashboard, Wallet, TrendingUp, Settings, LogOut } from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { signOut } from "@/app/actions/auth"
+import { signOut } from "@/app/actions/auth";
+import { Button } from "@/components/ui/button";
+import {
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  TrendingUp,
+  Wallet,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type React from "react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Ledgers", href: "/ledgers", icon: Wallet },
   { name: "Assets", href: "/assets", icon: TrendingUp },
   { name: "Settings", href: "/settings", icon: Settings },
-]
+];
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -42,15 +48,19 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <nav className="border-b bg-background md:hidden">
         <div className="container flex items-center gap-1 overflow-x-auto px-4 py-2">
           {navigation.map((item) => {
-            const isActive = pathname === item.href
+            const isActive = pathname === item.href;
             return (
               <Link key={item.name} href={item.href}>
-                <Button variant={isActive ? "secondary" : "ghost"} size="sm" className="gap-2">
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  size="sm"
+                  className="gap-2"
+                >
                   <item.icon className="h-4 w-4" />
                   {item.name}
                 </Button>
               </Link>
-            )
+            );
           })}
         </div>
       </nav>
@@ -60,7 +70,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <aside className="hidden w-64 border-r bg-background md:block">
           <nav className="space-y-1 p-4">
             {navigation.map((item) => {
-              const isActive = pathname === item.href
+              const isActive = pathname === item.href;
               return (
                 <Link key={item.name} href={item.href}>
                   <Button
@@ -72,16 +82,18 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     {item.name}
                   </Button>
                 </Link>
-              )
+              );
             })}
           </nav>
         </aside>
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto">
-          <div className="container max-w-7xl px-4 py-6 md:px-6 md:py-8">{children}</div>
+          <div className="container max-w-7xl px-4 py-6 md:px-6 md:py-8">
+            {children}
+          </div>
         </main>
       </div>
     </div>
-  )
+  );
 }

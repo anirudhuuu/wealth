@@ -1,5 +1,5 @@
-import { AlertCircle } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 export function SandboxBanner() {
   return (
@@ -7,8 +7,9 @@ export function SandboxBanner() {
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>Sandbox Mode</AlertTitle>
       <AlertDescription>
-        You are viewing demo data. Changes will not be saved. Contact the administrator to get full access.
+        You are viewing demo data. Changes will not be saved. Contact the
+        administrator to get full access.
       </AlertDescription>
     </Alert>
-  )
+  );
 }

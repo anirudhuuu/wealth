@@ -1,36 +1,40 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Plus, ArrowUpRight, ArrowDownRight, Receipt } from "lucide-react"
-import type { Transaction, Ledger } from "@/lib/types"
-import { AddTransactionDialog } from "./add-transaction-dialog"
-import { useState } from "react"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Ledger, Transaction } from "@/lib/types";
+import { ArrowDownRight, ArrowUpRight, Plus, Receipt } from "lucide-react";
+import { useState } from "react";
+import { AddTransactionDialog } from "./add-transaction-dialog";
 
 interface TransactionsListProps {
-  transactions: Transaction[]
-  ledgers: Ledger[]
-  isAdmin: boolean
+  transactions: Transaction[];
+  ledgers: Ledger[];
+  isAdmin: boolean;
 }
 
-export function TransactionsList({ transactions, ledgers, isAdmin }: TransactionsListProps) {
-  const [showAddDialog, setShowAddDialog] = useState(false)
+export function TransactionsList({
+  transactions,
+  ledgers,
+  isAdmin,
+}: TransactionsListProps) {
+  const [showAddDialog, setShowAddDialog] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
       maximumFractionDigits: 0,
-    }).format(amount)
-  }
+    }).format(amount);
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
-    })
-  }
+    });
+  };
 
   return (
     <>
@@ -52,11 +56,18 @@ export function TransactionsList({ transactions, ledgers, isAdmin }: Transaction
               <div className="py-8 text-center text-sm text-muted-foreground">
                 <Receipt className="mx-auto mb-2 h-8 w-8 opacity-50" />
                 <p>No transactions yet</p>
-                {isAdmin && <p className="mt-1">Add your first transaction to start tracking</p>}
+                {isAdmin && (
+                  <p className="mt-1">
+                    Add your first transaction to start tracking
+                  </p>
+                )}
               </div>
             ) : (
               transactions.map((txn) => (
-                <div key={txn.id} className="flex items-center justify-between rounded-lg border p-3">
+                <div
+                  key={txn.id}
+                  className="flex items-center justify-between rounded-lg border p-3"
+                >
                   <div className="flex items-center gap-3">
                     <div
                       className={`flex h-10 w-10 items-center justify-center rounded-full ${
@@ -81,7 +92,9 @@ export function TransactionsList({ transactions, ledgers, isAdmin }: Transaction
                     </div>
                   </div>
                   <div
-                    className={`text-right font-semibold ${txn.type === "income" ? "text-green-600" : "text-red-600"}`}
+                    className={`text-right font-semibold ${
+                      txn.type === "income" ? "text-green-600" : "text-red-600"
+                    }`}
                   >
                     {txn.type === "income" ? "+" : "-"}
                     {formatCurrency(Number(txn.amount))}
@@ -93,7 +106,13 @@ export function TransactionsList({ transactions, ledgers, isAdmin }: Transaction
         </CardContent>
       </Card>
 
-      {isAdmin && <AddTransactionDialog open={showAddDialog} onOpenChange={setShowAddDialog} ledgers={ledgers} />}
+      {isAdmin && (
+        <AddTransactionDialog
+          open={showAddDialog}
+          onOpenChange={setShowAddDialog}
+          ledgers={ledgers}
+        />
+      )}
     </>
-  )
+  );
 }
