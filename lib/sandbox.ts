@@ -1,4 +1,4 @@
-import type { Transaction, Ledger, Asset } from "@/lib/types"
+import type { Asset, Ledger, Transaction } from "@/lib/types";
 
 // Sandbox mode: Generate dummy data for non-admin users
 export function generateSandboxLedgers(): Ledger[] {
@@ -21,43 +21,55 @@ export function generateSandboxLedgers(): Ledger[] {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     },
-  ]
+  ];
 }
 
 export function generateSandboxTransactions(): Transaction[] {
-  const today = new Date()
-  const transactions: Transaction[] = []
+  const today = new Date();
+  const transactions: Transaction[] = [];
 
   // Generate 30 days of sample transactions
   for (let i = 0; i < 30; i++) {
-    const date = new Date(today)
-    date.setDate(date.getDate() - i)
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
 
     // Add 2-3 transactions per day
-    const numTransactions = Math.floor(Math.random() * 2) + 2
+    const numTransactions = Math.floor(Math.random() * 2) + 2;
     for (let j = 0; j < numTransactions; j++) {
-      const isIncome = Math.random() > 0.7
+      const isIncome = Math.random() > 0.7;
       transactions.push({
         id: `sandbox-txn-${i}-${j}`,
         user_id: "sandbox",
         ledger_id: Math.random() > 0.5 ? "sandbox-1" : "sandbox-2",
         date: date.toISOString().split("T")[0],
         description: isIncome
-          ? ["Salary", "Freelance Payment", "Investment Return"][Math.floor(Math.random() * 3)]
-          : ["Groceries", "Utilities", "Transportation", "Entertainment", "Healthcare"][Math.floor(Math.random() * 5)],
+          ? ["Salary", "Freelance Payment", "Investment Return"][
+              Math.floor(Math.random() * 3)
+            ]
+          : [
+              "Groceries",
+              "Utilities",
+              "Transportation",
+              "Entertainment",
+              "Healthcare",
+            ][Math.floor(Math.random() * 5)],
         category: isIncome
           ? ["Salary", "Freelance", "Investment"][Math.floor(Math.random() * 3)]
-          : ["Food", "Bills", "Transport", "Entertainment", "Health"][Math.floor(Math.random() * 5)],
-        amount: isIncome ? Math.floor(Math.random() * 50000) + 10000 : Math.floor(Math.random() * 5000) + 500,
+          : ["Food", "Bills", "Transport", "Entertainment", "Health"][
+              Math.floor(Math.random() * 5)
+            ],
+        amount: isIncome
+          ? Math.floor(Math.random() * 50000) + 10000
+          : Math.floor(Math.random() * 5000) + 500,
         type: isIncome ? "income" : "expense",
         notes: null,
         created_at: date.toISOString(),
         updated_at: date.toISOString(),
-      })
+      });
     }
   }
 
-  return transactions
+  return transactions;
 }
 
 export function generateSandboxAssets(): Asset[] {
@@ -104,20 +116,24 @@ export function generateSandboxAssets(): Asset[] {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     },
-  ]
+  ];
 }
 
 export function calculateSandboxKPIs() {
-  const transactions = generateSandboxTransactions()
+  const transactions = generateSandboxTransactions();
 
-  const totalIncome = transactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0)
+  const totalIncome = transactions
+    .filter((t) => t.type === "income")
+    .reduce((sum, t) => sum + t.amount, 0);
 
-  const totalExpenses = transactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + t.amount, 0)
+  const totalExpenses = transactions
+    .filter((t) => t.type === "expense")
+    .reduce((sum, t) => sum + t.amount, 0);
 
-  const netSavings = totalIncome - totalExpenses
+  const netSavings = totalIncome - totalExpenses;
 
-  const assets = generateSandboxAssets()
-  const totalAssets = assets.reduce((sum, a) => sum + a.current_value, 0)
+  const assets = generateSandboxAssets();
+  const totalAssets = assets.reduce((sum, a) => sum + a.current_value, 0);
 
   return {
     totalIncome,
@@ -125,5 +141,5 @@ export function calculateSandboxKPIs() {
     netSavings,
     totalAssets,
     savingsRate: totalIncome > 0 ? (netSavings / totalIncome) * 100 : 0,
-  }
+  };
 }
