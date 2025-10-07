@@ -13,6 +13,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import {
   Form,
   FormControl,
   FormField,
@@ -29,6 +45,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDeleteLedger, useUpdateLedger } from "@/hooks/use-ledgers";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import type { Ledger, Transaction } from "@/lib/types";
 import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -62,6 +79,127 @@ const ledgerEditSchema = z.object({
 
 type LedgerEditFormData = z.infer<typeof ledgerEditSchema>;
 
+// Reusable form component for editing ledgers
+function EditLedgerForm({
+  form,
+  onSubmit,
+  updateLedgerMutation,
+  onOpenChange,
+  className,
+  showCancelButton = true,
+}: {
+  form: any;
+  onSubmit: (data: LedgerEditFormData) => void;
+  updateLedgerMutation: any;
+  onOpenChange: (open: boolean) => void;
+  className?: string;
+  showCancelButton?: boolean;
+}) {
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={`space-y-4 ${className || ""}`}
+      >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Ledger Name</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter ledger name"
+                  disabled={updateLedgerMutation.isPending}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type</FormLabel>
+                <Select
+                  disabled={updateLedgerMutation.isPending}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select ledger type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="personal">Personal</SelectItem>
+                    <SelectItem value="family">Family</SelectItem>
+                    <SelectItem value="loan">Loan</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="currency"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Currency</FormLabel>
+                <Select
+                  disabled={updateLedgerMutation.isPending}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select currency" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="INR">INR (₹)</SelectItem>
+                    <SelectItem value="USD">USD ($)</SelectItem>
+                    <SelectItem value="EUR">EUR (€)</SelectItem>
+                    <SelectItem value="GBP">GBP (£)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <Button
+            type="submit"
+            disabled={updateLedgerMutation.isPending}
+            className="bg-primary hover:bg-primary/90"
+          >
+            {updateLedgerMutation.isPending ? "Updating..." : "Update Ledger"}
+          </Button>
+          {showCancelButton && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={updateLedgerMutation.isPending}
+            >
+              Cancel
+            </Button>
+          )}
+        </div>
+      </form>
+    </Form>
+  );
+}
+
 interface LedgersListProps {
   ledgers: Ledger[];
   transactions: Transaction[];
@@ -83,6 +221,7 @@ export function LedgersList({
   // React Query mutations
   const updateLedgerMutation = useUpdateLedger();
   const deleteLedgerMutation = useDeleteLedger();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const form = useForm<LedgerEditFormData>({
     resolver: zodResolver(ledgerEditSchema),
@@ -335,114 +474,58 @@ export function LedgersList({
         <AddLedgerDialog open={showAddDialog} onOpenChange={setShowAddDialog} />
       )}
 
-      {/* Edit Ledger Dialog */}
-      <AlertDialog
-        open={!!editingLedger}
-        onOpenChange={() => setEditingLedger(null)}
-      >
-        <AlertDialogContent className="max-w-md">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Edit Ledger</AlertDialogTitle>
-            <AlertDialogDescription>
-              Update the details for "{editingLedger?.name}"
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleEditLedger)}
-              className="space-y-4"
-            >
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ledger Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter ledger name"
-                        disabled={updateLedgerMutation.isPending}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+      {/* Edit Ledger Dialog/Drawer */}
+      {isDesktop ? (
+        <Dialog
+          open={!!editingLedger}
+          onOpenChange={() => setEditingLedger(null)}
+        >
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Edit Ledger</DialogTitle>
+              <DialogDescription>
+                Update the details for "{editingLedger?.name}"
+              </DialogDescription>
+            </DialogHeader>
+            <EditLedgerForm
+              form={form}
+              onSubmit={handleEditLedger}
+              updateLedgerMutation={updateLedgerMutation}
+              onOpenChange={() => setEditingLedger(null)}
+            />
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Drawer
+          open={!!editingLedger}
+          onOpenChange={() => setEditingLedger(null)}
+        >
+          <DrawerContent>
+            <DrawerHeader className="text-left">
+              <DrawerTitle>Edit Ledger</DrawerTitle>
+              <DrawerDescription>
+                Update the details for "{editingLedger?.name}"
+              </DrawerDescription>
+            </DrawerHeader>
+            <div className="px-4">
+              <EditLedgerForm
+                form={form}
+                onSubmit={handleEditLedger}
+                updateLedgerMutation={updateLedgerMutation}
+                onOpenChange={() => setEditingLedger(null)}
+                showCancelButton={false}
               />
-
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ledger Type</FormLabel>
-                    <Select
-                      disabled={updateLedgerMutation.isPending}
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select ledger type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="personal">Personal</SelectItem>
-                        <SelectItem value="family">Family</SelectItem>
-                        <SelectItem value="loan">Loan</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="currency"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Currency</FormLabel>
-                    <Select
-                      disabled={updateLedgerMutation.isPending}
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select currency" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="INR">INR (₹)</SelectItem>
-                        <SelectItem value="USD">USD ($)</SelectItem>
-                        <SelectItem value="EUR">EUR (€)</SelectItem>
-                        <SelectItem value="GBP">GBP (£)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <AlertDialogFooter>
-                <AlertDialogCancel disabled={updateLedgerMutation.isPending}>
+            </div>
+            <DrawerFooter className="pt-2">
+              <DrawerClose asChild>
+                <Button variant="outline" className="w-full">
                   Cancel
-                </AlertDialogCancel>
-                <Button
-                  type="submit"
-                  disabled={updateLedgerMutation.isPending}
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  {updateLedgerMutation.isPending
-                    ? "Updating..."
-                    : "Update Ledger"}
                 </Button>
-              </AlertDialogFooter>
-            </form>
-          </Form>
-        </AlertDialogContent>
-      </AlertDialog>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      )}
 
       {/* Delete Ledger Dialog */}
       <AlertDialog
