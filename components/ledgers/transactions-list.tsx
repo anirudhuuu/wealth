@@ -44,6 +44,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { AddTransactionDialog } from "./add-transaction-dialog";
 import { EditTransactionDialog } from "./edit-transaction-dialog";
+import { toast } from "sonner";
 
 interface TransactionsListProps {
   transactions: Transaction[];
@@ -112,9 +113,10 @@ export function TransactionsList({
       if (error) throw error;
 
       router.refresh();
+      toast.success("Transaction deleted successfully");
     } catch (error) {
       console.error("Error deleting transaction:", error);
-      alert("Failed to delete transaction. Please try again.");
+      toast.error("Failed to delete transaction. Please try again.");
     } finally {
       setDeletingTransactionId(null);
     }
@@ -381,12 +383,16 @@ export function TransactionsList({
                               {txn.type}
                             </span>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">
-                              Category:
-                            </span>
-                            <span className="font-medium">{txn.category}</span>
-                          </div>
+                          {txn.category.length <= 20 && (
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">
+                                Category:
+                              </span>
+                              <span className="font-medium">
+                                {txn.category}
+                              </span>
+                            </div>
+                          )}
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">Date:</span>
                             <span className="font-medium">

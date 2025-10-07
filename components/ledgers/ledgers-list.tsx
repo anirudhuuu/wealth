@@ -37,6 +37,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { z } from "zod";
+import { toast } from "sonner";
 import { AddLedgerDialog } from "./add-ledger-dialog";
 
 // Validation schema for ledger name
@@ -155,9 +156,10 @@ export function LedgersList({
       setEditingLedger(null);
       form.reset();
       router.refresh();
+      toast.success("Ledger updated successfully");
     } catch (error) {
       console.error("Error updating ledger:", error);
-      alert("Failed to update ledger. Please try again.");
+      toast.error("Failed to update ledger. Please try again.");
     } finally {
       setIsUpdating(false);
     }
@@ -192,9 +194,10 @@ export function LedgersList({
       // Reset state and close dialog
       setDeletingLedger(null);
       router.refresh();
+      toast.success("Ledger deleted successfully");
     } catch (error) {
       console.error("Error deleting ledger:", error);
-      alert("Failed to delete ledger. Please try again.");
+      toast.error("Failed to delete ledger. Please try again.");
     } finally {
       setIsDeleting(false);
     }

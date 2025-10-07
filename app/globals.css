@@ -3,6 +3,52 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Sonner Toast Customizations */
+[data-sonner-toaster] {
+  --normal-bg: hsl(var(--popover));
+  --normal-border: hsl(var(--border));
+  --normal-text: hsl(var(--popover-foreground));
+  --success-bg: hsl(var(--popover));
+  --success-border: hsl(var(--border));
+  --success-text: hsl(var(--popover-foreground));
+  --error-bg: hsl(var(--popover));
+  --error-border: hsl(var(--border));
+  --error-text: hsl(var(--popover-foreground));
+}
+
+[data-sonner-toast] {
+  background: hsl(var(--popover) / 0.95) !important;
+  backdrop-filter: blur(8px);
+  border: 1px solid hsl(var(--border) / 0.5) !important;
+  color: hsl(var(--popover-foreground)) !important;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+}
+
+[data-sonner-toast][data-type="success"] {
+  background: hsl(var(--popover) / 0.95) !important;
+  border-left: 4px solid hsl(142 76% 36%) !important;
+}
+
+[data-sonner-toast][data-type="error"] {
+  background: hsl(var(--popover) / 0.95) !important;
+  border-left: 4px solid hsl(0 84% 60%) !important;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  [data-sonner-toaster] {
+    left: 16px !important;
+    right: 16px !important;
+    width: auto !important;
+  }
+
+  [data-sonner-toast] {
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
 :root {
   --background: 0 0% 100%;
   --foreground: 0 0% 3.9%;

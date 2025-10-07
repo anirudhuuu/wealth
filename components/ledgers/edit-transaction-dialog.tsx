@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { toast } from "sonner";
 
 // Validation schema (same as add transaction)
 const transactionSchema = z.object({
@@ -133,9 +134,10 @@ export function EditTransactionDialog({
 
       onOpenChange(false);
       router.refresh();
+      toast.success("Transaction updated successfully");
     } catch (error) {
       console.error("Error updating transaction:", error);
-      // Form will show validation errors automatically
+      toast.error("Failed to update transaction. Please try again.");
     } finally {
       setIsLoading(false);
     }

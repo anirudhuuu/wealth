@@ -32,6 +32,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { toast } from "sonner";
 
 // Validation schema
 const assetSchema = z.object({
@@ -121,9 +122,10 @@ export function AddAssetDialog({ open, onOpenChange }: AddAssetDialogProps) {
       form.reset();
       onOpenChange(false);
       router.refresh();
+      toast.success("Asset created successfully");
     } catch (error) {
       console.error("Error creating asset:", error);
-      // Form will show validation errors automatically
+      toast.error("Failed to create asset. Please try again.");
     } finally {
       setIsLoading(false);
     }

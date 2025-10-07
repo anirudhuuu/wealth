@@ -31,10 +31,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { toast } from "sonner";
 
 // Validation schema
 const ledgerSchema = z.object({
-  name: z.string().min(1, "Ledger name is required").max(100, "Ledger name must be less than 100 characters"),
+  name: z
+    .string()
+    .min(1, "Ledger name is required")
+    .max(100, "Ledger name must be less than 100 characters"),
   type: z.enum(["family", "personal", "loan"]),
   currency: z.enum(["INR", "USD", "EUR", "GBP"]),
 });
@@ -82,9 +86,10 @@ export function AddLedgerDialog({ open, onOpenChange }: AddLedgerDialogProps) {
       form.reset();
       onOpenChange(false);
       router.refresh();
+      toast.success("Ledger created successfully");
     } catch (error) {
       console.error("Error creating ledger:", error);
-      // Form will show validation errors automatically
+      toast.error("Failed to create ledger. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -118,7 +123,10 @@ export function AddLedgerDialog({ open, onOpenChange }: AddLedgerDialogProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue />
@@ -141,7 +149,10 @@ export function AddLedgerDialog({ open, onOpenChange }: AddLedgerDialogProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Currency</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue />
