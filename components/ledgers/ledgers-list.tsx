@@ -35,6 +35,7 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -78,14 +79,6 @@ export function LedgersList({
     },
   });
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
   const toggleLedgerExpansion = (ledgerId: string) => {
     setExpandedLedgers((prev) => {
       const newSet = new Set(prev);
@@ -103,18 +96,22 @@ export function LedgersList({
       (txn) => txn.ledger_id === ledgerId
     );
 
-    const totalIncome = ledgerTransactions
-      .filter((txn) => txn.type === "income")
-      .reduce((sum, txn) => sum + Number(txn.amount), 0);
+    const totalIncome = roundToTwoDecimals(
+      ledgerTransactions
+        .filter((txn) => txn.type === "income")
+        .reduce((sum, txn) => sum + Number(txn.amount), 0)
+    );
 
-    const totalExpenses = ledgerTransactions
-      .filter((txn) => txn.type === "expense")
-      .reduce((sum, txn) => sum + Number(txn.amount), 0);
+    const totalExpenses = roundToTwoDecimals(
+      ledgerTransactions
+        .filter((txn) => txn.type === "expense")
+        .reduce((sum, txn) => sum + Number(txn.amount), 0)
+    );
 
     return {
       income: totalIncome,
       expenses: totalExpenses,
-      net: totalIncome - totalExpenses,
+      net: roundToTwoDecimals(totalIncome - totalExpenses),
       transactionCount: ledgerTransactions.length,
     };
   };

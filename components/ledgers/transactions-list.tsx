@@ -41,6 +41,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { formatCurrency } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { AddTransactionDialog } from "./add-transaction-dialog";
 import { EditTransactionDialog } from "./edit-transaction-dialog";
@@ -82,14 +83,6 @@ export function TransactionsList({
       }
       return newSet;
     });
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(amount);
   };
 
   const formatDate = (dateString: string) => {

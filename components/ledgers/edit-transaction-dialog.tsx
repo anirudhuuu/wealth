@@ -35,6 +35,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { parseAndRoundAmount } from "@/lib/utils";
 import { format } from "date-fns";
 
 // Validation schema (same as add transaction)
@@ -127,7 +128,7 @@ export function EditTransactionDialog({
           date: format(data.date, "yyyy-MM-dd"),
           description: data.description,
           category: data.category,
-          amount: Number.parseFloat(data.amount),
+          amount: parseAndRoundAmount(data.amount),
           type: data.type,
           notes: data.notes || null,
         })

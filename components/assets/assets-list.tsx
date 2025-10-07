@@ -25,6 +25,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useState } from "react";
+import { formatCurrency } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
@@ -74,14 +75,6 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
     } finally {
       setDeletingAssetId(null);
     }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(amount);
   };
 
   const formatDate = (dateString: string | null) => {

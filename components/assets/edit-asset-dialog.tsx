@@ -35,6 +35,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { parseAndRoundAmount } from "@/lib/utils";
 import { format } from "date-fns";
 
 // Validation schema
@@ -141,10 +142,12 @@ export function EditAssetDialog({
         .update({
           name: data.name,
           type: data.type,
-          current_value: Number.parseFloat(data.currentValue),
-          purchase_value: Number.parseFloat(data.purchaseValue),
+          current_value: parseAndRoundAmount(data.currentValue),
+          purchase_value: parseAndRoundAmount(data.purchaseValue),
           purchase_date: format(data.purchaseDate, "yyyy-MM-dd"),
-          maturity_date: data.maturityDate ? format(data.maturityDate, "yyyy-MM-dd") : null,
+          maturity_date: data.maturityDate
+            ? format(data.maturityDate, "yyyy-MM-dd")
+            : null,
           currency: data.currency,
           notes: data.notes || null,
         })

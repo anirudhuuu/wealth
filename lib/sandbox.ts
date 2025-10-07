@@ -1,4 +1,5 @@
 import type { Asset, Ledger, Transaction } from "@/lib/types";
+import { roundToTwoDecimals } from "@/lib/utils";
 
 // Sandbox mode: Generate dummy data for non-admin users
 export function generateSandboxLedgers(): Ledger[] {
@@ -122,18 +123,24 @@ export function generateSandboxAssets(): Asset[] {
 export function calculateSandboxKPIs() {
   const transactions = generateSandboxTransactions();
 
-  const totalIncome = transactions
-    .filter((t) => t.type === "income")
-    .reduce((sum, t) => sum + t.amount, 0);
+  const totalIncome = roundToTwoDecimals(
+    transactions
+      .filter((t) => t.type === "income")
+      .reduce((sum, t) => sum + t.amount, 0)
+  );
 
-  const totalExpenses = transactions
-    .filter((t) => t.type === "expense")
-    .reduce((sum, t) => sum + t.amount, 0);
+  const totalExpenses = roundToTwoDecimals(
+    transactions
+      .filter((t) => t.type === "expense")
+      .reduce((sum, t) => sum + t.amount, 0)
+  );
 
-  const netSavings = totalIncome - totalExpenses;
+  const netSavings = roundToTwoDecimals(totalIncome - totalExpenses);
 
   const assets = generateSandboxAssets();
-  const totalAssets = assets.reduce((sum, a) => sum + a.current_value, 0);
+  const totalAssets = roundToTwoDecimals(
+    assets.reduce((sum, a) => sum + a.current_value, 0)
+  );
 
   return {
     totalIncome,

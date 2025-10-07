@@ -3,6 +3,7 @@ import { SandboxBanner } from "@/components/sandbox-banner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getProfile, requireAuth } from "@/lib/auth";
 import { generateSandboxAssets } from "@/lib/sandbox";
+import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
 import { TrendingDown, TrendingUp } from "lucide-react";
 
@@ -30,17 +31,21 @@ export default async function AssetsPage() {
   }
 
   // Calculate totals
-  totalValue = assets.reduce(
-    (sum, asset) => sum + Number(asset.current_value),
-    0
+  totalValue = roundToTwoDecimals(
+    assets.reduce(
+      (sum: number, asset: any) => sum + Number(asset.current_value),
+      0
+    )
   );
-  totalGain = assets.reduce(
-    (sum, asset) =>
-      sum + (Number(asset.current_value) - Number(asset.purchase_value)),
-    0
+  totalGain = roundToTwoDecimals(
+    assets.reduce(
+      (sum: number, asset: any) =>
+        sum + (Number(asset.current_value) - Number(asset.purchase_value)),
+      0
+    )
   );
 
-  const gainPercentage = assets.reduce((sum, asset) => {
+  const gainPercentage = assets.reduce((sum: number, asset: any) => {
     const purchaseValue = Number(asset.purchase_value);
     if (purchaseValue === 0) return sum;
     return (
@@ -51,14 +56,6 @@ export default async function AssetsPage() {
 
   const avgGainPercentage =
     assets.length > 0 ? gainPercentage / assets.length : 0;
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   return (
     <div className="space-y-6">

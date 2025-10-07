@@ -6,6 +6,7 @@ import {
   calculateSandboxKPIs,
   generateSandboxTransactions,
 } from "@/lib/sandbox";
+import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
 import { ArrowDownRight, ArrowUpRight, TrendingUp, Wallet } from "lucide-react";
 
@@ -35,15 +36,19 @@ export default async function DashboardPage() {
     transactions = txnData || [];
 
     // Calculate KPIs
-    totalIncome = transactions
-      .filter((t) => t.type === "income")
-      .reduce((sum, t) => sum + Number(t.amount), 0);
+    totalIncome = roundToTwoDecimals(
+      transactions
+        .filter((t: any) => t.type === "income")
+        .reduce((sum: number, t: any) => sum + Number(t.amount), 0)
+    );
 
-    totalExpenses = transactions
-      .filter((t) => t.type === "expense")
-      .reduce((sum, t) => sum + Number(t.amount), 0);
+    totalExpenses = roundToTwoDecimals(
+      transactions
+        .filter((t: any) => t.type === "expense")
+        .reduce((sum: number, t: any) => sum + Number(t.amount), 0)
+    );
 
-    netSavings = totalIncome - totalExpenses;
+    netSavings = roundToTwoDecimals(totalIncome - totalExpenses);
     savingsRate = totalIncome > 0 ? (netSavings / totalIncome) * 100 : 0;
 
     // Fetch assets
@@ -52,17 +57,20 @@ export default async function DashboardPage() {
       .select("*")
       .eq("user_id", user.id);
 
-    totalAssets = (assetData || []).reduce(
-      (sum, a) => sum + Number(a.current_value),
-      0
+    totalAssets = roundToTwoDecimals(
+      (assetData || []).reduce(
+        (sum: number, a: any) => sum + Number(a.current_value),
+        0
+      )
     );
 
     // Calculate category breakdown
     transactions
       .filter((t) => t.type === "expense")
-      .forEach((t) => {
-        categoryData[t.category] =
-          (categoryData[t.category] || 0) + Number(t.amount);
+      .forEach((t: any) => {
+        categoryData[t.category] = roundToTwoDecimals(
+          (categoryData[t.category] || 0) + Number(t.amount)
+        );
       });
   } else {
     // Sandbox mode
@@ -78,18 +86,12 @@ export default async function DashboardPage() {
     // Calculate category breakdown
     transactions
       .filter((t) => t.type === "expense")
-      .forEach((t) => {
-        categoryData[t.category] = (categoryData[t.category] || 0) + t.amount;
+      .forEach((t: any) => {
+        categoryData[t.category] = roundToTwoDecimals(
+          (categoryData[t.category] || 0) + t.amount
+        );
       });
   }
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   return (
     <div className="space-y-6">
