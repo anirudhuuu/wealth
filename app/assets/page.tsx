@@ -3,8 +3,8 @@ import { SandboxBanner } from "@/components/sandbox-banner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getProfile, requireAuth } from "@/lib/auth";
 import { generateSandboxAssets } from "@/lib/sandbox";
-import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
+import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
 import { TrendingDown, TrendingUp } from "lucide-react";
 
 export default async function AssetsPage() {
