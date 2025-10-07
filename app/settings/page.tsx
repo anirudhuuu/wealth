@@ -1,9 +1,51 @@
-import { ProfileSettings } from "@/components/settings/profile-settings";
-import { getProfile, requireAuth } from "@/lib/auth";
+"use client";
 
-export default async function SettingsPage() {
-  const user = await requireAuth();
-  const profile = await getProfile(user.id);
+import { ProfileSettings } from "@/components/settings/profile-settings";
+import { SettingsSkeleton } from "@/components/settings/settings-skeleton";
+import { useUserWithProfile } from "@/hooks/use-user";
+
+export default function SettingsPage() {
+  const { user, profile, isLoading, error } = useUserWithProfile();
+
+  if (isLoading) {
+    return <SettingsSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+          <p className="text-muted-foreground">
+            Manage your account and preferences
+          </p>
+        </div>
+        <div className="text-center py-8">
+          <p className="text-red-600">
+            Failed to load settings data. Please try again.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+          <p className="text-muted-foreground">
+            Manage your account and preferences
+          </p>
+        </div>
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">
+            Please sign in to view your settings.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -15,7 +57,17 @@ export default async function SettingsPage() {
       </div>
 
       {/* Profile Information */}
-      <ProfileSettings user={user} profile={profile} />
+      <ProfileSettings
+        user={user}
+        profile={
+          profile
+            ? {
+                display_name: profile.display_name,
+                is_admin: profile.is_admin,
+              }
+            : null
+        }
+      />
     </div>
   );
 }

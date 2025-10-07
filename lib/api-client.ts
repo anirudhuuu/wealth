@@ -126,6 +126,25 @@ class ApiClient {
     return this.repositories.transactions.getSummary(userId, filters);
   }
 
+  // Dashboard methods
+  async getDashboardKPIs(): Promise<{
+    kpis: {
+      totalIncome: number;
+      totalExpenses: number;
+      netSavings: number;
+      totalAssets: number;
+      savingsRate: number;
+    };
+    transactions: Transaction[];
+    categoryData: Record<string, number>;
+  }> {
+    const response = await fetch("/api/dashboard/kpis");
+    if (!response.ok) {
+      throw new Error("Failed to fetch dashboard KPIs");
+    }
+    return response.json();
+  }
+
   // User methods
   async getProfile(): Promise<Profile> {
     const userId = await this.getCurrentUserId();
