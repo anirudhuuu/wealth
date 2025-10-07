@@ -1,37 +1,27 @@
 "use client";
 
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { TooltipProviderWrapper } from "@/components/ui/tooltip-wrapper";
-import type React from "react";
+import { AppSidebar } from "@/components/app-sidebar";
 import { Footer } from "./footer";
 import { Navbar } from "./navbar";
-import { Sidebar } from "./sidebar";
+import type React from "react";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <TooltipProviderWrapper>
-      <div className="flex min-h-screen flex-col">
-        <Navbar />
-
-        {/* Mobile Navigation */}
-        <nav className="border-b bg-background md:hidden">
-          <div className="container flex items-center gap-1 overflow-x-auto px-4 py-2">
-            {/* Mobile nav items can be added here if needed */}
+    <SidebarProvider>
+      <TooltipProviderWrapper>
+        <div className="flex min-h-screen w-full">
+          <AppSidebar />
+          <div className="flex flex-1 flex-col min-w-0">
+            <Navbar />
+            <main className="flex-1 overflow-y-auto w-full">
+              <div className="w-full px-4 py-6 md:px-6 md:py-8">{children}</div>
+            </main>
+            <Footer />
           </div>
-        </nav>
-
-        <div className="flex flex-1">
-          <Sidebar />
-
-          {/* Main Content */}
-          <main className="flex-1 overflow-y-auto">
-            <div className="container max-w-7xl px-4 py-6 md:px-6 md:py-8">
-              {children}
-            </div>
-          </main>
         </div>
-
-        <Footer />
-      </div>
-    </TooltipProviderWrapper>
+      </TooltipProviderWrapper>
+    </SidebarProvider>
   );
 }

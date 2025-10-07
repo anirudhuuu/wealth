@@ -4,16 +4,15 @@ import { signOut } from "@/app/actions/auth";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { TooltipWrapper } from "@/components/ui/tooltip-wrapper";
-import { LogOut, Wallet } from "lucide-react";
+import { LogOut } from "lucide-react";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center justify-between px-6 w-full">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <Wallet className="h-5 w-5 text-primary-foreground" />
-          </div>
+          <SidebarTrigger />
           <span className="text-xl font-bold tracking-tight">Wealth</span>
         </div>
 
