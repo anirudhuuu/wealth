@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import type React from "react";
 
 export const metadata: Metadata = {
-  title: "Assets - Expense Tracker",
+  title: "Assets - Wealth",
   description: "Track your investments and wealth",
 };
 

@@ -59,7 +59,7 @@ export default function SignInPage() {
           </div>
           <CardTitle className="text-2xl">Welcome</CardTitle>
           <CardDescription>
-            Sign in with Google to access your expense tracker
+            Sign in with Google to access your Wealth
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
