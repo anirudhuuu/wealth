@@ -24,7 +24,14 @@ import {
 import { Input } from "@/components/ui/input";
 import type { Ledger, Transaction } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown, ChevronRight, Edit, Plus, Wallet } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Edit,
+  Plus,
+  Trash2,
+  Wallet,
+} from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -58,7 +65,9 @@ export function LedgersList({
     new Set()
   );
   const [editingLedger, setEditingLedger] = useState<Ledger | null>(null);
+  const [deletingLedger, setDeletingLedger] = useState<Ledger | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
   const form = useForm<LedgerNameFormData>({
@@ -159,6 +168,42 @@ export function LedgersList({
     form.reset({ name: ledger.name });
   };
 
+  const handleDeleteLedger = async () => {
+    if (!deletingLedger) return;
+
+    setIsDeleting(true);
+    try {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) throw new Error("Not authenticated");
+
+      // Delete the ledger (only empty ledgers can be deleted)
+      const { error } = await supabase
+        .from("ledgers")
+        .delete()
+        .eq("id", deletingLedger.id)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      // Reset state and close dialog
+      setDeletingLedger(null);
+      router.refresh();
+    } catch (error) {
+      console.error("Error deleting ledger:", error);
+      alert("Failed to delete ledger. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const getLedgerTransactionCount = (ledgerId: string) => {
+    return transactions.filter((txn) => txn.ledger_id === ledgerId).length;
+  };
+
   return (
     <>
       <Card>
@@ -210,14 +255,30 @@ export function LedgersList({
                       </div>
                       <div className="flex items-center gap-1">
                         {isAdmin && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => openEditDialog(ledger)}
-                            className="h-8 w-8 p-0"
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openEditDialog(ledger)}
+                              className="h-8 w-8 p-0"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setDeletingLedger(ledger)}
+                              disabled={spending.transactionCount > 0}
+                              className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:bg-transparent"
+                              title={
+                                spending.transactionCount > 0
+                                  ? "Cannot delete ledger with transactions"
+                                  : "Delete ledger"
+                              }
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </>
                         )}
                         {spending.transactionCount > 0 && (
                           <Button
@@ -330,6 +391,38 @@ export function LedgersList({
               </AlertDialogFooter>
             </form>
           </Form>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Ledger Dialog */}
+      <AlertDialog
+        open={
+          !!deletingLedger &&
+          getLedgerTransactionCount(deletingLedger?.id || "") === 0
+        }
+        onOpenChange={() => setDeletingLedger(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Ledger</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{deletingLedger?.name}"? This
+              will permanently delete the ledger.
+              <br />
+              <br />
+              <strong>This action cannot be undone.</strong>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteLedger}
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {isDeleting ? "Deleting..." : "Delete Ledger"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>
