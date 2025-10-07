@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DatePicker } from "@/components/ui/date-picker";
 import { createClient } from "@/lib/supabase/client";
 import type { Asset } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,6 +35,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { format } from "date-fns";
 
 // Validation schema
 const assetSchema = z.object({
@@ -64,8 +66,10 @@ const assetSchema = z.object({
       const num = parseFloat(val);
       return !isNaN(num) && num >= 0;
     }, "Purchase value must be a non-negative number"),
-  purchaseDate: z.string().min(1, "Purchase date is required"),
-  maturityDate: z.string().optional(),
+  purchaseDate: z.date({
+    message: "Purchase date is required",
+  }),
+  maturityDate: z.date().optional(),
   currency: z.enum(["INR", "USD", "EUR", "GBP"]),
   notes: z.string().optional(),
 });
@@ -93,8 +97,8 @@ export function EditAssetDialog({
       type: "fd",
       currentValue: "",
       purchaseValue: "",
-      purchaseDate: new Date().toISOString().split("T")[0],
-      maturityDate: "",
+      purchaseDate: new Date(),
+      maturityDate: undefined,
       currency: "INR",
       notes: "",
     },
@@ -109,11 +113,11 @@ export function EditAssetDialog({
         currentValue: asset.current_value?.toString() || "0",
         purchaseValue: asset.purchase_value?.toString() || "0",
         purchaseDate: asset.purchase_date
-          ? new Date(asset.purchase_date).toISOString().split("T")[0]
-          : "",
+          ? new Date(asset.purchase_date)
+          : new Date(),
         maturityDate: asset.maturity_date
-          ? new Date(asset.maturity_date).toISOString().split("T")[0]
-          : "",
+          ? new Date(asset.maturity_date)
+          : undefined,
         currency: asset.currency as any,
         notes: asset.notes || "",
       });
@@ -139,8 +143,8 @@ export function EditAssetDialog({
           type: data.type,
           current_value: Number.parseFloat(data.currentValue),
           purchase_value: Number.parseFloat(data.purchaseValue),
-          purchase_date: data.purchaseDate,
-          maturity_date: data.maturityDate || null,
+          purchase_date: format(data.purchaseDate, "yyyy-MM-dd"),
+          maturity_date: data.maturityDate ? format(data.maturityDate, "yyyy-MM-dd") : null,
           currency: data.currency,
           notes: data.notes || null,
         })
@@ -265,7 +269,11 @@ export function EditAssetDialog({
                   <FormItem>
                     <FormLabel>Purchase Date</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DatePicker
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="Select purchase date"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -279,7 +287,11 @@ export function EditAssetDialog({
                   <FormItem>
                     <FormLabel>Maturity Date (Optional)</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DatePicker
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="Select maturity date"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

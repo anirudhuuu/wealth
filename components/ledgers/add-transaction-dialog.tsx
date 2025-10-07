@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DatePicker } from "@/components/ui/date-picker";
 import { createClient } from "@/lib/supabase/client";
 import type { Ledger } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,11 +35,14 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { format } from "date-fns";
 
 // Validation schema
 const transactionSchema = z.object({
   ledger_id: z.string().min(1, "Please select a ledger"),
-  date: z.string().min(1, "Date is required"),
+  date: z.date({
+    message: "Date is required",
+  }),
   description: z
     .string()
     .min(1, "Description is required")
@@ -78,7 +82,7 @@ export function AddTransactionDialog({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
       ledger_id: "",
-      date: new Date().toISOString().split("T")[0], // Today's date
+      date: new Date(), // Today's date
       description: "",
       category: "",
       amount: "",
@@ -110,7 +114,7 @@ export function AddTransactionDialog({
       const { error } = await supabase.from("transactions").insert({
         user_id: user.id,
         ledger_id: data.ledger_id,
-        date: data.date,
+        date: format(data.date, "yyyy-MM-dd"),
         description: data.description,
         category: data.category,
         amount: Number.parseFloat(data.amount),
@@ -206,7 +210,11 @@ export function AddTransactionDialog({
                 <FormItem>
                   <FormLabel>Date</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <DatePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Select transaction date"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

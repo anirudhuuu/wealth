@@ -417,7 +417,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
       {isAdmin && (
         <Button
           onClick={() => setShowAddDialog(true)}
-          className="fixed bottom-6 right-6 h-auto px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-50 gap-2 md:hidden"
+          className="fixed bottom-24 right-6 h-auto px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-50 gap-2 md:hidden"
         >
           <Plus className="h-5 w-5" />
           <span className="text-sm font-medium">Add Asset</span>

@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DatePicker } from "@/components/ui/date-picker";
 import { createClient } from "@/lib/supabase/client";
 import type { Ledger, Transaction } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,11 +35,14 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { format } from "date-fns";
 
 // Validation schema (same as add transaction)
 const transactionSchema = z.object({
   ledger_id: z.string().min(1, "Please select a ledger"),
-  date: z.string().min(1, "Date is required"),
+  date: z.date({
+    message: "Date is required",
+  }),
   description: z
     .string()
     .min(1, "Description is required")
@@ -80,7 +84,7 @@ export function EditTransactionDialog({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
       ledger_id: "",
-      date: "",
+      date: new Date(),
       description: "",
       category: "",
       amount: "",
@@ -94,7 +98,7 @@ export function EditTransactionDialog({
     if (transaction) {
       form.reset({
         ledger_id: transaction.ledger_id,
-        date: transaction.date,
+        date: new Date(transaction.date),
         description: transaction.description,
         category: transaction.category,
         amount: transaction.amount.toString(),
@@ -120,7 +124,7 @@ export function EditTransactionDialog({
         .from("transactions")
         .update({
           ledger_id: data.ledger_id,
-          date: data.date,
+          date: format(data.date, "yyyy-MM-dd"),
           description: data.description,
           category: data.category,
           amount: Number.parseFloat(data.amount),
@@ -210,7 +214,11 @@ export function EditTransactionDialog({
                 <FormItem>
                   <FormLabel>Date</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <DatePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Select transaction date"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
