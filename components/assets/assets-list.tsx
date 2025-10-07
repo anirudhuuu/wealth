@@ -129,11 +129,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
           <div className="flex items-center justify-between">
             <CardTitle>Your Assets</CardTitle>
             {isAdmin && (
-              <Button
-                size="sm"
-                onClick={() => setShowAddDialog(true)}
-                className="hidden md:flex"
-              >
+              <Button size="sm" onClick={() => setShowAddDialog(true)}>
                 <Plus className="mr-2 h-4 w-4" />
                 Add Asset
               </Button>
@@ -411,17 +407,6 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
           onOpenChange={(open) => !open && setEditingAsset(null)}
           asset={editingAsset}
         />
-      )}
-
-      {/* Floating Action Button - Mobile Only */}
-      {isAdmin && (
-        <Button
-          onClick={() => setShowAddDialog(true)}
-          className="fixed bottom-24 right-6 h-auto px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-50 gap-2 md:hidden"
-        >
-          <Plus className="h-5 w-5" />
-          <span className="text-sm font-medium">Add Asset</span>
-        </Button>
       )}
     </>
   );
