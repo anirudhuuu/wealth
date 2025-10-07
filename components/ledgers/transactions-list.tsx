@@ -176,39 +176,7 @@ export function TransactionsList({
                   ))}
                 </SelectContent>
               </Select>
-
-              <div className="flex items-center gap-1 sm:gap-2">
-                <span className="text-sm text-muted-foreground whitespace-nowrap">
-                  Show:
-                </span>
-                <Select
-                  value={itemsPerPage.toString()}
-                  onValueChange={(value) => {
-                    setItemsPerPage(Number(value));
-                    setCurrentPage(1);
-                  }}
-                >
-                  <SelectTrigger className="w-20">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="5">5</SelectItem>
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="20">20</SelectItem>
-                    <SelectItem value="50">50</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
-
-            {totalItems > 0 && (
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">
-                  Showing {startIndex + 1}-{Math.min(endIndex, totalItems)} of{" "}
-                  {totalItems} transactions
-                </div>
-              </div>
-            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -458,6 +426,39 @@ export function TransactionsList({
           </Pagination>
         </div>
       )}
+
+      {/* Pagination Controls */}
+      <div className="mt-4 flex items-center justify-between">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <span className="text-sm text-muted-foreground whitespace-nowrap">
+            Show:
+          </span>
+          <Select
+            value={itemsPerPage.toString()}
+            onValueChange={(value) => {
+              setItemsPerPage(Number(value));
+              setCurrentPage(1);
+            }}
+          >
+            <SelectTrigger className="w-20">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="5">5</SelectItem>
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="20">20</SelectItem>
+              <SelectItem value="50">50</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {totalItems > 0 && (
+          <div className="text-sm text-muted-foreground">
+            Showing {startIndex + 1}-{Math.min(endIndex, totalItems)} of{" "}
+            {totalItems} transactions
+          </div>
+        )}
+      </div>
 
       {isAdmin && (
         <>
