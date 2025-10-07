@@ -1,8 +1,7 @@
 "use client";
 
-import type React from "react";
-
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Dialog,
   DialogContent,
@@ -26,17 +25,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { DatePicker } from "@/components/ui/date-picker";
-import { createClient } from "@/lib/supabase/client";
+import { useCreateTransaction } from "@/hooks/use-transactions";
 import type { Ledger } from "@/lib/types";
+import { parseAndRoundAmount } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { toast } from "sonner";
-import { parseAndRoundAmount } from "@/lib/utils";
-import { format } from "date-fns";
 
 // Validation schema
 const transactionSchema = z.object({
@@ -76,8 +71,7 @@ export function AddTransactionDialog({
   onOpenChange,
   ledgers,
 }: AddTransactionDialogProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const createTransactionMutation = useCreateTransaction();
 
   const form = useForm<TransactionFormData>({
     resolver: zodResolver(transactionSchema),
@@ -103,39 +97,23 @@ export function AddTransactionDialog({
   }, [open, ledgers, form]);
 
   const onSubmit = async (data: TransactionFormData) => {
-    setIsLoading(true);
-    try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) throw new Error("Not authenticated");
-
-      const { error } = await supabase.from("transactions").insert({
-        user_id: user.id,
-        ledger_id: data.ledger_id,
-        date: format(data.date, "yyyy-MM-dd"),
+    createTransactionMutation.mutate(
+      {
+        ledgerId: data.ledger_id,
+        date: data.date,
         description: data.description,
         category: data.category,
         amount: parseAndRoundAmount(data.amount),
         type: data.type,
         notes: data.notes || null,
-      });
-
-      if (error) throw error;
-
-      // Reset form and close dialog
-      form.reset();
-      onOpenChange(false);
-      router.refresh();
-      toast.success("Transaction created successfully");
-    } catch (error) {
-      console.error("Error creating transaction:", error);
-      toast.error("Failed to create transaction. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+      },
+      {
+        onSuccess: () => {
+          form.reset();
+          onOpenChange(false);
+        },
+      }
+    );
   };
 
   return (
@@ -294,12 +272,17 @@ export function AddTransactionDialog({
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                disabled={isLoading}
+                disabled={createTransactionMutation.isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Creating..." : "Create Transaction"}
+              <Button
+                type="submit"
+                disabled={createTransactionMutation.isPending}
+              >
+                {createTransactionMutation.isPending
+                  ? "Creating..."
+                  : "Create Transaction"}
               </Button>
             </div>
           </form>

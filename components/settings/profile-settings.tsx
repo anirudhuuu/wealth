@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,14 +17,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createClient } from "@/lib/supabase/client";
-import type { User } from "@supabase/supabase-js";
+import { useUpdateProfile } from "@/hooks/use-user";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import type { User } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { toast } from "sonner";
+import { z } from "zod";
 
 // Validation schema
 const profileSchema = z.object({
@@ -45,8 +41,7 @@ interface ProfileSettingsProps {
 }
 
 export function ProfileSettings({ user, profile }: ProfileSettingsProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const updateProfileMutation = useUpdateProfile();
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -56,24 +51,16 @@ export function ProfileSettings({ user, profile }: ProfileSettingsProps) {
   });
 
   const onSubmit = async (data: ProfileFormData) => {
-    setIsLoading(true);
-    try {
-      const supabase = createClient();
-      const { error } = await supabase
-        .from("profiles")
-        .update({ display_name: data.display_name })
-        .eq("id", user.id);
-
-      if (error) throw error;
-
-      toast.success("Profile updated successfully");
-      router.refresh();
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error("Failed to update profile. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+    updateProfileMutation.mutate(
+      {
+        displayName: data.display_name,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Profile updated successfully");
+        },
+      }
+    );
   };
 
   return (
@@ -94,7 +81,7 @@ export function ProfileSettings({ user, profile }: ProfileSettingsProps) {
                   <FormControl>
                     <Input
                       placeholder="Enter your display name"
-                      disabled={isLoading}
+                      disabled={updateProfileMutation.isPending}
                       {...field}
                     />
                   </FormControl>
@@ -103,8 +90,8 @@ export function ProfileSettings({ user, profile }: ProfileSettingsProps) {
               )}
             />
 
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save Changes"}
+            <Button type="submit" disabled={updateProfileMutation.isPending}>
+              {updateProfileMutation.isPending ? "Saving..." : "Save Changes"}
             </Button>
           </form>
         </Form>

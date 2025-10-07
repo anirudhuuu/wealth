@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,8 +9,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -22,7 +21,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useDeleteLedger, useUpdateLedger } from "@/hooks/use-ledgers";
 import type { Ledger, Transaction } from "@/lib/types";
+import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ChevronDown,
@@ -34,22 +42,25 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
 import { z } from "zod";
-import { toast } from "sonner";
 import { AddLedgerDialog } from "./add-ledger-dialog";
 
 // Validation schema for ledger name
-const ledgerNameSchema = z.object({
+const ledgerEditSchema = z.object({
   name: z
     .string()
     .min(1, "Ledger name is required")
     .max(100, "Ledger name must be less than 100 characters"),
+  type: z.enum(["family", "personal", "loan"], {
+    message: "Please select a ledger type",
+  }),
+  currency: z
+    .string()
+    .min(1, "Currency is required")
+    .max(10, "Currency code must be less than 10 characters"),
 });
 
-type LedgerNameFormData = z.infer<typeof ledgerNameSchema>;
+type LedgerEditFormData = z.infer<typeof ledgerEditSchema>;
 
 interface LedgersListProps {
   ledgers: Ledger[];
@@ -68,14 +79,17 @@ export function LedgersList({
   );
   const [editingLedger, setEditingLedger] = useState<Ledger | null>(null);
   const [deletingLedger, setDeletingLedger] = useState<Ledger | null>(null);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
 
-  const form = useForm<LedgerNameFormData>({
-    resolver: zodResolver(ledgerNameSchema),
+  // React Query mutations
+  const updateLedgerMutation = useUpdateLedger();
+  const deleteLedgerMutation = useDeleteLedger();
+
+  const form = useForm<LedgerEditFormData>({
+    resolver: zodResolver(ledgerEditSchema),
     defaultValues: {
       name: "",
+      type: "personal",
+      currency: "INR",
     },
   });
 
@@ -129,75 +143,44 @@ export function LedgersList({
     }
   };
 
-  const handleEditLedger = async (data: LedgerNameFormData) => {
+  const handleEditLedger = async (data: LedgerEditFormData) => {
     if (!editingLedger) return;
 
-    setIsUpdating(true);
-    try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) throw new Error("Not authenticated");
-
-      const { error } = await supabase
-        .from("ledgers")
-        .update({ name: data.name.trim() })
-        .eq("id", editingLedger.id)
-        .eq("user_id", user.id);
-
-      if (error) throw error;
-
-      // Reset form and close dialog
-      setEditingLedger(null);
-      form.reset();
-      router.refresh();
-      toast.success("Ledger updated successfully");
-    } catch (error) {
-      console.error("Error updating ledger:", error);
-      toast.error("Failed to update ledger. Please try again.");
-    } finally {
-      setIsUpdating(false);
-    }
+    updateLedgerMutation.mutate(
+      {
+        id: editingLedger.id,
+        input: {
+          name: data.name.trim(),
+          type: data.type,
+          currency: data.currency,
+        },
+      },
+      {
+        onSuccess: () => {
+          setEditingLedger(null);
+          form.reset();
+        },
+      }
+    );
   };
 
   const openEditDialog = (ledger: Ledger) => {
     setEditingLedger(ledger);
-    form.reset({ name: ledger.name });
+    form.reset({
+      name: ledger.name,
+      type: ledger.type,
+      currency: ledger.currency,
+    });
   };
 
   const handleDeleteLedger = async () => {
     if (!deletingLedger) return;
 
-    setIsDeleting(true);
-    try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) throw new Error("Not authenticated");
-
-      // Delete the ledger (only empty ledgers can be deleted)
-      const { error } = await supabase
-        .from("ledgers")
-        .delete()
-        .eq("id", deletingLedger.id)
-        .eq("user_id", user.id);
-
-      if (error) throw error;
-
-      // Reset state and close dialog
-      setDeletingLedger(null);
-      router.refresh();
-      toast.success("Ledger deleted successfully");
-    } catch (error) {
-      console.error("Error deleting ledger:", error);
-      toast.error("Failed to delete ledger. Please try again.");
-    } finally {
-      setIsDeleting(false);
-    }
+    deleteLedgerMutation.mutate(deletingLedger.id, {
+      onSuccess: () => {
+        setDeletingLedger(null);
+      },
+    });
   };
 
   const getLedgerTransactionCount = (ledgerId: string) => {
@@ -357,11 +340,11 @@ export function LedgersList({
         open={!!editingLedger}
         onOpenChange={() => setEditingLedger(null)}
       >
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>Edit Ledger Name</AlertDialogTitle>
+            <AlertDialogTitle>Edit Ledger</AlertDialogTitle>
             <AlertDialogDescription>
-              Update the name of "{editingLedger?.name}"
+              Update the details for "{editingLedger?.name}"
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Form {...form}>
@@ -378,7 +361,7 @@ export function LedgersList({
                     <FormControl>
                       <Input
                         placeholder="Enter ledger name"
-                        disabled={isUpdating}
+                        disabled={updateLedgerMutation.isPending}
                         {...field}
                       />
                     </FormControl>
@@ -386,16 +369,74 @@ export function LedgersList({
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ledger Type</FormLabel>
+                    <Select
+                      disabled={updateLedgerMutation.isPending}
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select ledger type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="personal">Personal</SelectItem>
+                        <SelectItem value="family">Family</SelectItem>
+                        <SelectItem value="loan">Loan</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="currency"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Currency</FormLabel>
+                    <Select
+                      disabled={updateLedgerMutation.isPending}
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select currency" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="INR">INR (₹)</SelectItem>
+                        <SelectItem value="USD">USD ($)</SelectItem>
+                        <SelectItem value="EUR">EUR (€)</SelectItem>
+                        <SelectItem value="GBP">GBP (£)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <AlertDialogFooter>
-                <AlertDialogCancel disabled={isUpdating}>
+                <AlertDialogCancel disabled={updateLedgerMutation.isPending}>
                   Cancel
                 </AlertDialogCancel>
                 <Button
                   type="submit"
-                  disabled={isUpdating}
+                  disabled={updateLedgerMutation.isPending}
                   className="bg-primary hover:bg-primary/90"
                 >
-                  {isUpdating ? "Updating..." : "Update Ledger"}
+                  {updateLedgerMutation.isPending
+                    ? "Updating..."
+                    : "Update Ledger"}
                 </Button>
               </AlertDialogFooter>
             </form>
@@ -423,13 +464,15 @@ export function LedgersList({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleteLedgerMutation.isPending}>
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteLedger}
-              disabled={isDeleting}
+              disabled={deleteLedgerMutation.isPending}
               className="bg-red-600 hover:bg-red-700"
             >
-              {isDeleting ? "Deleting..." : "Delete Ledger"}
+              {deleteLedgerMutation.isPending ? "Deleting..." : "Delete Ledger"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

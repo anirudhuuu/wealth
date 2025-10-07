@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +11,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useDeleteAsset } from "@/hooks/use-assets";
 import type { Asset } from "@/lib/types";
+import { formatCurrency } from "@/lib/utils";
+import { parseDateFromDatabase } from "@/lib/repositories/utils";
 import {
   ChevronDown,
   ChevronRight,
@@ -25,10 +28,6 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useState } from "react";
-import { formatCurrency } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import { toast } from "sonner";
 import { AddAssetDialog } from "./add-asset-dialog";
 import { EditAssetDialog } from "./edit-asset-dialog";
 
@@ -42,7 +41,9 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
   const [expandedAssets, setExpandedAssets] = useState<Set<string>>(new Set());
   const [deletingAssetId, setDeletingAssetId] = useState<string | null>(null);
   const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
-  const router = useRouter();
+
+  // React Query mutations
+  const deleteAssetMutation = useDeleteAsset();
 
   const toggleAssetExpansion = (assetId: string) => {
     setExpandedAssets((prev) => {
@@ -58,28 +59,16 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
 
   const handleDeleteAsset = async (assetId: string) => {
     setDeletingAssetId(assetId);
-    try {
-      const supabase = createClient();
-      const { error } = await supabase
-        .from("assets")
-        .delete()
-        .eq("id", assetId);
-
-      if (error) throw error;
-
-      router.refresh();
-      toast.success("Asset deleted successfully");
-    } catch (error) {
-      console.error("Error deleting asset:", error);
-      toast.error("Failed to delete asset. Please try again.");
-    } finally {
-      setDeletingAssetId(null);
-    }
+    deleteAssetMutation.mutate(assetId, {
+      onSettled: () => {
+        setDeletingAssetId(null);
+      },
+    });
   };
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return parseDateFromDatabase(dateString).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",

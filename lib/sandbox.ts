@@ -1,3 +1,4 @@
+import { formatDateForDatabase } from "@/lib/repositories/utils";
 import type { Asset, Ledger, Transaction } from "@/lib/types";
 import { roundToTwoDecimals } from "@/lib/utils";
 
@@ -42,7 +43,7 @@ export function generateSandboxTransactions(): Transaction[] {
         id: `sandbox-txn-${i}-${j}`,
         user_id: "sandbox",
         ledger_id: Math.random() > 0.5 ? "sandbox-1" : "sandbox-2",
-        date: date.toISOString().split("T")[0],
+        date: formatDateForDatabase(date),
         description: isIncome
           ? ["Salary", "Freelance Payment", "Investment Return"][
               Math.floor(Math.random() * 3)

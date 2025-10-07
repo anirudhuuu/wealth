@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,13 +23,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createClient } from "@/lib/supabase/client";
+import { useCreateLedger } from "@/hooks/use-ledgers";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { toast } from "sonner";
 
 // Validation schema
 const ledgerSchema = z.object({
@@ -51,8 +46,7 @@ interface AddLedgerDialogProps {
 }
 
 export function AddLedgerDialog({ open, onOpenChange }: AddLedgerDialogProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const createLedgerMutation = useCreateLedger();
 
   const form = useForm<LedgerFormData>({
     resolver: zodResolver(ledgerSchema),
@@ -64,35 +58,19 @@ export function AddLedgerDialog({ open, onOpenChange }: AddLedgerDialogProps) {
   });
 
   const onSubmit = async (data: LedgerFormData) => {
-    setIsLoading(true);
-    try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) throw new Error("Not authenticated");
-
-      const { error } = await supabase.from("ledgers").insert({
-        user_id: user.id,
+    createLedgerMutation.mutate(
+      {
         name: data.name,
         type: data.type,
         currency: data.currency,
-      });
-
-      if (error) throw error;
-
-      // Reset form and close dialog
-      form.reset();
-      onOpenChange(false);
-      router.refresh();
-      toast.success("Ledger created successfully");
-    } catch (error) {
-      console.error("Error creating ledger:", error);
-      toast.error("Failed to create ledger. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+      },
+      {
+        onSuccess: () => {
+          form.reset();
+          onOpenChange(false);
+        },
+      }
+    );
   };
 
   return (
@@ -179,12 +157,14 @@ export function AddLedgerDialog({ open, onOpenChange }: AddLedgerDialogProps) {
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                disabled={isLoading}
+                disabled={createLedgerMutation.isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Creating..." : "Create Ledger"}
+              <Button type="submit" disabled={createLedgerMutation.isPending}>
+                {createLedgerMutation.isPending
+                  ? "Creating..."
+                  : "Create Ledger"}
               </Button>
             </div>
           </form>

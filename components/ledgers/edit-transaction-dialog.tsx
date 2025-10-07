@@ -1,8 +1,7 @@
 "use client";
 
-import type React from "react";
-
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Dialog,
   DialogContent,
@@ -26,17 +25,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { DatePicker } from "@/components/ui/date-picker";
-import { createClient } from "@/lib/supabase/client";
+import { useUpdateTransaction } from "@/hooks/use-transactions";
+import { parseDateFromDatabase } from "@/lib/repositories/utils";
 import type { Ledger, Transaction } from "@/lib/types";
+import { parseAndRoundAmount } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { toast } from "sonner";
-import { parseAndRoundAmount } from "@/lib/utils";
-import { format } from "date-fns";
 
 // Validation schema (same as add transaction)
 const transactionSchema = z.object({
@@ -78,8 +74,7 @@ export function EditTransactionDialog({
   transaction,
   ledgers,
 }: EditTransactionDialogProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const updateTransactionMutation = useUpdateTransaction();
 
   const form = useForm<TransactionFormData>({
     resolver: zodResolver(transactionSchema),
@@ -99,7 +94,7 @@ export function EditTransactionDialog({
     if (transaction) {
       form.reset({
         ledger_id: transaction.ledger_id,
-        date: new Date(transaction.date),
+        date: parseDateFromDatabase(transaction.date),
         description: transaction.description,
         category: transaction.category,
         amount: transaction.amount.toString(),
@@ -112,40 +107,25 @@ export function EditTransactionDialog({
   const onSubmit = async (data: TransactionFormData) => {
     if (!transaction) return;
 
-    setIsLoading(true);
-    try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) throw new Error("Not authenticated");
-
-      const { error } = await supabase
-        .from("transactions")
-        .update({
-          ledger_id: data.ledger_id,
-          date: format(data.date, "yyyy-MM-dd"),
+    updateTransactionMutation.mutate(
+      {
+        id: transaction.id,
+        input: {
+          ledgerId: data.ledger_id,
+          date: data.date,
           description: data.description,
           category: data.category,
           amount: parseAndRoundAmount(data.amount),
           type: data.type,
           notes: data.notes || null,
-        })
-        .eq("id", transaction.id)
-        .eq("user_id", user.id);
-
-      if (error) throw error;
-
-      onOpenChange(false);
-      router.refresh();
-      toast.success("Transaction updated successfully");
-    } catch (error) {
-      console.error("Error updating transaction:", error);
-      toast.error("Failed to update transaction. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+        },
+      },
+      {
+        onSuccess: () => {
+          onOpenChange(false);
+        },
+      }
+    );
   };
 
   return (
@@ -298,12 +278,17 @@ export function EditTransactionDialog({
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                disabled={isLoading}
+                disabled={updateTransactionMutation.isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Updating..." : "Update Transaction"}
+              <Button
+                type="submit"
+                disabled={updateTransactionMutation.isPending}
+              >
+                {updateTransactionMutation.isPending
+                  ? "Updating..."
+                  : "Update Transaction"}
               </Button>
             </div>
           </form>

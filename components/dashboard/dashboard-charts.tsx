@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Transaction } from "@/lib/types";
+import { parseDateFromDatabase } from "@/lib/repositories/utils";
 import {
   Bar,
   BarChart,
@@ -43,7 +44,7 @@ export function DashboardCharts({
   > = {};
 
   transactions.forEach((txn) => {
-    const date = new Date(txn.date);
+    const date = parseDateFromDatabase(txn.date);
     const monthKey = `${date.getFullYear()}-${String(
       date.getMonth() + 1
     ).padStart(2, "0")}`;
@@ -118,7 +119,7 @@ export function DashboardCharts({
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ name, percent }) =>
+                label={({ name, percent }: any) =>
                   `${name} ${(percent * 100).toFixed(0)}%`
                 }
                 outerRadius={80}

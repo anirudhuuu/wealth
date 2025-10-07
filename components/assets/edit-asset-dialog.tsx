@@ -1,8 +1,7 @@
 "use client";
 
-import type React from "react";
-
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Dialog,
   DialogContent,
@@ -26,17 +25,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { DatePicker } from "@/components/ui/date-picker";
-import { createClient } from "@/lib/supabase/client";
+import { useUpdateAsset } from "@/hooks/use-assets";
+import { parseDateFromDatabase } from "@/lib/repositories/utils";
 import type { Asset } from "@/lib/types";
+import { parseAndRoundAmount } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { toast } from "sonner";
-import { parseAndRoundAmount } from "@/lib/utils";
-import { format } from "date-fns";
 
 // Validation schema
 const assetSchema = z.object({
@@ -88,8 +84,7 @@ export function EditAssetDialog({
   onOpenChange,
   asset,
 }: EditAssetDialogProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const updateAssetMutation = useUpdateAsset();
 
   const form = useForm<AssetFormData>({
     resolver: zodResolver(assetSchema),
@@ -114,10 +109,10 @@ export function EditAssetDialog({
         currentValue: asset.current_value?.toString() || "0",
         purchaseValue: asset.purchase_value?.toString() || "0",
         purchaseDate: asset.purchase_date
-          ? new Date(asset.purchase_date)
+          ? parseDateFromDatabase(asset.purchase_date)
           : new Date(),
         maturityDate: asset.maturity_date
-          ? new Date(asset.maturity_date)
+          ? parseDateFromDatabase(asset.maturity_date)
           : undefined,
         currency: asset.currency as any,
         notes: asset.notes || "",
@@ -128,43 +123,28 @@ export function EditAssetDialog({
   const onSubmit = async (data: AssetFormData) => {
     if (!asset) return;
 
-    setIsLoading(true);
-    try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) throw new Error("Not authenticated");
-
-      const { error } = await supabase
-        .from("assets")
-        .update({
+    updateAssetMutation.mutate(
+      {
+        id: asset.id,
+        input: {
           name: data.name,
           type: data.type,
-          current_value: parseAndRoundAmount(data.currentValue),
-          purchase_value: parseAndRoundAmount(data.purchaseValue),
-          purchase_date: format(data.purchaseDate, "yyyy-MM-dd"),
-          maturity_date: data.maturityDate
-            ? format(data.maturityDate, "yyyy-MM-dd")
+          currentValue: parseAndRoundAmount(data.currentValue),
+          purchaseValue: data.purchaseValue
+            ? parseAndRoundAmount(data.purchaseValue)
             : null,
+          purchaseDate: data.purchaseDate,
+          maturityDate: data.maturityDate,
           currency: data.currency,
           notes: data.notes || null,
-        })
-        .eq("id", asset.id)
-        .eq("user_id", user.id);
-
-      if (error) throw error;
-
-      onOpenChange(false);
-      router.refresh();
-      toast.success("Asset updated successfully");
-    } catch (error) {
-      console.error("Error updating asset:", error);
-      toast.error("Failed to update asset. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+        },
+      },
+      {
+        onSuccess: () => {
+          onOpenChange(false);
+        },
+      }
+    );
   };
 
   return (
@@ -353,12 +333,12 @@ export function EditAssetDialog({
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                disabled={isLoading}
+                disabled={updateAssetMutation.isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Updating..." : "Update Asset"}
+              <Button type="submit" disabled={updateAssetMutation.isPending}>
+                {updateAssetMutation.isPending ? "Updating..." : "Update Asset"}
               </Button>
             </div>
           </form>

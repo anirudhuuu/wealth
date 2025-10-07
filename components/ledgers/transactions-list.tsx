@@ -1,14 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,6 +11,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Pagination,
   PaginationContent,
@@ -28,7 +21,19 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getUserFriendlyMessage, handleError } from "@/lib/errors";
+import { createRepositories } from "@/lib/repositories";
+import { parseDateFromDatabase } from "@/lib/repositories/utils";
+import { createClient } from "@/lib/supabase/client";
 import type { Ledger, Transaction } from "@/lib/types";
+import { formatCurrency } from "@/lib/utils";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -39,13 +44,11 @@ import {
   Receipt,
   Trash2,
 } from "lucide-react";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatCurrency } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
+import { useState } from "react";
+import { toast } from "sonner";
 import { AddTransactionDialog } from "./add-transaction-dialog";
 import { EditTransactionDialog } from "./edit-transaction-dialog";
-import { toast } from "sonner";
 
 interface TransactionsListProps {
   transactions: Transaction[];
@@ -86,7 +89,7 @@ export function TransactionsList({
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return parseDateFromDatabase(dateString).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
@@ -98,18 +101,25 @@ export function TransactionsList({
 
     try {
       const supabase = createClient();
-      const { error } = await supabase
-        .from("transactions")
-        .delete()
-        .eq("id", transactionId);
+      const repos = createRepositories(supabase);
 
-      if (error) throw error;
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) throw new Error("Not authenticated");
+
+      // Use repository instead of direct Supabase call
+      await repos.transactions.delete(transactionId, user.id);
 
       router.refresh();
       toast.success("Transaction deleted successfully");
     } catch (error) {
       console.error("Error deleting transaction:", error);
-      toast.error("Failed to delete transaction. Please try again.");
+
+      // Use centralized error handling
+      const appError = handleError(error);
+      toast.error(getUserFriendlyMessage(appError));
     } finally {
       setDeletingTransactionId(null);
     }

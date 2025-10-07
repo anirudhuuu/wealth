@@ -6,8 +6,8 @@ import {
   calculateSandboxKPIs,
   generateSandboxTransactions,
 } from "@/lib/sandbox";
-import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
+import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
 import { ArrowDownRight, ArrowUpRight, TrendingUp, Wallet } from "lucide-react";
 
 export default async function DashboardPage() {

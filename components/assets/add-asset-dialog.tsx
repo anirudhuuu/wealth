@@ -1,8 +1,7 @@
 "use client";
 
-import type React from "react";
-
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Dialog,
   DialogContent,
@@ -26,16 +25,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { DatePicker } from "@/components/ui/date-picker";
-import { createClient } from "@/lib/supabase/client";
+import { useCreateAsset } from "@/hooks/use-assets";
+import { parseAndRoundAmount } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { toast } from "sonner";
-import { parseAndRoundAmount } from "@/lib/utils";
-import { format } from "date-fns";
 
 // Validation schema
 const assetSchema = z.object({
@@ -82,8 +76,7 @@ interface AddAssetDialogProps {
 }
 
 export function AddAssetDialog({ open, onOpenChange }: AddAssetDialogProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const createAssetMutation = useCreateAsset();
 
   const form = useForm<AssetFormData>({
     resolver: zodResolver(assetSchema),
@@ -100,42 +93,26 @@ export function AddAssetDialog({ open, onOpenChange }: AddAssetDialogProps) {
   });
 
   const onSubmit = async (data: AssetFormData) => {
-    setIsLoading(true);
-    try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) throw new Error("Not authenticated");
-
-      const { error } = await supabase.from("assets").insert({
-        user_id: user.id,
+    createAssetMutation.mutate(
+      {
         name: data.name,
         type: data.type,
-        current_value: parseAndRoundAmount(data.currentValue),
-        purchase_value: parseAndRoundAmount(data.purchaseValue),
-        purchase_date: format(data.purchaseDate, "yyyy-MM-dd"),
-        maturity_date: data.maturityDate
-          ? format(data.maturityDate, "yyyy-MM-dd")
+        currentValue: parseAndRoundAmount(data.currentValue),
+        purchaseValue: data.purchaseValue
+          ? parseAndRoundAmount(data.purchaseValue)
           : null,
+        purchaseDate: data.purchaseDate,
+        maturityDate: data.maturityDate,
         currency: data.currency,
         notes: data.notes || null,
-      });
-
-      if (error) throw error;
-
-      // Reset form and close dialog
-      form.reset();
-      onOpenChange(false);
-      router.refresh();
-      toast.success("Asset created successfully");
-    } catch (error) {
-      console.error("Error creating asset:", error);
-      toast.error("Failed to create asset. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+      },
+      {
+        onSuccess: () => {
+          form.reset();
+          onOpenChange(false);
+        },
+      }
+    );
   };
 
   return (
@@ -322,12 +299,12 @@ export function AddAssetDialog({ open, onOpenChange }: AddAssetDialogProps) {
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                disabled={isLoading}
+                disabled={createAssetMutation.isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Adding..." : "Add Asset"}
+              <Button type="submit" disabled={createAssetMutation.isPending}>
+                {createAssetMutation.isPending ? "Adding..." : "Add Asset"}
               </Button>
             </div>
           </form>
