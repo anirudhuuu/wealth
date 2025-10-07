@@ -20,6 +20,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import type { Ledger, Transaction } from "@/lib/types";
 import {
   ArrowDownRight,
@@ -59,6 +67,8 @@ export function TransactionsList({
   const [expandedTransactions, setExpandedTransactions] = useState<Set<string>>(
     new Set()
   );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const router = useRouter();
 
   const toggleTransactionExpansion = (transactionId: string) => {
@@ -116,6 +126,22 @@ export function TransactionsList({
       ? transactions
       : transactions.filter((txn) => txn.ledger_id === selectedLedgerId);
 
+  // Pagination logic
+  const totalItems = filteredTransactions.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedTransactions = filteredTransactions.slice(
+    startIndex,
+    endIndex
+  );
+
+  // Reset to first page when filter changes
+  const handleLedgerFilterChange = (value: string) => {
+    setSelectedLedgerId(value);
+    setCurrentPage(1);
+  };
+
   return (
     <>
       <Card>
@@ -129,28 +155,62 @@ export function TransactionsList({
               </Button>
             )}
           </div>
-          <div className="mt-4">
-            <Select
-              value={selectedLedgerId}
-              onValueChange={setSelectedLedgerId}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Filter by ledger" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Ledgers</SelectItem>
-                {ledgers.map((ledger) => (
-                  <SelectItem key={ledger.id} value={ledger.id}>
-                    {ledger.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="mt-3 space-y-1 sm:space-y-2">
+            <div className="flex flex-col gap-1 sm:gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <Select
+                value={selectedLedgerId}
+                onValueChange={handleLedgerFilterChange}
+              >
+                <SelectTrigger className="w-full sm:w-auto">
+                  <SelectValue placeholder="Filter by ledger" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Ledgers</SelectItem>
+                  {ledgers.map((ledger) => (
+                    <SelectItem key={ledger.id} value={ledger.id}>
+                      {ledger.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <div className="flex items-center gap-1 sm:gap-2">
+                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                  Show:
+                </span>
+                <Select
+                  value={itemsPerPage.toString()}
+                  onValueChange={(value) => {
+                    setItemsPerPage(Number(value));
+                    setCurrentPage(1);
+                  }}
+                >
+                  <SelectTrigger className="w-20">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="5">5</SelectItem>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {totalItems > 0 && (
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-muted-foreground">
+                  Showing {startIndex + 1}-{Math.min(endIndex, totalItems)} of{" "}
+                  {totalItems} transactions
+                </div>
+              </div>
+            )}
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {filteredTransactions.length === 0 ? (
+            {paginatedTransactions.length === 0 ? (
               <div className="py-8 text-center text-sm text-muted-foreground">
                 <Receipt className="mx-auto mb-2 h-8 w-8 opacity-50" />
                 <p>
@@ -165,48 +225,48 @@ export function TransactionsList({
                 )}
               </div>
             ) : (
-              filteredTransactions.map((txn) => {
+              paginatedTransactions.map((txn) => {
                 const isExpanded = expandedTransactions.has(txn.id);
                 const ledger = ledgers.find((l) => l.id === txn.ledger_id);
                 return (
                   <div
                     key={txn.id}
-                    className="rounded-lg border p-4 overflow-hidden"
+                    className="rounded-lg border p-3 sm:p-4 overflow-hidden"
                   >
-                    <div className="flex items-start justify-between gap-3 min-w-0">
-                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2 sm:gap-3 min-w-0">
+                      <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
                         <div
-                          className={`flex h-12 w-12 items-center justify-center rounded-full flex-shrink-0 ${
+                          className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full flex-shrink-0 ${
                             txn.type === "income"
                               ? "bg-green-100 text-green-600 dark:bg-green-950 dark:text-green-400"
                               : "bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-400"
                           }`}
                         >
                           {txn.type === "income" ? (
-                            <ArrowUpRight className="h-6 w-6" />
+                            <ArrowUpRight className="h-5 w-5 sm:h-6 sm:w-6" />
                           ) : (
-                            <ArrowDownRight className="h-6 w-6" />
+                            <ArrowDownRight className="h-5 w-5 sm:h-6 sm:w-6" />
                           )}
                         </div>
                         <div className="flex-1 min-w-0 overflow-hidden">
-                          <div className="font-semibold text-base mb-1">
-                            {txn.description.length > 30
-                              ? `${txn.description.substring(0, 30)}...`
+                          <div className="font-semibold text-sm sm:text-base mb-1">
+                            {txn.description.length > 25
+                              ? `${txn.description.substring(0, 25)}...`
                               : txn.description}
                           </div>
-                          <div className="text-sm text-muted-foreground mb-1">
-                            {txn.category.length > 20
-                              ? `${txn.category.substring(0, 20)}...`
+                          <div className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            {txn.category.length > 15
+                              ? `${txn.category.substring(0, 15)}...`
                               : txn.category}
                           </div>
-                          <div className="text-sm text-muted-foreground truncate">
+                          <div className="text-xs sm:text-sm text-muted-foreground truncate">
                             {formatDate(txn.date)}
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col items-end gap-2">
+                      <div className="flex flex-col items-end gap-1 sm:gap-2">
                         <div
-                          className={`text-lg font-bold ${
+                          className={`text-base sm:text-lg font-bold ${
                             txn.type === "income"
                               ? "text-green-600"
                               : "text-amber-600"
@@ -215,17 +275,17 @@ export function TransactionsList({
                           {txn.type === "income" ? "+" : "-"}
                           {formatCurrency(Number(txn.amount))}
                         </div>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-0.5 sm:gap-1">
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => toggleTransactionExpansion(txn.id)}
-                            className="h-8 w-8 p-0"
+                            className="h-7 w-7 sm:h-8 sm:w-8 p-0"
                           >
                             {isExpanded ? (
-                              <ChevronDown className="h-4 w-4" />
+                              <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
                             ) : (
-                              <ChevronRight className="h-4 w-4" />
+                              <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
                             )}
                           </Button>
                           {isAdmin && (
@@ -237,9 +297,9 @@ export function TransactionsList({
                                   setSelectedTransaction(txn);
                                   setShowEditDialog(true);
                                 }}
-                                className="h-8 w-8 p-0"
+                                className="h-7 w-7 sm:h-8 sm:w-8 p-0"
                               >
-                                <Edit className="h-4 w-4" />
+                                <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                               </Button>
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
@@ -247,9 +307,9 @@ export function TransactionsList({
                                     variant="ghost"
                                     size="sm"
                                     disabled={deletingTransactionId === txn.id}
-                                    className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    className="h-7 w-7 sm:h-8 sm:w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
                                   >
-                                    <Trash2 className="h-4 w-4" />
+                                    <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                                   </Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
@@ -352,6 +412,45 @@ export function TransactionsList({
           </div>
         </CardContent>
       </Card>
+
+      {/* Simple Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-4 sm:mt-6">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  className={
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+
+              <PaginationItem>
+                <PaginationLink isActive={true} className="cursor-default">
+                  {currentPage} / {totalPages}
+                </PaginationLink>
+              </PaginationItem>
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() =>
+                    setCurrentPage(Math.min(totalPages, currentPage + 1))
+                  }
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
 
       {isAdmin && (
         <>
