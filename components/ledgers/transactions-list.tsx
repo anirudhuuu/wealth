@@ -341,7 +341,10 @@ export function TransactionsList({
                             <span className="text-muted-foreground">
                               Ledger:
                             </span>
-                            <span className="font-medium truncate max-w-[120px]" title={ledger?.name || "Unknown"}>
+                            <span
+                              className="font-medium truncate max-w-[120px]"
+                              title={ledger?.name || "Unknown"}
+                            >
                               {ledger?.name || "Unknown"}
                             </span>
                           </div>

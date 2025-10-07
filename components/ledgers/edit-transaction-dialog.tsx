@@ -174,8 +174,14 @@ export function EditTransactionDialog({
                     </FormControl>
                     <SelectContent>
                       {ledgers.map((ledger) => (
-                        <SelectItem key={ledger.id} value={ledger.id} className="truncate">
-                          <span className="truncate" title={ledger.name}>{ledger.name}</span>
+                        <SelectItem
+                          key={ledger.id}
+                          value={ledger.id}
+                          className="truncate"
+                        >
+                          <span className="truncate" title={ledger.name}>
+                            {ledger.name}
+                          </span>
                         </SelectItem>
                       ))}
                     </SelectContent>

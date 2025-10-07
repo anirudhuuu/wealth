@@ -241,7 +241,12 @@ export function LedgersList({
                   <div key={ledger.id} className="rounded-lg border p-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="font-medium truncate" title={ledger.name}>{ledger.name}</div>
+                        <div
+                          className="font-medium truncate"
+                          title={ledger.name}
+                        >
+                          {ledger.name}
+                        </div>
                         <div className="mt-1 flex items-center gap-2">
                           <span
                             className={`rounded-full px-2 py-0.5 text-xs font-medium ${getLedgerTypeColor(
