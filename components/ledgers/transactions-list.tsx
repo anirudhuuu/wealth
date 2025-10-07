@@ -120,11 +120,12 @@ export function TransactionsList({
     }
   };
 
-  // Filter transactions based on selected ledger
-  const filteredTransactions =
+  // Filter transactions based on selected ledger and sort by date (newest first)
+  const filteredTransactions = (
     selectedLedgerId === "all"
       ? transactions
-      : transactions.filter((txn) => txn.ledger_id === selectedLedgerId);
+      : transactions.filter((txn) => txn.ledger_id === selectedLedgerId)
+  ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   // Pagination logic
   const totalItems = filteredTransactions.length;
