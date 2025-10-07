@@ -95,7 +95,7 @@ export default async function AssetsPage() {
           <CardContent>
             <div
               className={`flex items-center gap-2 text-2xl font-bold ${
-                totalGain >= 0 ? "text-green-600" : "text-red-600"
+                totalGain >= 0 ? "text-green-600" : "text-amber-600"
               }`}
             >
               {totalGain >= 0 ? (
@@ -117,7 +117,7 @@ export default async function AssetsPage() {
           <CardContent>
             <div
               className={`text-2xl font-bold ${
-                avgGainPercentage >= 0 ? "text-green-600" : "text-red-600"
+                avgGainPercentage >= 0 ? "text-green-600" : "text-amber-600"
               }`}
             >
               {avgGainPercentage >= 0 ? "+" : ""}
