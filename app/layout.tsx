@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Expense & Wealth Tracker",
+  title: "Wealth Manager",
   description: "Track your expenses, assets, and build wealth",
 };
 

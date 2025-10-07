@@ -30,7 +30,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Ledger } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -86,6 +86,16 @@ export function AddTransactionDialog({
       notes: "",
     },
   });
+
+  // Set default ledger when dialog opens and ledgers are available
+  useEffect(() => {
+    if (open && ledgers.length > 0) {
+      const currentLedgerId = form.getValues("ledger_id");
+      if (!currentLedgerId) {
+        form.setValue("ledger_id", ledgers[0].id);
+      }
+    }
+  }, [open, ledgers, form]);
 
   const onSubmit = async (data: TransactionFormData) => {
     setIsLoading(true);
