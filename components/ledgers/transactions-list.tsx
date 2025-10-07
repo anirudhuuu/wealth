@@ -28,10 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getUserFriendlyMessage, handleError } from "@/lib/errors";
-import { createRepositories } from "@/lib/repositories";
+import { useDeleteTransaction } from "@/hooks/use-transactions";
 import { parseDateFromDatabase } from "@/lib/repositories/utils";
-import { createClient } from "@/lib/supabase/client";
 import type { Ledger, Transaction } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import {
@@ -44,9 +42,7 @@ import {
   Receipt,
   Trash2,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
 import { AddTransactionDialog } from "./add-transaction-dialog";
 import { EditTransactionDialog } from "./edit-transaction-dialog";
 
@@ -66,15 +62,13 @@ export function TransactionsList({
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
   const [selectedLedgerId, setSelectedLedgerId] = useState<string>("all");
-  const [deletingTransactionId, setDeletingTransactionId] = useState<
-    string | null
-  >(null);
   const [expandedTransactions, setExpandedTransactions] = useState<Set<string>>(
     new Set()
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const router = useRouter();
+
+  const deleteTransactionMutation = useDeleteTransaction();
 
   const toggleTransactionExpansion = (transactionId: string) => {
     setExpandedTransactions((prev) => {
@@ -96,33 +90,8 @@ export function TransactionsList({
     });
   };
 
-  const handleDeleteTransaction = async (transactionId: string) => {
-    setDeletingTransactionId(transactionId);
-
-    try {
-      const supabase = createClient();
-      const repos = createRepositories(supabase);
-
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) throw new Error("Not authenticated");
-
-      // Use repository instead of direct Supabase call
-      await repos.transactions.delete(transactionId, user.id);
-
-      router.refresh();
-      toast.success("Transaction deleted successfully");
-    } catch (error) {
-      console.error("Error deleting transaction:", error);
-
-      // Use centralized error handling
-      const appError = handleError(error);
-      toast.error(getUserFriendlyMessage(appError));
-    } finally {
-      setDeletingTransactionId(null);
-    }
+  const handleDeleteTransaction = (transactionId: string) => {
+    deleteTransactionMutation.mutate(transactionId);
   };
 
   // Filter transactions based on selected ledger and sort by date (newest first)
@@ -280,7 +249,9 @@ export function TransactionsList({
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    disabled={deletingTransactionId === txn.id}
+                                    disabled={
+                                      deleteTransactionMutation.isPending
+                                    }
                                     className="h-7 w-7 sm:h-8 sm:w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
                                   >
                                     <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
