@@ -1,6 +1,7 @@
 "use client";
 
 import { signOut } from "@/app/actions/auth";
+import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
@@ -35,12 +36,15 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <span className="text-lg font-semibold">Expense Tracker</span>
           </div>
 
-          <form action={signOut}>
-            <Button variant="ghost" size="sm" type="submit">
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
-            </Button>
-          </form>
+          <div className="flex items-center gap-2">
+            <ModeToggle />
+            <form action={signOut}>
+              <Button variant="ghost" size="sm" type="submit">
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign Out
+              </Button>
+            </form>
+          </div>
         </div>
       </header>
 
