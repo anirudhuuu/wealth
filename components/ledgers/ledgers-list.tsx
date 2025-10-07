@@ -2,18 +2,86 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Ledger } from "@/lib/types";
-import { Plus, Wallet } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import type { Ledger, Transaction } from "@/lib/types";
+import { ChevronDown, ChevronRight, Edit, Plus, Wallet } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { AddLedgerDialog } from "./add-ledger-dialog";
 
 interface LedgersListProps {
   ledgers: Ledger[];
+  transactions: Transaction[];
   isAdmin: boolean;
 }
 
-export function LedgersList({ ledgers, isAdmin }: LedgersListProps) {
+export function LedgersList({
+  ledgers,
+  transactions,
+  isAdmin,
+}: LedgersListProps) {
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [expandedLedgers, setExpandedLedgers] = useState<Set<string>>(
+    new Set()
+  );
+  const [editingLedger, setEditingLedger] = useState<Ledger | null>(null);
+  const [newLedgerName, setNewLedgerName] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
+  const router = useRouter();
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const toggleLedgerExpansion = (ledgerId: string) => {
+    setExpandedLedgers((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(ledgerId)) {
+        newSet.delete(ledgerId);
+      } else {
+        newSet.add(ledgerId);
+      }
+      return newSet;
+    });
+  };
+
+  const getLedgerSpending = (ledgerId: string) => {
+    const ledgerTransactions = transactions.filter(
+      (txn) => txn.ledger_id === ledgerId
+    );
+
+    const totalIncome = ledgerTransactions
+      .filter((txn) => txn.type === "income")
+      .reduce((sum, txn) => sum + Number(txn.amount), 0);
+
+    const totalExpenses = ledgerTransactions
+      .filter((txn) => txn.type === "expense")
+      .reduce((sum, txn) => sum + Number(txn.amount), 0);
+
+    return {
+      income: totalIncome,
+      expenses: totalExpenses,
+      net: totalIncome - totalExpenses,
+      transactionCount: ledgerTransactions.length,
+    };
+  };
 
   const getLedgerTypeColor = (type: string) => {
     switch (type) {
@@ -26,6 +94,43 @@ export function LedgersList({ ledgers, isAdmin }: LedgersListProps) {
       default:
         return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
     }
+  };
+
+  const handleEditLedger = async () => {
+    if (!editingLedger || !newLedgerName.trim()) return;
+
+    setIsUpdating(true);
+    try {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) throw new Error("Not authenticated");
+
+      const { error } = await supabase
+        .from("ledgers")
+        .update({ name: newLedgerName.trim() })
+        .eq("id", editingLedger.id)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      // Reset form and close dialog
+      setEditingLedger(null);
+      setNewLedgerName("");
+      router.refresh();
+    } catch (error) {
+      console.error("Error updating ledger:", error);
+      alert("Failed to update ledger. Please try again.");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const openEditDialog = (ledger: Ledger) => {
+    setEditingLedger(ledger);
+    setNewLedgerName(ledger.name);
   };
 
   return (
@@ -55,28 +160,97 @@ export function LedgersList({ ledgers, isAdmin }: LedgersListProps) {
                 )}
               </div>
             ) : (
-              ledgers.map((ledger) => (
-                <div
-                  key={ledger.id}
-                  className="flex items-center justify-between rounded-lg border p-3"
-                >
-                  <div className="flex-1">
-                    <div className="font-medium">{ledger.name}</div>
-                    <div className="mt-1 flex items-center gap-2">
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-medium ${getLedgerTypeColor(
-                          ledger.type
-                        )}`}
-                      >
-                        {ledger.type}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {ledger.currency}
-                      </span>
+              ledgers.map((ledger) => {
+                const spending = getLedgerSpending(ledger.id);
+                const isExpanded = expandedLedgers.has(ledger.id);
+                return (
+                  <div key={ledger.id} className="rounded-lg border p-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="font-medium">{ledger.name}</div>
+                        <div className="mt-1 flex items-center gap-2">
+                          <span
+                            className={`rounded-full px-2 py-0.5 text-xs font-medium ${getLedgerTypeColor(
+                              ledger.type
+                            )}`}
+                          >
+                            {ledger.type.charAt(0).toUpperCase() +
+                              ledger.type.slice(1).toLowerCase()}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {ledger.currency}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {isAdmin && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openEditDialog(ledger)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        )}
+                        {spending.transactionCount > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleLedgerExpansion(ledger.id)}
+                            className="h-8 w-8 p-0"
+                          >
+                            {isExpanded ? (
+                              <ChevronDown className="h-4 w-4" />
+                            ) : (
+                              <ChevronRight className="h-4 w-4" />
+                            )}
+                          </Button>
+                        )}
+                      </div>
                     </div>
+
+                    {spending.transactionCount > 0 && isExpanded && (
+                      <div className="mt-3 space-y-2">
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">
+                              Income:
+                            </span>
+                            <span className="font-medium text-green-600">
+                              {formatCurrency(spending.income)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">
+                              Expenses:
+                            </span>
+                            <span className="font-medium text-amber-600">
+                              {formatCurrency(spending.expenses)}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex justify-between border-t pt-2">
+                          <span className="text-sm font-medium">Net:</span>
+                          <span
+                            className={`text-sm font-semibold ${
+                              spending.net >= 0
+                                ? "text-green-600"
+                                : "text-amber-600"
+                            }`}
+                          >
+                            {formatCurrency(spending.net)}
+                          </span>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {spending.transactionCount} transaction
+                          {spending.transactionCount !== 1 ? "s" : ""}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </CardContent>
@@ -85,6 +259,42 @@ export function LedgersList({ ledgers, isAdmin }: LedgersListProps) {
       {isAdmin && (
         <AddLedgerDialog open={showAddDialog} onOpenChange={setShowAddDialog} />
       )}
+
+      {/* Edit Ledger Dialog */}
+      <AlertDialog
+        open={!!editingLedger}
+        onOpenChange={() => setEditingLedger(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Edit Ledger Name</AlertDialogTitle>
+            <AlertDialogDescription>
+              Update the name of "{editingLedger?.name}"
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="ledger-name">Ledger Name</Label>
+              <Input
+                id="ledger-name"
+                value={newLedgerName}
+                onChange={(e) => setNewLedgerName(e.target.value)}
+                placeholder="Enter ledger name"
+                disabled={isUpdating}
+              />
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isUpdating}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleEditLedger}
+              disabled={isUpdating || !newLedgerName.trim()}
+            >
+              {isUpdating ? "Updating..." : "Update Ledger"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

@@ -58,7 +58,11 @@ export default async function LedgersPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Ledgers Section */}
         <div className="lg:col-span-1">
-          <LedgersList ledgers={ledgers} isAdmin={isAdmin} />
+          <LedgersList
+            ledgers={ledgers}
+            transactions={transactions}
+            isAdmin={isAdmin}
+          />
         </div>
 
         {/* Transactions Section */}

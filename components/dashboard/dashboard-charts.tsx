@@ -25,7 +25,7 @@ const COLORS = [
   "#3b82f6",
   "#10b981",
   "#f59e0b",
-  "#ef4444",
+  "#f59e0b", // Changed from red to amber
   "#8b5cf6",
   "#ec4899",
   "#14b8a6",
@@ -99,7 +99,7 @@ export function DashboardCharts({
               />
               <Legend />
               <Bar dataKey="income" fill="#10b981" name="Income" />
-              <Bar dataKey="expenses" fill="#ef4444" name="Expenses" />
+              <Bar dataKey="expenses" fill="#f59e0b" name="Expenses" />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>

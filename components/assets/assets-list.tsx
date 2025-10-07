@@ -157,7 +157,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                       <div className="ml-4 text-right">
                         <div
                           className={`flex items-center gap-1 text-lg font-bold ${
-                            gain >= 0 ? "text-green-600" : "text-red-600"
+                            gain >= 0 ? "text-green-600" : "text-amber-600"
                           }`}
                         >
                           {gain >= 0 ? (
@@ -170,7 +170,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                         </div>
                         <div
                           className={`text-sm ${
-                            gain >= 0 ? "text-green-600" : "text-red-600"
+                            gain >= 0 ? "text-green-600" : "text-amber-600"
                           }`}
                         >
                           {gain >= 0 ? "+" : ""}
