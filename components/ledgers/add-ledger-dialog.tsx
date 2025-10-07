@@ -1,12 +1,23 @@
 "use client";
 
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -24,6 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCreateLedger } from "@/hooks/use-ledgers";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -45,8 +57,120 @@ interface AddLedgerDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+// Form component that can be reused in both dialog and drawer
+function LedgerForm({
+  form,
+  onSubmit,
+  createLedgerMutation,
+  onOpenChange,
+  className,
+  showCancelButton = true,
+}: {
+  form: any;
+  onSubmit: (data: LedgerFormData) => void;
+  createLedgerMutation: any;
+  onOpenChange: (open: boolean) => void;
+  className?: string;
+  showCancelButton?: boolean;
+}) {
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={`space-y-4 ${className || ""}`}
+      >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Ledger Name</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g., Family Budget" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="family">Family</SelectItem>
+                    <SelectItem value="personal">Personal</SelectItem>
+                    <SelectItem value="loan">Loan</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="currency"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Currency</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="INR">INR (₹)</SelectItem>
+                    <SelectItem value="USD">USD ($)</SelectItem>
+                    <SelectItem value="EUR">EUR (€)</SelectItem>
+                    <SelectItem value="GBP">GBP (£)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <Button type="submit" disabled={createLedgerMutation.isPending}>
+            {createLedgerMutation.isPending ? "Creating..." : "Create Ledger"}
+          </Button>
+          {showCancelButton && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={createLedgerMutation.isPending}
+            >
+              Cancel
+            </Button>
+          )}
+        </div>
+      </form>
+    </Form>
+  );
+}
+
 export function AddLedgerDialog({ open, onOpenChange }: AddLedgerDialogProps) {
   const createLedgerMutation = useCreateLedger();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const form = useForm<LedgerFormData>({
     resolver: zodResolver(ledgerSchema),
@@ -73,103 +197,57 @@ export function AddLedgerDialog({ open, onOpenChange }: AddLedgerDialogProps) {
     );
   };
 
+  if (isDesktop) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent
+          onEscapeKeyDown={(e) => e.preventDefault()}
+          onPointerDownOutside={(e) => e.preventDefault()}
+          showCloseButton={true}
+        >
+          <DialogHeader>
+            <DialogTitle>Add New Ledger</DialogTitle>
+            <DialogDescription>
+              Create a new ledger to track your financial transactions.
+            </DialogDescription>
+          </DialogHeader>
+          <LedgerForm
+            form={form}
+            onSubmit={onSubmit}
+            createLedgerMutation={createLedgerMutation}
+            onOpenChange={onOpenChange}
+          />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        onEscapeKeyDown={(e) => e.preventDefault()}
-        onPointerDownOutside={(e) => e.preventDefault()}
-        showCloseButton={true}
-      >
-        <DialogHeader>
-          <DialogTitle>Add New Ledger</DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ledger Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., Family Budget" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Type</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="family">Family</SelectItem>
-                      <SelectItem value="personal">Personal</SelectItem>
-                      <SelectItem value="loan">Loan</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="currency"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Currency</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="INR">INR (₹)</SelectItem>
-                      <SelectItem value="USD">USD ($)</SelectItem>
-                      <SelectItem value="EUR">EUR (€)</SelectItem>
-                      <SelectItem value="GBP">GBP (£)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex justify-end gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={createLedgerMutation.isPending}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={createLedgerMutation.isPending}>
-                {createLedgerMutation.isPending
-                  ? "Creating..."
-                  : "Create Ledger"}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Add New Ledger</DrawerTitle>
+          <DrawerDescription>
+            Create a new ledger to track your financial transactions.
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4">
+          <LedgerForm
+            form={form}
+            onSubmit={onSubmit}
+            createLedgerMutation={createLedgerMutation}
+            onOpenChange={onOpenChange}
+            showCancelButton={false}
+          />
+        </div>
+        <DrawerFooter className="pt-2">
+          <DrawerClose asChild>
+            <Button variant="outline" className="w-full">
+              Cancel
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }
