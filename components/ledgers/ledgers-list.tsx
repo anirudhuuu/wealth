@@ -388,9 +388,13 @@ export function LedgersList({
                 <AlertDialogCancel disabled={isUpdating}>
                   Cancel
                 </AlertDialogCancel>
-                <AlertDialogAction type="submit" disabled={isUpdating}>
+                <Button
+                  type="submit"
+                  disabled={isUpdating}
+                  className="bg-primary hover:bg-primary/90"
+                >
                   {isUpdating ? "Updating..." : "Update Ledger"}
-                </AlertDialogAction>
+                </Button>
               </AlertDialogFooter>
             </form>
           </Form>
