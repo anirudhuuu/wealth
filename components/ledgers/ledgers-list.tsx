@@ -13,14 +13,34 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import type { Ledger, Transaction } from "@/lib/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown, ChevronRight, Edit, Plus, Wallet } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { z } from "zod";
 import { AddLedgerDialog } from "./add-ledger-dialog";
+
+// Validation schema for ledger name
+const ledgerNameSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Ledger name is required")
+    .max(100, "Ledger name must be less than 100 characters"),
+});
+
+type LedgerNameFormData = z.infer<typeof ledgerNameSchema>;
 
 interface LedgersListProps {
   ledgers: Ledger[];
@@ -38,9 +58,15 @@ export function LedgersList({
     new Set()
   );
   const [editingLedger, setEditingLedger] = useState<Ledger | null>(null);
-  const [newLedgerName, setNewLedgerName] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
   const router = useRouter();
+
+  const form = useForm<LedgerNameFormData>({
+    resolver: zodResolver(ledgerNameSchema),
+    defaultValues: {
+      name: "",
+    },
+  });
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -96,8 +122,8 @@ export function LedgersList({
     }
   };
 
-  const handleEditLedger = async () => {
-    if (!editingLedger || !newLedgerName.trim()) return;
+  const handleEditLedger = async (data: LedgerNameFormData) => {
+    if (!editingLedger) return;
 
     setIsUpdating(true);
     try {
@@ -110,7 +136,7 @@ export function LedgersList({
 
       const { error } = await supabase
         .from("ledgers")
-        .update({ name: newLedgerName.trim() })
+        .update({ name: data.name.trim() })
         .eq("id", editingLedger.id)
         .eq("user_id", user.id);
 
@@ -118,7 +144,7 @@ export function LedgersList({
 
       // Reset form and close dialog
       setEditingLedger(null);
-      setNewLedgerName("");
+      form.reset();
       router.refresh();
     } catch (error) {
       console.error("Error updating ledger:", error);
@@ -130,7 +156,7 @@ export function LedgersList({
 
   const openEditDialog = (ledger: Ledger) => {
     setEditingLedger(ledger);
-    setNewLedgerName(ledger.name);
+    form.reset({ name: ledger.name });
   };
 
   return (
@@ -272,27 +298,38 @@ export function LedgersList({
               Update the name of "{editingLedger?.name}"
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="ledger-name">Ledger Name</Label>
-              <Input
-                id="ledger-name"
-                value={newLedgerName}
-                onChange={(e) => setNewLedgerName(e.target.value)}
-                placeholder="Enter ledger name"
-                disabled={isUpdating}
-              />
-            </div>
-          </div>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isUpdating}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleEditLedger}
-              disabled={isUpdating || !newLedgerName.trim()}
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleEditLedger)}
+              className="space-y-4"
             >
-              {isUpdating ? "Updating..." : "Update Ledger"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ledger Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter ledger name"
+                        disabled={isUpdating}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={isUpdating}>
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction type="submit" disabled={isUpdating}>
+                  {isUpdating ? "Updating..." : "Update Ledger"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </form>
+          </Form>
         </AlertDialogContent>
       </AlertDialog>
     </>
