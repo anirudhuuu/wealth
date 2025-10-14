@@ -1,10 +1,18 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { DatabaseError, NotFoundError, ValidationError } from "../errors";
 
+// Define a proper error type for Supabase errors
+interface SupabaseError {
+  code?: string;
+  message: string;
+  details?: string;
+  hint?: string;
+}
+
 export abstract class BaseRepository<T> {
   constructor(protected supabase: SupabaseClient) {}
 
-  protected async handleError(error: any, operation: string): Promise<never> {
+  protected async handleError(error: SupabaseError, operation: string): Promise<never> {
     console.error(`Database error during ${operation}:`, error);
 
     if (error.code === "PGRST116") {
@@ -29,7 +37,7 @@ export abstract class BaseRepository<T> {
   protected abstract getTableName(): string;
 
   protected async executeQuery<R>(
-    queryFn: () => Promise<{ data: R | null; error: any }>,
+    queryFn: () => Promise<{ data: R | null; error: SupabaseError | null }>,
     operation: string
   ): Promise<R> {
     const { data, error } = await queryFn();
@@ -46,7 +54,7 @@ export abstract class BaseRepository<T> {
   }
 
   protected async executeQueryList<R>(
-    queryFn: () => Promise<{ data: R[] | null; error: any }>,
+    queryFn: () => Promise<{ data: R[] | null; error: SupabaseError | null }>,
     operation: string
   ): Promise<R[]> {
     const { data, error } = await queryFn();
@@ -59,7 +67,7 @@ export abstract class BaseRepository<T> {
   }
 
   protected async executeMutation<R>(
-    mutationFn: () => Promise<{ data: R | null; error: any }>,
+    mutationFn: () => Promise<{ data: R | null; error: SupabaseError | null }>,
     operation: string
   ): Promise<R> {
     const { data, error } = await mutationFn();
@@ -76,7 +84,7 @@ export abstract class BaseRepository<T> {
   }
 
   protected async executeMutationList<R>(
-    mutationFn: () => Promise<{ data: R[] | null; error: any }>,
+    mutationFn: () => Promise<{ data: R[] | null; error: SupabaseError | null }>,
     operation: string
   ): Promise<R[]> {
     const { data, error } = await mutationFn();

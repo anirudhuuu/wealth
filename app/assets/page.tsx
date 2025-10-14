@@ -58,20 +58,20 @@ export default function AssetsPage() {
   // Calculate totals
   const totalValue = roundToTwoDecimals(
     assets.reduce(
-      (sum: number, asset: any) => sum + Number(asset.current_value),
+      (sum: number, asset) => sum + Number(asset.current_value),
       0
     )
   );
 
   const totalGain = roundToTwoDecimals(
     assets.reduce(
-      (sum: number, asset: any) =>
-        sum + (Number(asset.current_value) - Number(asset.purchase_value)),
+      (sum: number, asset) =>
+        sum + (Number(asset.current_value) - Number(asset.purchase_value || 0)),
       0
     )
   );
 
-  const gainPercentage = assets.reduce((sum: number, asset: any) => {
+  const gainPercentage = assets.reduce((sum: number, asset) => {
     const purchaseValue = Number(asset.purchase_value);
     if (purchaseValue === 0) return sum;
     return (

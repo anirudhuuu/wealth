@@ -136,7 +136,7 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       throw new ValidationError("Transaction amount must be greater than 0");
     }
 
-    const updateData: any = {};
+    const updateData: Partial<Transaction> = {};
 
     if (input.ledgerId !== undefined) {
       updateData.ledger_id = input.ledgerId;

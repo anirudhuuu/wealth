@@ -47,7 +47,7 @@ export function useCreateAsset() {
       router.refresh(); // Refresh server-side data
       toast.success("Asset created successfully");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Failed to create asset");
     },
   });
@@ -68,7 +68,7 @@ export function useUpdateAsset() {
       router.refresh(); // Refresh server-side data
       toast.success("Asset updated successfully");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Failed to update asset");
     },
   });
@@ -85,7 +85,7 @@ export function useDeleteAsset() {
       router.refresh(); // Refresh server-side data
       toast.success("Asset deleted successfully");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Failed to delete asset");
     },
   });

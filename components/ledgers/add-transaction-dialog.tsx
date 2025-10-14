@@ -41,7 +41,7 @@ import type { Ledger } from "@/lib/types";
 import { parseAndRoundAmount } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 // Validation schema
@@ -81,9 +81,9 @@ function TransactionForm({
   className,
   showCancelButton = true,
 }: {
-  form: any;
+  form: UseFormReturn<TransactionFormData>;
   onSubmit: (data: TransactionFormData) => void;
-  createTransactionMutation: any;
+  createTransactionMutation: ReturnType<typeof useCreateTransaction>;
   onOpenChange: (open: boolean) => void;
   ledgers: Ledger[];
   className?: string;

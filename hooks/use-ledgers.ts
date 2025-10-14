@@ -47,7 +47,7 @@ export function useCreateLedger() {
       router.refresh(); // Refresh server-side data
       toast.success("Ledger created successfully");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Failed to create ledger");
     },
   });
@@ -68,7 +68,7 @@ export function useUpdateLedger() {
       router.refresh(); // Refresh server-side data
       toast.success("Ledger updated successfully");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Failed to update ledger");
     },
   });
@@ -85,7 +85,7 @@ export function useDeleteLedger() {
       router.refresh(); // Refresh server-side data
       toast.success("Ledger deleted successfully");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Failed to delete ledger");
     },
   });

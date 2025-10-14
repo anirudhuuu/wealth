@@ -60,7 +60,7 @@ export function useCreateTransaction() {
       router.refresh(); // Refresh server-side data
       toast.success("Transaction created successfully");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Failed to create transaction");
     },
   });
@@ -87,7 +87,7 @@ export function useUpdateTransaction() {
       router.refresh(); // Refresh server-side data
       toast.success("Transaction updated successfully");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Failed to update transaction");
     },
   });
@@ -105,7 +105,7 @@ export function useDeleteTransaction() {
       router.refresh(); // Refresh server-side data
       toast.success("Transaction deleted successfully");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Failed to delete transaction");
     },
   });

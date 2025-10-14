@@ -118,7 +118,7 @@ export class AssetRepository extends BaseRepository<Asset> {
       throw new ValidationError("Purchase value cannot be negative");
     }
 
-    const updateData: any = {};
+    const updateData: Partial<Asset> = {};
 
     if (input.name !== undefined) {
       updateData.name = input.name.trim();

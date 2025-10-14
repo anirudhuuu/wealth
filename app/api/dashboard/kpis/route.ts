@@ -1,6 +1,7 @@
 import { requireAuth } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { roundToTwoDecimals } from "@/lib/utils";
+import type { Transaction, Asset } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -29,20 +30,20 @@ export async function GET(request: NextRequest) {
       throw new Error(`Failed to fetch assets: ${assetError.message}`);
     }
 
-    const txnData = transactions || [];
-    const assetData = assets || [];
+    const txnData: Transaction[] = transactions || [];
+    const assetData: Asset[] = assets || [];
 
     // Calculate KPIs
     const totalIncome = roundToTwoDecimals(
       txnData
-        .filter((t: any) => t.type === "income")
-        .reduce((sum: number, t: any) => sum + Number(t.amount), 0)
+        .filter((t) => t.type === "income")
+        .reduce((sum: number, t) => sum + Number(t.amount), 0)
     );
 
     const totalExpenses = roundToTwoDecimals(
       txnData
-        .filter((t: any) => t.type === "expense")
-        .reduce((sum: number, t: any) => sum + Number(t.amount), 0)
+        .filter((t) => t.type === "expense")
+        .reduce((sum: number, t) => sum + Number(t.amount), 0)
     );
 
     const netSavings = roundToTwoDecimals(totalIncome - totalExpenses);
@@ -50,7 +51,7 @@ export async function GET(request: NextRequest) {
 
     const totalAssets = roundToTwoDecimals(
       assetData.reduce(
-        (sum: number, a: any) => sum + Number(a.current_value),
+        (sum: number, a) => sum + Number(a.current_value),
         0
       )
     );
@@ -59,7 +60,7 @@ export async function GET(request: NextRequest) {
     const categoryData: Record<string, number> = {};
     txnData
       .filter((t) => t.type === "expense")
-      .forEach((t: any) => {
+      .forEach((t) => {
         categoryData[t.category] = roundToTwoDecimals(
           (categoryData[t.category] || 0) + Number(t.amount)
         );
