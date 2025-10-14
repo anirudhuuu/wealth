@@ -1,6 +1,7 @@
 import { requireAuth } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { roundToTwoDecimals } from "@/lib/utils";
+import { formatDateForDatabase } from "@/lib/repositories/utils";
 import type { Transaction, Asset } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -9,18 +10,44 @@ export async function GET(request: NextRequest) {
     const user = await requireAuth();
     const supabase = await createClient();
 
-    // Fetch transactions
+    // Parse query parameters
+    const { searchParams } = new URL(request.url);
+    const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 100); // Max 100 transactions
+    const offset = parseInt(searchParams.get("offset") || "0");
+    const timeRange = searchParams.get("timeRange") || "12m";
+
+    // Calculate date range based on timeRange
+    const now = new Date();
+    let startDate: Date;
+    
+    switch (timeRange) {
+      case "3m":
+        startDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+        break;
+      case "6m":
+        startDate = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
+        break;
+      case "12m":
+        startDate = new Date(now.getFullYear(), now.getMonth() - 12, now.getDate());
+        break;
+      default:
+        startDate = new Date(0); // All time
+    }
+
+    // Fetch transactions with pagination and date filter
     const { data: transactions, error: txnError } = await supabase
       .from("transactions")
       .select("*")
       .eq("user_id", user.id)
-      .order("date", { ascending: false });
+      .gte("date", formatDateForDatabase(startDate))
+      .order("date", { ascending: false })
+      .range(offset, offset + limit - 1);
 
     if (txnError) {
       throw new Error(`Failed to fetch transactions: ${txnError.message}`);
     }
 
-    // Fetch assets
+    // Fetch assets (no pagination needed for assets as they're typically fewer)
     const { data: assets, error: assetError } = await supabase
       .from("assets")
       .select("*")
@@ -29,6 +56,13 @@ export async function GET(request: NextRequest) {
     if (assetError) {
       throw new Error(`Failed to fetch assets: ${assetError.message}`);
     }
+
+    // Get total count for pagination
+    const { count: totalTransactions } = await supabase
+      .from("transactions")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .gte("date", formatDateForDatabase(startDate));
 
     const txnData: Transaction[] = transactions || [];
     const assetData: Asset[] = assets || [];
@@ -76,6 +110,13 @@ export async function GET(request: NextRequest) {
       },
       transactions: txnData,
       categoryData,
+      pagination: {
+        total: totalTransactions || 0,
+        limit,
+        offset,
+        hasMore: (totalTransactions || 0) > offset + limit,
+      },
+      timeRange,
     });
   } catch (error) {
     console.error("Dashboard KPIs error:", error);

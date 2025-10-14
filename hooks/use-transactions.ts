@@ -25,7 +25,9 @@ export function useTransactions(filters?: TransactionFilters) {
   return useQuery({
     queryKey: transactionKeys.list(filters),
     queryFn: () => apiClient.getTransactions(filters),
-    staleTime: 2 * 60 * 1000, // 2 minutes (more frequent updates for transactions)
+    staleTime: 3 * 60 * 1000, // 3 minutes - transactions don't change frequently
+    gcTime: 5 * 60 * 1000, // 5 minutes - keep in cache longer
+    refetchOnWindowFocus: false, // Don't refetch on window focus
   });
 }
 

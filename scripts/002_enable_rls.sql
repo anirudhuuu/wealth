@@ -4,7 +4,6 @@ ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ledgers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE assets ENABLE ROW LEVEL SECURITY;
-ALTER TABLE fx_rates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_settings ENABLE ROW LEVEL SECURITY;
 
 -- Admin whitelist policies (only admins can manage)
@@ -75,23 +74,6 @@ CREATE POLICY "Users can update their own assets"
 
 CREATE POLICY "Users can delete their own assets"
   ON assets FOR DELETE
-  USING (auth.uid() = user_id);
-
--- FX rates policies
-CREATE POLICY "Users can view their own fx rates"
-  ON fx_rates FOR SELECT
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can insert their own fx rates"
-  ON fx_rates FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Users can update their own fx rates"
-  ON fx_rates FOR UPDATE
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can delete their own fx rates"
-  ON fx_rates FOR DELETE
   USING (auth.uid() = user_id);
 
 -- User settings policies

@@ -127,7 +127,11 @@ class ApiClient {
   }
 
   // Dashboard methods
-  async getDashboardKPIs(): Promise<{
+  async getDashboardKPIs(
+    timeRange: string = "12m",
+    limit: number = 50,
+    offset: number = 0
+  ): Promise<{
     kpis: {
       totalIncome: number;
       totalExpenses: number;
@@ -137,8 +141,21 @@ class ApiClient {
     };
     transactions: Transaction[];
     categoryData: Record<string, number>;
+    pagination: {
+      total: number;
+      limit: number;
+      offset: number;
+      hasMore: boolean;
+    };
+    timeRange: string;
   }> {
-    const response = await fetch("/api/dashboard/kpis");
+    const params = new URLSearchParams({
+      timeRange,
+      limit: limit.toString(),
+      offset: offset.toString(),
+    });
+    
+    const response = await fetch(`/api/dashboard/kpis?${params}`);
     if (!response.ok) {
       throw new Error("Failed to fetch dashboard KPIs");
     }

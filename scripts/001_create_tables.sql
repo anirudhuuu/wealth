@@ -60,18 +60,6 @@ CREATE TABLE IF NOT EXISTS assets (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- FX rates table
-CREATE TABLE IF NOT EXISTS fx_rates (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  from_currency TEXT NOT NULL,
-  to_currency TEXT NOT NULL,
-  rate DECIMAL(15, 6) NOT NULL,
-  effective_date DATE NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(user_id, from_currency, to_currency, effective_date)
-);
-
 -- User settings table
 CREATE TABLE IF NOT EXISTS user_settings (
   user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -85,6 +73,10 @@ CREATE TABLE IF NOT EXISTS user_settings (
 CREATE INDEX IF NOT EXISTS idx_transactions_user_id ON transactions(user_id);
 CREATE INDEX IF NOT EXISTS idx_transactions_ledger_id ON transactions(ledger_id);
 CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(date);
+CREATE INDEX IF NOT EXISTS idx_transactions_user_date ON transactions(user_id, date);
+CREATE INDEX IF NOT EXISTS idx_transactions_user_category_date ON transactions(user_id, category, date);
+CREATE INDEX IF NOT EXISTS idx_transactions_user_type_date ON transactions(user_id, type, date);
 CREATE INDEX IF NOT EXISTS idx_ledgers_user_id ON ledgers(user_id);
 CREATE INDEX IF NOT EXISTS idx_assets_user_id ON assets(user_id);
-CREATE INDEX IF NOT EXISTS idx_fx_rates_user_id ON fx_rates(user_id);
+CREATE INDEX IF NOT EXISTS idx_assets_user_type ON assets(user_id, type);
+CREATE INDEX IF NOT EXISTS idx_assets_maturity_date ON assets(maturity_date) WHERE maturity_date IS NOT NULL;

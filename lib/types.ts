@@ -53,16 +53,6 @@ export interface Asset {
   updated_at: string;
 }
 
-export interface FxRate {
-  id: string;
-  user_id: string;
-  from_currency: string;
-  to_currency: string;
-  rate: number;
-  effective_date: string;
-  created_at: string;
-}
-
 // Repository input types
 export interface CreateLedgerInput {
   name: string;
