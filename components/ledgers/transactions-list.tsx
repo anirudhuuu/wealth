@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -39,9 +40,10 @@ import {
   Edit,
   Plus,
   Receipt,
+  Search,
   Trash2,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { AddTransactionDialog } from "./add-transaction-dialog";
 import { EditTransactionDialog } from "./edit-transaction-dialog";
 
@@ -66,8 +68,71 @@ export function TransactionsList({
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"date" | "amount" | "description" | "category" | "type">("date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const deleteTransactionMutation = useDeleteTransaction();
+
+  // Filter and sort transactions
+  const filteredAndSortedTransactions = useMemo(() => {
+    let filtered = transactions;
+
+    // Apply ledger filter
+    if (selectedLedgerId !== "all") {
+      filtered = transactions.filter((txn) => txn.ledger_id === selectedLedgerId);
+    }
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (txn) =>
+          txn.description.toLowerCase().includes(query) ||
+          txn.category.toLowerCase().includes(query) ||
+          txn.type.toLowerCase().includes(query) ||
+          (txn.notes && txn.notes.toLowerCase().includes(query))
+      );
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      let aValue: string | number | Date;
+      let bValue: string | number | Date;
+
+      switch (sortBy) {
+        case "date":
+          aValue = new Date(a.date);
+          bValue = new Date(b.date);
+          break;
+        case "amount":
+          aValue = Number(a.amount);
+          bValue = Number(b.amount);
+          break;
+        case "description":
+          aValue = a.description.toLowerCase();
+          bValue = b.description.toLowerCase();
+          break;
+        case "category":
+          aValue = a.category.toLowerCase();
+          bValue = b.category.toLowerCase();
+          break;
+        case "type":
+          aValue = a.type.toLowerCase();
+          bValue = b.type.toLowerCase();
+          break;
+        default:
+          aValue = new Date(a.date);
+          bValue = new Date(b.date);
+      }
+
+      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    return filtered;
+  }, [transactions, selectedLedgerId, searchQuery, sortBy, sortOrder]);
 
   const toggleTransactionExpansion = (transactionId: string) => {
     setExpandedTransactions((prev) => {
@@ -93,19 +158,12 @@ export function TransactionsList({
     deleteTransactionMutation.mutate(transactionId);
   };
 
-  // Filter transactions based on selected ledger and sort by date (newest first)
-  const filteredTransactions = (
-    selectedLedgerId === "all"
-      ? transactions
-      : transactions.filter((txn) => txn.ledger_id === selectedLedgerId)
-  ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
   // Pagination logic
-  const totalItems = filteredTransactions.length;
+  const totalItems = filteredAndSortedTransactions.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedTransactions = filteredTransactions.slice(
+  const paginatedTransactions = filteredAndSortedTransactions.slice(
     startIndex,
     endIndex
   );
@@ -129,25 +187,83 @@ export function TransactionsList({
               </Button>
             )}
           </div>
-          <div className="mt-3 space-y-1 sm:space-y-2">
-            <div className="flex flex-col gap-1 sm:gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <Select
-                value={selectedLedgerId}
-                onValueChange={handleLedgerFilterChange}
-              >
-                <SelectTrigger className="w-full sm:w-auto">
-                  <SelectValue placeholder="Filter by ledger" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Ledgers</SelectItem>
-                  {ledgers.map((ledger) => (
-                    <SelectItem key={ledger.id} value={ledger.id}>
-                      {ledger.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          
+          {/* Search and Filter Controls */}
+          <div className="mt-4 space-y-4">
+            <div className="flex flex-col lg:flex-row gap-4">
+              {/* Search Input */}
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search transactions by description, category, type, or notes..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="pl-10"
+                />
+              </div>
+              
+              {/* All Dropdowns in a row on desktop */}
+              <div className="flex flex-col sm:flex-row gap-2 lg:flex-row lg:gap-2">
+                {/* Ledger Filter */}
+                <Select
+                  value={selectedLedgerId}
+                  onValueChange={handleLedgerFilterChange}
+                >
+                  <SelectTrigger className="w-full sm:w-[180px] lg:w-[160px]">
+                    <SelectValue placeholder="Filter by ledger" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Ledgers</SelectItem>
+                    {ledgers.map((ledger) => (
+                      <SelectItem key={ledger.id} value={ledger.id}>
+                        {ledger.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
+                {/* Sort By */}
+                <Select value={sortBy} onValueChange={(value: "date" | "amount" | "description" | "category" | "type") => {
+                  setSortBy(value);
+                  setCurrentPage(1);
+                }}>
+                  <SelectTrigger className="w-full sm:w-[140px] lg:w-[130px]">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="date">Date</SelectItem>
+                    <SelectItem value="amount">Amount</SelectItem>
+                    <SelectItem value="description">Description</SelectItem>
+                    <SelectItem value="category">Category</SelectItem>
+                    <SelectItem value="type">Type</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                {/* Sort Order */}
+                <Select value={sortOrder} onValueChange={(value: "asc" | "desc") => {
+                  setSortOrder(value);
+                  setCurrentPage(1);
+                }}>
+                  <SelectTrigger className="w-full sm:w-[140px] lg:w-[130px]">
+                    <SelectValue placeholder="Order" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="asc">Low to High</SelectItem>
+                    <SelectItem value="desc">High to Low</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
+            
+            {/* Results count */}
+            {(searchQuery || selectedLedgerId !== "all") && (
+              <p className="text-sm text-muted-foreground">
+                Showing {filteredAndSortedTransactions.length} of {transactions.length} transactions
+              </p>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -155,15 +271,19 @@ export function TransactionsList({
             {paginatedTransactions.length === 0 ? (
               <div className="py-8 text-center text-sm text-muted-foreground">
                 <Receipt className="mx-auto mb-2 h-8 w-8 opacity-50" />
-                <p>
-                  {selectedLedgerId === "all"
-                    ? "No transactions yet"
-                    : "No transactions for selected ledger"}
-                </p>
-                {isAdmin && (
-                  <p className="mt-1">
-                    Add your first transaction to start tracking
-                  </p>
+                {searchQuery ? (
+                  <p>No transactions found matching "{searchQuery}"</p>
+                ) : selectedLedgerId !== "all" ? (
+                  <p>No transactions for selected ledger</p>
+                ) : (
+                  <>
+                    <p>No transactions yet</p>
+                    {isAdmin && (
+                      <p className="mt-1">
+                        Add your first transaction to start tracking
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
             ) : (

@@ -182,7 +182,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
         <CardContent>
           {/* Search and Sort Controls */}
           <div className="mb-6 space-y-4">
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col lg:flex-row gap-4">
               {/* Search Input */}
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -194,10 +194,11 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                 />
               </div>
               
-              {/* Sort Controls */}
-              <div className="flex gap-2 justify-end">
+              {/* All Dropdowns in a row on desktop */}
+              <div className="flex flex-col sm:flex-row gap-2 lg:flex-row lg:gap-2">
+                {/* Sort By */}
                 <Select value={sortBy} onValueChange={(value: "name" | "value" | "gain" | "type") => setSortBy(value)}>
-                  <SelectTrigger className="w-[140px]">
+                  <SelectTrigger className="w-full sm:w-[140px] lg:w-[130px]">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
@@ -208,8 +209,9 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                   </SelectContent>
                 </Select>
                 
+                {/* Sort Order */}
                 <Select value={sortOrder} onValueChange={(value: "asc" | "desc") => setSortOrder(value)}>
-                  <SelectTrigger className="w-[140px]">
+                  <SelectTrigger className="w-full sm:w-[140px] lg:w-[130px]">
                     <SelectValue placeholder="Order" />
                   </SelectTrigger>
                   <SelectContent>
