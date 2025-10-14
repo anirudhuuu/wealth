@@ -30,9 +30,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDeleteTransaction } from "@/hooks/use-transactions";
+import { exportTransactionsToCsv } from "@/lib/csv-export";
 import type { Ledger, Transaction } from "@/lib/types";
 import { formatCurrency, parseDateFromDatabase } from "@/lib/utils";
-import { exportTransactionsToCsv } from "@/lib/csv-export";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -45,7 +45,7 @@ import {
   Search,
   Trash2,
 } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { AddTransactionDialog } from "./add-transaction-dialog";
 import { EditTransactionDialog } from "./edit-transaction-dialog";
 
@@ -71,7 +71,9 @@ export function TransactionsList({
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"date" | "amount" | "description" | "category" | "type">("date");
+  const [sortBy, setSortBy] = useState<
+    "date" | "amount" | "description" | "category" | "type"
+  >("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const deleteTransactionMutation = useDeleteTransaction();
@@ -82,7 +84,9 @@ export function TransactionsList({
 
     // Apply ledger filter
     if (selectedLedgerId !== "all") {
-      filtered = transactions.filter((txn) => txn.ledger_id === selectedLedgerId);
+      filtered = transactions.filter(
+        (txn) => txn.ledger_id === selectedLedgerId
+      );
     }
 
     // Apply search filter
@@ -183,10 +187,15 @@ export function TransactionsList({
           <div className="flex items-center justify-between">
             <CardTitle>All Transactions</CardTitle>
             <div className="flex items-center gap-2">
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="outline"
-                onClick={() => exportTransactionsToCsv(filteredAndSortedTransactions, ledgers)}
+                onClick={() =>
+                  exportTransactionsToCsv(
+                    filteredAndSortedTransactions,
+                    ledgers
+                  )
+                }
                 title="Export transactions to CSV"
               >
                 <Download className="mr-2 h-4 w-4" />
@@ -200,7 +209,7 @@ export function TransactionsList({
               )}
             </div>
           </div>
-          
+
           {/* Search and Filter Controls */}
           <div className="mt-4 space-y-4">
             <div className="flex flex-col lg:flex-row gap-4">
@@ -217,7 +226,7 @@ export function TransactionsList({
                   className="pl-10"
                 />
               </div>
-              
+
               {/* All Dropdowns in a row on desktop */}
               <div className="flex flex-col sm:flex-row gap-2 lg:flex-row lg:gap-2">
                 {/* Ledger Filter */}
@@ -237,12 +246,22 @@ export function TransactionsList({
                     ))}
                   </SelectContent>
                 </Select>
-                
+
                 {/* Sort By */}
-                <Select value={sortBy} onValueChange={(value: "date" | "amount" | "description" | "category" | "type") => {
-                  setSortBy(value);
-                  setCurrentPage(1);
-                }}>
+                <Select
+                  value={sortBy}
+                  onValueChange={(
+                    value:
+                      | "date"
+                      | "amount"
+                      | "description"
+                      | "category"
+                      | "type"
+                  ) => {
+                    setSortBy(value);
+                    setCurrentPage(1);
+                  }}
+                >
                   <SelectTrigger className="w-full sm:w-[140px] lg:w-[130px]">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
@@ -254,12 +273,15 @@ export function TransactionsList({
                     <SelectItem value="type">Type</SelectItem>
                   </SelectContent>
                 </Select>
-                
+
                 {/* Sort Order */}
-                <Select value={sortOrder} onValueChange={(value: "asc" | "desc") => {
-                  setSortOrder(value);
-                  setCurrentPage(1);
-                }}>
+                <Select
+                  value={sortOrder}
+                  onValueChange={(value: "asc" | "desc") => {
+                    setSortOrder(value);
+                    setCurrentPage(1);
+                  }}
+                >
                   <SelectTrigger className="w-full sm:w-[140px] lg:w-[130px]">
                     <SelectValue placeholder="Order" />
                   </SelectTrigger>
@@ -270,11 +292,12 @@ export function TransactionsList({
                 </Select>
               </div>
             </div>
-            
+
             {/* Results count */}
             {(searchQuery || selectedLedgerId !== "all") && (
               <p className="text-sm text-muted-foreground">
-                Showing {filteredAndSortedTransactions.length} of {transactions.length} transactions
+                Showing {filteredAndSortedTransactions.length} of{" "}
+                {transactions.length} transactions
               </p>
             )}
           </div>
@@ -346,7 +369,9 @@ export function TransactionsList({
                               ? "text-green-600"
                               : "text-amber-600"
                           }`}
-                          title={`${txn.type === "income" ? "+" : "-"}${formatCurrency(Number(txn.amount))}`}
+                          title={`${
+                            txn.type === "income" ? "+" : "-"
+                          }${formatCurrency(Number(txn.amount))}`}
                         >
                           {txn.type === "income" ? "+" : "-"}
                           {formatCurrency(Number(txn.amount))}

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 // Query keys
 export const dashboardKeys = {
   all: ["dashboard"] as const,
-  kpis: (timeRange?: string, limit?: number, offset?: number) => 
+  kpis: (timeRange?: string, limit?: number, offset?: number) =>
     [...dashboardKeys.all, "kpis", { timeRange, limit, offset }] as const,
 };
 

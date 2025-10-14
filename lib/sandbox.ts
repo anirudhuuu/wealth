@@ -20,7 +20,9 @@ export function generateSandboxLedgers(): Ledger[] {
     name: ledger.name,
     type: ledger.type,
     currency: "INR",
-    created_at: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: new Date(
+      Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000
+    ).toISOString(),
     updated_at: new Date().toISOString(),
   }));
 }
@@ -32,13 +34,41 @@ export function generateSandboxTransactions(): Transaction[] {
 
   // Income sources
   const incomeSources = [
-    { description: "Monthly Salary", category: "Salary", amount: [80000, 120000] },
-    { description: "Freelance Project", category: "Freelance", amount: [15000, 50000] },
-    { description: "Investment Returns", category: "Investment", amount: [5000, 25000] },
-    { description: "Rental Income", category: "Rental", amount: [20000, 40000] },
-    { description: "Bonus Payment", category: "Salary", amount: [30000, 100000] },
-    { description: "Side Business", category: "Business", amount: [10000, 30000] },
-    { description: "Cashback Rewards", category: "Rewards", amount: [500, 2000] },
+    {
+      description: "Monthly Salary",
+      category: "Salary",
+      amount: [80000, 120000],
+    },
+    {
+      description: "Freelance Project",
+      category: "Freelance",
+      amount: [15000, 50000],
+    },
+    {
+      description: "Investment Returns",
+      category: "Investment",
+      amount: [5000, 25000],
+    },
+    {
+      description: "Rental Income",
+      category: "Rental",
+      amount: [20000, 40000],
+    },
+    {
+      description: "Bonus Payment",
+      category: "Salary",
+      amount: [30000, 100000],
+    },
+    {
+      description: "Side Business",
+      category: "Business",
+      amount: [10000, 30000],
+    },
+    {
+      description: "Cashback Rewards",
+      category: "Rewards",
+      amount: [500, 2000],
+    },
     { description: "Refund", category: "Refund", amount: [1000, 5000] },
   ];
 
@@ -46,28 +76,64 @@ export function generateSandboxTransactions(): Transaction[] {
   const expenseCategories = [
     { description: "Groceries", category: "Food", amount: [2000, 8000] },
     { description: "Restaurant", category: "Food", amount: [500, 3000] },
-    { description: "Electricity Bill", category: "Bills", amount: [2000, 6000] },
+    {
+      description: "Electricity Bill",
+      category: "Bills",
+      amount: [2000, 6000],
+    },
     { description: "Water Bill", category: "Bills", amount: [500, 1500] },
     { description: "Internet Bill", category: "Bills", amount: [800, 2000] },
     { description: "Mobile Recharge", category: "Bills", amount: [200, 1000] },
     { description: "Petrol", category: "Transport", amount: [1000, 3000] },
     { description: "Uber/Ola", category: "Transport", amount: [200, 1500] },
-    { description: "Movie Tickets", category: "Entertainment", amount: [500, 2000] },
-    { description: "Netflix Subscription", category: "Entertainment", amount: [200, 800] },
+    {
+      description: "Movie Tickets",
+      category: "Entertainment",
+      amount: [500, 2000],
+    },
+    {
+      description: "Netflix Subscription",
+      category: "Entertainment",
+      amount: [200, 800],
+    },
     { description: "Gym Membership", category: "Health", amount: [2000, 5000] },
     { description: "Doctor Visit", category: "Health", amount: [1000, 5000] },
     { description: "Medicine", category: "Health", amount: [300, 2000] },
     { description: "Shopping", category: "Shopping", amount: [2000, 10000] },
-    { description: "Online Shopping", category: "Shopping", amount: [1000, 5000] },
-    { description: "Insurance Premium", category: "Insurance", amount: [3000, 15000] },
+    {
+      description: "Online Shopping",
+      category: "Shopping",
+      amount: [1000, 5000],
+    },
+    {
+      description: "Insurance Premium",
+      category: "Insurance",
+      amount: [3000, 15000],
+    },
     { description: "EMI Payment", category: "Loans", amount: [5000, 25000] },
-    { description: "Credit Card Payment", category: "Loans", amount: [2000, 15000] },
-    { description: "Education Fees", category: "Education", amount: [5000, 20000] },
+    {
+      description: "Credit Card Payment",
+      category: "Loans",
+      amount: [2000, 15000],
+    },
+    {
+      description: "Education Fees",
+      category: "Education",
+      amount: [5000, 20000],
+    },
     { description: "Books", category: "Education", amount: [500, 3000] },
     { description: "Travel", category: "Travel", amount: [5000, 50000] },
     { description: "Hotel Booking", category: "Travel", amount: [2000, 15000] },
-    { description: "Flight Tickets", category: "Travel", amount: [5000, 30000] },
-    { description: "Charity Donation", category: "Charity", amount: [1000, 10000] },
+    {
+      description: "Flight Tickets",
+      category: "Travel",
+      amount: [5000, 30000],
+    },
+    {
+      description: "Charity Donation",
+      category: "Charity",
+      amount: [1000, 10000],
+    },
     { description: "Gift Purchase", category: "Gifts", amount: [500, 5000] },
   ];
 
@@ -78,10 +144,11 @@ export function generateSandboxTransactions(): Transaction[] {
 
     // Skip weekends for some transactions (more realistic)
     const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-    
+
     // Income transactions (less frequent)
     if (Math.random() > 0.9) {
-      const income = incomeSources[Math.floor(Math.random() * incomeSources.length)];
+      const income =
+        incomeSources[Math.floor(Math.random() * incomeSources.length)];
       transactions.push({
         id: `sandbox-income-${i}`,
         user_id: "sandbox",
@@ -89,7 +156,9 @@ export function generateSandboxTransactions(): Transaction[] {
         date: formatDateForDatabase(date),
         description: income.description,
         category: income.category,
-        amount: Math.floor(Math.random() * (income.amount[1] - income.amount[0])) + income.amount[0],
+        amount:
+          Math.floor(Math.random() * (income.amount[1] - income.amount[0])) +
+          income.amount[0],
         type: "income",
         notes: Math.random() > 0.7 ? "Monthly payment" : null,
         created_at: date.toISOString(),
@@ -98,9 +167,12 @@ export function generateSandboxTransactions(): Transaction[] {
     }
 
     // Expense transactions (more frequent)
-    const numExpenses = isWeekend ? Math.floor(Math.random() * 2) + 1 : Math.floor(Math.random() * 3) + 2;
+    const numExpenses = isWeekend
+      ? Math.floor(Math.random() * 2) + 1
+      : Math.floor(Math.random() * 3) + 2;
     for (let j = 0; j < numExpenses; j++) {
-      const expense = expenseCategories[Math.floor(Math.random() * expenseCategories.length)];
+      const expense =
+        expenseCategories[Math.floor(Math.random() * expenseCategories.length)];
       transactions.push({
         id: `sandbox-expense-${i}-${j}`,
         user_id: "sandbox",
@@ -108,9 +180,19 @@ export function generateSandboxTransactions(): Transaction[] {
         date: formatDateForDatabase(date),
         description: expense.description,
         category: expense.category,
-        amount: Math.floor(Math.random() * (expense.amount[1] - expense.amount[0])) + expense.amount[0],
+        amount:
+          Math.floor(Math.random() * (expense.amount[1] - expense.amount[0])) +
+          expense.amount[0],
         type: "expense",
-        notes: Math.random() > 0.8 ? ["Paid via UPI", "Credit card payment", "Cash payment", "Online transfer"][Math.floor(Math.random() * 4)] : null,
+        notes:
+          Math.random() > 0.8
+            ? [
+                "Paid via UPI",
+                "Credit card payment",
+                "Cash payment",
+                "Online transfer",
+              ][Math.floor(Math.random() * 4)]
+            : null,
         created_at: date.toISOString(),
         updated_at: date.toISOString(),
       });
@@ -290,7 +372,9 @@ export function generateSandboxAssets(): Asset[] {
     id: `sandbox-asset-${index + 1}`,
     user_id: "sandbox",
     ...asset,
-    created_at: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: new Date(
+      Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000
+    ).toISOString(),
     updated_at: new Date().toISOString(),
   }));
 }

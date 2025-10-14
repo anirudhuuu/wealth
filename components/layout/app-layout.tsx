@@ -1,11 +1,11 @@
 "use client";
 
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { TooltipProviderWrapper } from "@/components/ui/tooltip-wrapper";
 import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { TooltipProviderWrapper } from "@/components/ui/tooltip-wrapper";
+import type React from "react";
 import { Footer } from "./footer";
 import { Navbar } from "./navbar";
-import type React from "react";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (

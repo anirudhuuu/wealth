@@ -7,9 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDashboardKPIs } from "@/hooks/use-dashboard";
 import { useUserWithProfile } from "@/hooks/use-user";
-import { formatCurrency } from "@/lib/utils";
 import { exportAllDataToCsv } from "@/lib/csv-export";
-import { ArrowDownRight, ArrowUpRight, Download, TrendingUp, Wallet } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  Download,
+  TrendingUp,
+  Wallet,
+} from "lucide-react";
 
 export default function DashboardPage() {
   const {
@@ -88,8 +94,8 @@ export default function DashboardPage() {
               Overview of your financial health
             </p>
           </div>
-          <Button 
-            size="sm" 
+          <Button
+            size="sm"
             variant="outline"
             onClick={() => exportAllDataToCsv(transactions, [], [])}
             title="Export all data to CSV files"
@@ -112,7 +118,10 @@ export default function DashboardPage() {
             <ArrowUpRight className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold truncate" title={formatCurrency(kpis.totalIncome)}>
+            <div
+              className="text-2xl font-bold truncate"
+              title={formatCurrency(kpis.totalIncome)}
+            >
               {formatCurrency(kpis.totalIncome)}
             </div>
           </CardContent>
@@ -126,7 +135,10 @@ export default function DashboardPage() {
             <ArrowDownRight className="h-4 w-4 text-amber-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold truncate" title={formatCurrency(kpis.totalExpenses)}>
+            <div
+              className="text-2xl font-bold truncate"
+              title={formatCurrency(kpis.totalExpenses)}
+            >
               {formatCurrency(kpis.totalExpenses)}
             </div>
           </CardContent>
@@ -140,10 +152,16 @@ export default function DashboardPage() {
             <TrendingUp className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold truncate" title={formatCurrency(kpis.netSavings)}>
+            <div
+              className="text-2xl font-bold truncate"
+              title={formatCurrency(kpis.netSavings)}
+            >
               {formatCurrency(kpis.netSavings)}
             </div>
-            <p className="text-xs text-muted-foreground truncate" title={`${kpis.savingsRate.toFixed(1)}% savings rate`}>
+            <p
+              className="text-xs text-muted-foreground truncate"
+              title={`${kpis.savingsRate.toFixed(1)}% savings rate`}
+            >
               {kpis.savingsRate.toFixed(1)}% savings rate
             </p>
           </CardContent>
@@ -157,7 +175,10 @@ export default function DashboardPage() {
             <Wallet className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold truncate" title={formatCurrency(kpis.totalAssets)}>
+            <div
+              className="text-2xl font-bold truncate"
+              title={formatCurrency(kpis.totalAssets)}
+            >
               {formatCurrency(kpis.totalAssets)}
             </div>
           </CardContent>

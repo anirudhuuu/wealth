@@ -1,5 +1,5 @@
 import type { Asset, Ledger, Transaction } from "@/lib/types";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 
 /**
  * CSV Export Utilities
@@ -20,14 +20,18 @@ function escapeCsvField(value: string | number | null | undefined): string {
   if (value === null || value === undefined) {
     return "";
   }
-  
+
   const stringValue = String(value);
-  
+
   // If the value contains comma, quote, or newline, wrap in quotes and escape quotes
-  if (stringValue.includes(",") || stringValue.includes('"') || stringValue.includes("\n")) {
+  if (
+    stringValue.includes(",") ||
+    stringValue.includes('"') ||
+    stringValue.includes("\n")
+  ) {
     return `"${stringValue.replace(/"/g, '""')}"`;
   }
-  
+
   return stringValue;
 }
 
@@ -47,9 +51,7 @@ function arrayToCsv<T extends Record<string, any>>(
     // Header row
     headers.map(escapeCsvField).join(","),
     // Data rows
-    ...data.map(item => 
-      getRowData(item).map(escapeCsvField).join(",")
-    )
+    ...data.map((item) => getRowData(item).map(escapeCsvField).join(",")),
   ];
 
   return csvRows.join("\n");
@@ -61,7 +63,7 @@ function arrayToCsv<T extends Record<string, any>>(
 function downloadCsv(csvContent: string, filename: string): void {
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
-  
+
   if (link.download !== undefined) {
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
@@ -88,11 +90,11 @@ export function exportTransactionsToCsv(
     "Type",
     "Amount",
     "Ledger",
-    "Notes"
+    "Notes",
   ];
 
   const getRowData = (transaction: Transaction) => {
-    const ledger = ledgers.find(l => l.id === transaction.ledger_id);
+    const ledger = ledgers.find((l) => l.id === transaction.ledger_id);
     return [
       formatDate(transaction.date),
       transaction.description,
@@ -100,23 +102,22 @@ export function exportTransactionsToCsv(
       transaction.type,
       formatCurrencyForCsv(Number(transaction.amount)),
       ledger?.name || "Unknown",
-      transaction.notes || ""
+      transaction.notes || "",
     ];
   };
 
   const csvContent = arrayToCsv(transactions, headers, getRowData);
-  const defaultFilename = `transactions_${new Date().toISOString().split('T')[0]}.csv`;
-  
+  const defaultFilename = `transactions_${
+    new Date().toISOString().split("T")[0]
+  }.csv`;
+
   downloadCsv(csvContent, filename || defaultFilename);
 }
 
 /**
  * Export assets to CSV
  */
-export function exportAssetsToCsv(
-  assets: Asset[],
-  filename?: string
-): void {
+export function exportAssetsToCsv(assets: Asset[], filename?: string): void {
   const headers = [
     "Name",
     "Type",
@@ -127,7 +128,7 @@ export function exportAssetsToCsv(
     "Currency",
     "Gain/Loss",
     "Gain/Loss %",
-    "Notes"
+    "Notes",
   ];
 
   const getRowData = (asset: Asset) => {
@@ -146,13 +147,15 @@ export function exportAssetsToCsv(
       asset.currency,
       formatCurrencyForCsv(gain),
       `${gainPercentage.toFixed(2)}%`,
-      asset.notes || ""
+      asset.notes || "",
     ];
   };
 
   const csvContent = arrayToCsv(assets, headers, getRowData);
-  const defaultFilename = `assets_${new Date().toISOString().split('T')[0]}.csv`;
-  
+  const defaultFilename = `assets_${
+    new Date().toISOString().split("T")[0]
+  }.csv`;
+
   downloadCsv(csvContent, filename || defaultFilename);
 }
 
@@ -172,20 +175,22 @@ export function exportLedgersToCsv(
     "Total Expenses",
     "Net Amount",
     "Transaction Count",
-    "Created Date"
+    "Created Date",
   ];
 
   const getRowData = (ledger: Ledger) => {
-    const ledgerTransactions = transactions.filter(t => t.ledger_id === ledger.id);
-    
+    const ledgerTransactions = transactions.filter(
+      (t) => t.ledger_id === ledger.id
+    );
+
     const totalIncome = ledgerTransactions
-      .filter(t => t.type === "income")
+      .filter((t) => t.type === "income")
       .reduce((sum, t) => sum + Number(t.amount), 0);
-    
+
     const totalExpenses = ledgerTransactions
-      .filter(t => t.type === "expense")
+      .filter((t) => t.type === "expense")
       .reduce((sum, t) => sum + Number(t.amount), 0);
-    
+
     const netAmount = totalIncome - totalExpenses;
 
     return [
@@ -196,13 +201,15 @@ export function exportLedgersToCsv(
       formatCurrencyForCsv(totalExpenses),
       formatCurrencyForCsv(netAmount),
       ledgerTransactions.length,
-      formatDate(ledger.created_at)
+      formatDate(ledger.created_at),
     ];
   };
 
   const csvContent = arrayToCsv(ledgers, headers, getRowData);
-  const defaultFilename = `ledgers_${new Date().toISOString().split('T')[0]}.csv`;
-  
+  const defaultFilename = `ledgers_${
+    new Date().toISOString().split("T")[0]
+  }.csv`;
+
   downloadCsv(csvContent, filename || defaultFilename);
 }
 
@@ -214,9 +221,13 @@ export function exportAllDataToCsv(
   assets: Asset[],
   ledgers: Ledger[]
 ): void {
-  const datePrefix = new Date().toISOString().split('T')[0];
-  
-  exportTransactionsToCsv(transactions, ledgers, `${datePrefix}_transactions.csv`);
+  const datePrefix = new Date().toISOString().split("T")[0];
+
+  exportTransactionsToCsv(
+    transactions,
+    ledgers,
+    `${datePrefix}_transactions.csv`
+  );
   exportAssetsToCsv(assets, `${datePrefix}_assets.csv`);
   exportLedgersToCsv(ledgers, transactions, `${datePrefix}_ledgers.csv`);
 }

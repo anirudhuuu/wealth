@@ -18,7 +18,10 @@ export function roundToTwoDecimals(amount: number): number {
  * Formats currency with 2 decimal places for display
  * Uses Indian locale formatting
  */
-export function formatCurrency(amount: number, currency: string = "INR"): string {
+export function formatCurrency(
+  amount: number,
+  currency: string = "INR"
+): string {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: currency,
@@ -32,7 +35,8 @@ export function formatCurrency(amount: number, currency: string = "INR"): string
  * Used when processing form inputs
  */
 export function parseAndRoundAmount(amountString: string | number): number {
-  const num = typeof amountString === "string" ? parseFloat(amountString) : amountString;
+  const num =
+    typeof amountString === "string" ? parseFloat(amountString) : amountString;
   if (isNaN(num)) {
     throw new Error("Invalid amount format");
   }

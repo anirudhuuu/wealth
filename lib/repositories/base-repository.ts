@@ -12,7 +12,10 @@ interface SupabaseError {
 export abstract class BaseRepository<T> {
   constructor(protected supabase: SupabaseClient) {}
 
-  protected async handleError(error: SupabaseError, operation: string): Promise<never> {
+  protected async handleError(
+    error: SupabaseError,
+    operation: string
+  ): Promise<never> {
     console.error(`Database error during ${operation}:`, error);
 
     if (error.code === "PGRST116") {
@@ -84,7 +87,10 @@ export abstract class BaseRepository<T> {
   }
 
   protected async executeMutationList<R>(
-    mutationFn: () => Promise<{ data: R[] | null; error: SupabaseError | null }>,
+    mutationFn: () => Promise<{
+      data: R[] | null;
+      error: SupabaseError | null;
+    }>,
     operation: string
   ): Promise<R[]> {
     const { data, error } = await mutationFn();

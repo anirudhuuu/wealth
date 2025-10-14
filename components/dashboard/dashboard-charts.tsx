@@ -34,7 +34,7 @@ import {
   LabelList,
   Pie,
   PieChart,
-  XAxis
+  XAxis,
 } from "recharts";
 
 interface DashboardChartsProps {

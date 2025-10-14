@@ -22,9 +22,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDeleteAsset } from "@/hooks/use-assets";
+import { exportAssetsToCsv } from "@/lib/csv-export";
 import type { Asset } from "@/lib/types";
 import { formatCurrency, parseDateFromDatabase } from "@/lib/utils";
-import { exportAssetsToCsv } from "@/lib/csv-export";
 import {
   ChevronDown,
   ChevronRight,
@@ -37,7 +37,7 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { AddAssetDialog } from "./add-asset-dialog";
 import { EditAssetDialog } from "./edit-asset-dialog";
 
@@ -52,7 +52,9 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
   const [deletingAssetId, setDeletingAssetId] = useState<string | null>(null);
   const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"name" | "value" | "gain" | "type">("name");
+  const [sortBy, setSortBy] = useState<"name" | "value" | "gain" | "type">(
+    "name"
+  );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   // React Query mutations
@@ -174,8 +176,8 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
           <div className="flex items-center justify-between">
             <CardTitle>Your Assets</CardTitle>
             <div className="flex items-center gap-2">
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="outline"
                 onClick={() => exportAssetsToCsv(filteredAndSortedAssets)}
                 title="Export assets to CSV"
@@ -206,11 +208,16 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                   className="pl-10"
                 />
               </div>
-              
+
               {/* All Dropdowns in a row on desktop */}
               <div className="flex flex-col sm:flex-row gap-2 lg:flex-row lg:gap-2">
                 {/* Sort By */}
-                <Select value={sortBy} onValueChange={(value: "name" | "value" | "gain" | "type") => setSortBy(value)}>
+                <Select
+                  value={sortBy}
+                  onValueChange={(value: "name" | "value" | "gain" | "type") =>
+                    setSortBy(value)
+                  }
+                >
                   <SelectTrigger className="w-full sm:w-[140px] lg:w-[130px]">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
@@ -221,9 +228,12 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                     <SelectItem value="type">Type</SelectItem>
                   </SelectContent>
                 </Select>
-                
+
                 {/* Sort Order */}
-                <Select value={sortOrder} onValueChange={(value: "asc" | "desc") => setSortOrder(value)}>
+                <Select
+                  value={sortOrder}
+                  onValueChange={(value: "asc" | "desc") => setSortOrder(value)}
+                >
                   <SelectTrigger className="w-full sm:w-[140px] lg:w-[130px]">
                     <SelectValue placeholder="Order" />
                   </SelectTrigger>
@@ -234,11 +244,12 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                 </Select>
               </div>
             </div>
-            
+
             {/* Results count */}
             {searchQuery && (
               <p className="text-sm text-muted-foreground">
-                Showing {filteredAndSortedAssets.length} of {assets.length} assets
+                Showing {filteredAndSortedAssets.length} of {assets.length}{" "}
+                assets
               </p>
             )}
           </div>
@@ -270,7 +281,10 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                 const isExpanded = expandedAssets.has(asset.id);
 
                 return (
-                  <div key={asset.id} className="rounded-lg border p-3 md:p-4 h-fit">
+                  <div
+                    key={asset.id}
+                    className="rounded-lg border p-3 md:p-4 h-fit"
+                  >
                     {/* Header with chevron, name, and gain/loss */}
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
@@ -310,7 +324,12 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                           ) : (
                             <TrendingDown className="h-4 w-4 flex-shrink-0" />
                           )}
-                          <span className="truncate" title={`${gain >= 0 ? "+" : ""}${formatCurrency(Math.abs(gain))}`}>
+                          <span
+                            className="truncate"
+                            title={`${gain >= 0 ? "+" : ""}${formatCurrency(
+                              Math.abs(gain)
+                            )}`}
+                          >
                             {gain >= 0 ? "+" : ""}
                             {formatCurrency(Math.abs(gain))}
                           </span>
@@ -319,7 +338,9 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                           className={`text-xs md:text-sm truncate ${
                             gain >= 0 ? "text-green-600" : "text-amber-600"
                           }`}
-                          title={`${gain >= 0 ? "+" : ""}${gainPercentage.toFixed(2)}%`}
+                          title={`${
+                            gain >= 0 ? "+" : ""
+                          }${gainPercentage.toFixed(2)}%`}
                         >
                           {gain >= 0 ? "+" : ""}
                           {gainPercentage.toFixed(2)}%
@@ -345,7 +366,10 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                           <span className="text-muted-foreground flex-shrink-0">
                             Current Value:
                           </span>
-                          <span className="font-semibold truncate ml-2" title={formatCurrency(currentValue)}>
+                          <span
+                            className="font-semibold truncate ml-2"
+                            title={formatCurrency(currentValue)}
+                          >
                             {formatCurrency(currentValue)}
                           </span>
                         </div>
@@ -353,7 +377,10 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                           <span className="text-muted-foreground flex-shrink-0">
                             Purchase Value:
                           </span>
-                          <span className="font-medium truncate ml-2" title={formatCurrency(purchaseValue)}>
+                          <span
+                            className="font-medium truncate ml-2"
+                            title={formatCurrency(purchaseValue)}
+                          >
                             {formatCurrency(purchaseValue)}
                           </span>
                         </div>
@@ -408,7 +435,9 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                                     ? "text-green-600"
                                     : "text-amber-600"
                                 }`}
-                                title={`${gain >= 0 ? "+" : ""}${formatCurrency(Math.abs(gain))} (${gainPercentage.toFixed(2)}%)`}
+                                title={`${gain >= 0 ? "+" : ""}${formatCurrency(
+                                  Math.abs(gain)
+                                )} (${gainPercentage.toFixed(2)}%)`}
                               >
                                 {gain >= 0 ? "+" : ""}
                                 {formatCurrency(Math.abs(gain))} (

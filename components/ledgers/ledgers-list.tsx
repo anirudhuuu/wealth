@@ -46,9 +46,9 @@ import {
 } from "@/components/ui/select";
 import { useDeleteLedger, useUpdateLedger } from "@/hooks/use-ledgers";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { exportLedgersToCsv } from "@/lib/csv-export";
 import type { Ledger, Transaction } from "@/lib/types";
 import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
-import { exportLedgersToCsv } from "@/lib/csv-export";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ChevronDown,
@@ -335,8 +335,8 @@ export function LedgersList({
           <div className="flex items-center justify-between">
             <CardTitle>Ledgers</CardTitle>
             <div className="flex items-center gap-2">
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="outline"
                 onClick={() => exportLedgersToCsv(ledgers, transactions)}
                 title="Export ledgers to CSV"
@@ -444,7 +444,10 @@ export function LedgersList({
                             <span className="text-muted-foreground flex-shrink-0">
                               Income:
                             </span>
-                            <span className="font-medium text-green-600 truncate ml-2" title={formatCurrency(spending.income)}>
+                            <span
+                              className="font-medium text-green-600 truncate ml-2"
+                              title={formatCurrency(spending.income)}
+                            >
                               {formatCurrency(spending.income)}
                             </span>
                           </div>
@@ -452,13 +455,18 @@ export function LedgersList({
                             <span className="text-muted-foreground flex-shrink-0">
                               Expenses:
                             </span>
-                            <span className="font-medium text-amber-600 truncate ml-2" title={formatCurrency(spending.expenses)}>
+                            <span
+                              className="font-medium text-amber-600 truncate ml-2"
+                              title={formatCurrency(spending.expenses)}
+                            >
                               {formatCurrency(spending.expenses)}
                             </span>
                           </div>
                         </div>
                         <div className="flex justify-between border-t pt-2 min-w-0">
-                          <span className="text-sm font-medium flex-shrink-0">Net:</span>
+                          <span className="text-sm font-medium flex-shrink-0">
+                            Net:
+                          </span>
                           <span
                             className={`text-sm font-semibold truncate ml-2 ${
                               spending.net >= 0

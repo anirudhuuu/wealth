@@ -18,16 +18,28 @@ export async function GET(request: NextRequest) {
     // Calculate date range based on timeRange
     const now = new Date();
     let startDate: Date;
-    
+
     switch (timeRange) {
       case "3m":
-        startDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+        startDate = new Date(
+          now.getFullYear(),
+          now.getMonth() - 3,
+          now.getDate()
+        );
         break;
       case "6m":
-        startDate = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
+        startDate = new Date(
+          now.getFullYear(),
+          now.getMonth() - 6,
+          now.getDate()
+        );
         break;
       case "12m":
-        startDate = new Date(now.getFullYear(), now.getMonth() - 12, now.getDate());
+        startDate = new Date(
+          now.getFullYear(),
+          now.getMonth() - 12,
+          now.getDate()
+        );
         break;
       default:
         startDate = new Date(0); // All time
@@ -83,10 +95,7 @@ export async function GET(request: NextRequest) {
     const savingsRate = totalIncome > 0 ? (netSavings / totalIncome) * 100 : 0;
 
     const totalAssets = roundToTwoDecimals(
-      assetData.reduce(
-        (sum: number, a) => sum + Number(a.current_value),
-        0
-      )
+      assetData.reduce((sum: number, a) => sum + Number(a.current_value), 0)
     );
 
     // Calculate category breakdown

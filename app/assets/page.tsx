@@ -57,10 +57,7 @@ export default function AssetsPage() {
 
   // Calculate totals
   const totalValue = roundToTwoDecimals(
-    assets.reduce(
-      (sum: number, asset) => sum + Number(asset.current_value),
-      0
-    )
+    assets.reduce((sum: number, asset) => sum + Number(asset.current_value), 0)
   );
 
   const totalGain = roundToTwoDecimals(
@@ -103,7 +100,10 @@ export default function AssetsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold truncate" title={formatCurrency(totalValue)}>
+            <div
+              className="text-2xl font-bold truncate"
+              title={formatCurrency(totalValue)}
+            >
               {formatCurrency(totalValue)}
             </div>
           </CardContent>
@@ -126,7 +126,10 @@ export default function AssetsPage() {
               ) : (
                 <TrendingDown className="h-5 w-5 flex-shrink-0" />
               )}
-              <span className="truncate" title={formatCurrency(Math.abs(totalGain))}>
+              <span
+                className="truncate"
+                title={formatCurrency(Math.abs(totalGain))}
+              >
                 {formatCurrency(Math.abs(totalGain))}
               </span>
             </div>
@@ -144,7 +147,9 @@ export default function AssetsPage() {
               className={`text-2xl font-bold truncate ${
                 avgGainPercentage >= 0 ? "text-green-600" : "text-amber-600"
               }`}
-              title={`${avgGainPercentage >= 0 ? "+" : ""}${avgGainPercentage.toFixed(2)}%`}
+              title={`${
+                avgGainPercentage >= 0 ? "+" : ""
+              }${avgGainPercentage.toFixed(2)}%`}
             >
               {avgGainPercentage >= 0 ? "+" : ""}
               {avgGainPercentage.toFixed(2)}%
