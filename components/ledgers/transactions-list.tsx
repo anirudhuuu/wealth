@@ -32,11 +32,13 @@ import {
 import { useDeleteTransaction } from "@/hooks/use-transactions";
 import type { Ledger, Transaction } from "@/lib/types";
 import { formatCurrency, parseDateFromDatabase } from "@/lib/utils";
+import { exportTransactionsToCsv } from "@/lib/csv-export";
 import {
   ArrowDownRight,
   ArrowUpRight,
   ChevronDown,
   ChevronRight,
+  Download,
   Edit,
   Plus,
   Receipt,
@@ -180,12 +182,23 @@ export function TransactionsList({
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>All Transactions</CardTitle>
-            {isAdmin && (
-              <Button size="sm" onClick={() => setShowAddDialog(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add
+            <div className="flex items-center gap-2">
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => exportTransactionsToCsv(filteredAndSortedTransactions, ledgers)}
+                title="Export transactions to CSV"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Export CSV
               </Button>
-            )}
+              {isAdmin && (
+                <Button size="sm" onClick={() => setShowAddDialog(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add
+                </Button>
+              )}
+            </div>
           </div>
           
           {/* Search and Filter Controls */}

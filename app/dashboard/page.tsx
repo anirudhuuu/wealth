@@ -3,11 +3,13 @@
 import { DashboardCharts } from "@/components/dashboard/dashboard-charts";
 import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton";
 import { SandboxBanner } from "@/components/sandbox-banner";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDashboardKPIs } from "@/hooks/use-dashboard";
 import { useUserWithProfile } from "@/hooks/use-user";
 import { formatCurrency } from "@/lib/utils";
-import { ArrowDownRight, ArrowUpRight, TrendingUp, Wallet } from "lucide-react";
+import { exportAllDataToCsv } from "@/lib/csv-export";
+import { ArrowDownRight, ArrowUpRight, Download, TrendingUp, Wallet } from "lucide-react";
 
 export default function DashboardPage() {
   const {
@@ -79,10 +81,23 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Overview of your financial health
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+            <p className="text-muted-foreground">
+              Overview of your financial health
+            </p>
+          </div>
+          <Button 
+            size="sm" 
+            variant="outline"
+            onClick={() => exportAllDataToCsv(transactions, [], [])}
+            title="Export all data to CSV files"
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Export All Data
+          </Button>
+        </div>
       </div>
 
       {!isAdmin && <SandboxBanner />}

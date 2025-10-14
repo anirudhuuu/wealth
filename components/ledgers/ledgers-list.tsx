@@ -48,10 +48,12 @@ import { useDeleteLedger, useUpdateLedger } from "@/hooks/use-ledgers";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import type { Ledger, Transaction } from "@/lib/types";
 import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
+import { exportLedgersToCsv } from "@/lib/csv-export";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ChevronDown,
   ChevronRight,
+  Download,
   Edit,
   Plus,
   Trash2,
@@ -332,12 +334,23 @@ export function LedgersList({
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Ledgers</CardTitle>
-            {isAdmin && (
-              <Button size="sm" onClick={() => setShowAddDialog(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add
+            <div className="flex items-center gap-2">
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => exportLedgersToCsv(ledgers, transactions)}
+                title="Export ledgers to CSV"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Export CSV
               </Button>
-            )}
+              {isAdmin && (
+                <Button size="sm" onClick={() => setShowAddDialog(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add
+                </Button>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent>

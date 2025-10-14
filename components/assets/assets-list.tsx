@@ -24,10 +24,12 @@ import {
 import { useDeleteAsset } from "@/hooks/use-assets";
 import type { Asset } from "@/lib/types";
 import { formatCurrency, parseDateFromDatabase } from "@/lib/utils";
+import { exportAssetsToCsv } from "@/lib/csv-export";
 import {
   ChevronDown,
   ChevronRight,
   Coins,
+  Download,
   Edit,
   Plus,
   Search,
@@ -171,12 +173,23 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Your Assets</CardTitle>
-            {isAdmin && (
-              <Button size="sm" onClick={() => setShowAddDialog(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Asset
+            <div className="flex items-center gap-2">
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => exportAssetsToCsv(filteredAndSortedAssets)}
+                title="Export assets to CSV"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Export CSV
               </Button>
-            )}
+              {isAdmin && (
+                <Button size="sm" onClick={() => setShowAddDialog(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Asset
+                </Button>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent>
