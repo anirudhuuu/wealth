@@ -118,9 +118,9 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
             {assets.length === 0 ? (
-              <div className="py-8 text-center text-sm text-muted-foreground">
+              <div className="col-span-full py-8 text-center text-sm text-muted-foreground">
                 <Coins className="mx-auto mb-2 h-8 w-8 opacity-50" />
                 <p>No assets yet</p>
                 {isAdmin && (
@@ -139,7 +139,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                 const isExpanded = expandedAssets.has(asset.id);
 
                 return (
-                  <div key={asset.id} className="rounded-lg border p-3 md:p-4">
+                  <div key={asset.id} className="rounded-lg border p-3 md:p-4 h-fit">
                     {/* Header with chevron, name, and gain/loss */}
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
