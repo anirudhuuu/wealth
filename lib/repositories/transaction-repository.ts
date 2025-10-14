@@ -1,3 +1,4 @@
+import { formatDateForDatabase } from "@/lib/utils";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { ValidationError } from "../errors";
 import {
@@ -8,7 +9,6 @@ import {
   UpdateTransactionInput,
 } from "../types";
 import { BaseRepository } from "./base-repository";
-import { formatDateForDatabase } from "./utils";
 
 export class TransactionRepository extends BaseRepository<Transaction> {
   constructor(supabase: SupabaseClient) {

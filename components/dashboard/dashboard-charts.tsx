@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
   Card,
   CardContent,
@@ -9,20 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Transaction } from "@/lib/types";
-import { parseDateFromDatabase } from "@/lib/repositories/utils";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  LabelList,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 import {
   ChartConfig,
   ChartContainer,
@@ -38,7 +23,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import type { Transaction } from "@/lib/types";
+import { parseDateFromDatabase } from "@/lib/utils";
+import { TrendingDown, TrendingUp } from "lucide-react";
+import * as React from "react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  LabelList,
+  Pie,
+  PieChart,
+  XAxis
+} from "recharts";
 
 interface DashboardChartsProps {
   transactions: Transaction[];

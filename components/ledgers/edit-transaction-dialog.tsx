@@ -37,9 +37,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useUpdateTransaction } from "@/hooks/use-transactions";
-import { parseDateFromDatabase } from "@/lib/repositories/utils";
 import type { Ledger, Transaction } from "@/lib/types";
-import { parseAndRoundAmount } from "@/lib/utils";
+import { parseAndRoundAmount, parseDateFromDatabase } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";

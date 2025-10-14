@@ -15,8 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDeleteAsset } from "@/hooks/use-assets";
 import type { Asset } from "@/lib/types";
-import { formatCurrency } from "@/lib/utils";
-import { parseDateFromDatabase } from "@/lib/repositories/utils";
+import { formatCurrency, parseDateFromDatabase } from "@/lib/utils";
 import {
   ChevronDown,
   ChevronRight,
