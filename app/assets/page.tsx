@@ -103,7 +103,7 @@ export default function AssetsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold truncate" title={formatCurrency(totalValue)}>
               {formatCurrency(totalValue)}
             </div>
           </CardContent>
@@ -122,11 +122,13 @@ export default function AssetsPage() {
               }`}
             >
               {totalGain >= 0 ? (
-                <TrendingUp className="h-5 w-5" />
+                <TrendingUp className="h-5 w-5 flex-shrink-0" />
               ) : (
-                <TrendingDown className="h-5 w-5" />
+                <TrendingDown className="h-5 w-5 flex-shrink-0" />
               )}
-              {formatCurrency(Math.abs(totalGain))}
+              <span className="truncate" title={formatCurrency(Math.abs(totalGain))}>
+                {formatCurrency(Math.abs(totalGain))}
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -139,9 +141,10 @@ export default function AssetsPage() {
           </CardHeader>
           <CardContent>
             <div
-              className={`text-2xl font-bold ${
+              className={`text-2xl font-bold truncate ${
                 avgGainPercentage >= 0 ? "text-green-600" : "text-amber-600"
               }`}
+              title={`${avgGainPercentage >= 0 ? "+" : ""}${avgGainPercentage.toFixed(2)}%`}
             >
               {avgGainPercentage >= 0 ? "+" : ""}
               {avgGainPercentage.toFixed(2)}%

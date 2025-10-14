@@ -97,7 +97,7 @@ export default function DashboardPage() {
             <ArrowUpRight className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold truncate" title={formatCurrency(kpis.totalIncome)}>
               {formatCurrency(kpis.totalIncome)}
             </div>
           </CardContent>
@@ -111,7 +111,7 @@ export default function DashboardPage() {
             <ArrowDownRight className="h-4 w-4 text-amber-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold truncate" title={formatCurrency(kpis.totalExpenses)}>
               {formatCurrency(kpis.totalExpenses)}
             </div>
           </CardContent>
@@ -125,10 +125,10 @@ export default function DashboardPage() {
             <TrendingUp className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold truncate" title={formatCurrency(kpis.netSavings)}>
               {formatCurrency(kpis.netSavings)}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground truncate" title={`${kpis.savingsRate.toFixed(1)}% savings rate`}>
               {kpis.savingsRate.toFixed(1)}% savings rate
             </p>
           </CardContent>
@@ -142,7 +142,7 @@ export default function DashboardPage() {
             <Wallet className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold truncate" title={formatCurrency(kpis.totalAssets)}>
               {formatCurrency(kpis.totalAssets)}
             </div>
           </CardContent>

@@ -427,31 +427,32 @@ export function LedgersList({
                     {spending.transactionCount > 0 && isExpanded && (
                       <div className="mt-3 space-y-2">
                         <div className="grid grid-cols-2 gap-2 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">
+                          <div className="flex justify-between min-w-0">
+                            <span className="text-muted-foreground flex-shrink-0">
                               Income:
                             </span>
-                            <span className="font-medium text-green-600">
+                            <span className="font-medium text-green-600 truncate ml-2" title={formatCurrency(spending.income)}>
                               {formatCurrency(spending.income)}
                             </span>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">
+                          <div className="flex justify-between min-w-0">
+                            <span className="text-muted-foreground flex-shrink-0">
                               Expenses:
                             </span>
-                            <span className="font-medium text-amber-600">
+                            <span className="font-medium text-amber-600 truncate ml-2" title={formatCurrency(spending.expenses)}>
                               {formatCurrency(spending.expenses)}
                             </span>
                           </div>
                         </div>
-                        <div className="flex justify-between border-t pt-2">
-                          <span className="text-sm font-medium">Net:</span>
+                        <div className="flex justify-between border-t pt-2 min-w-0">
+                          <span className="text-sm font-medium flex-shrink-0">Net:</span>
                           <span
-                            className={`text-sm font-semibold ${
+                            className={`text-sm font-semibold truncate ml-2 ${
                               spending.net >= 0
                                 ? "text-green-600"
                                 : "text-amber-600"
                             }`}
+                            title={formatCurrency(spending.net)}
                           >
                             {formatCurrency(spending.net)}
                           </span>

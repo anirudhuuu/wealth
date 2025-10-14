@@ -326,13 +326,14 @@ export function TransactionsList({
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col items-end gap-1 sm:gap-2">
+                      <div className="flex flex-col items-end gap-1 sm:gap-2 min-w-0 flex-shrink-0">
                         <div
-                          className={`text-base sm:text-lg font-bold ${
+                          className={`text-base sm:text-lg font-bold truncate ${
                             txn.type === "income"
                               ? "text-green-600"
                               : "text-amber-600"
                           }`}
+                          title={`${txn.type === "income" ? "+" : "-"}${formatCurrency(Number(txn.amount))}`}
                         >
                           {txn.type === "income" ? "+" : "-"}
                           {formatCurrency(Number(txn.amount))}

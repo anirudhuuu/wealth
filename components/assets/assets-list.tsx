@@ -286,24 +286,27 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                           )}
                         </h3>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right min-w-0 flex-shrink-0">
                         <div
                           className={`flex items-center gap-1 text-base md:text-lg font-bold ${
                             gain >= 0 ? "text-green-600" : "text-amber-600"
                           }`}
                         >
                           {gain >= 0 ? (
-                            <TrendingUp className="h-4 w-4" />
+                            <TrendingUp className="h-4 w-4 flex-shrink-0" />
                           ) : (
-                            <TrendingDown className="h-4 w-4" />
+                            <TrendingDown className="h-4 w-4 flex-shrink-0" />
                           )}
-                          {gain >= 0 ? "+" : ""}
-                          {formatCurrency(Math.abs(gain))}
+                          <span className="truncate" title={`${gain >= 0 ? "+" : ""}${formatCurrency(Math.abs(gain))}`}>
+                            {gain >= 0 ? "+" : ""}
+                            {formatCurrency(Math.abs(gain))}
+                          </span>
                         </div>
                         <div
-                          className={`text-xs md:text-sm ${
+                          className={`text-xs md:text-sm truncate ${
                             gain >= 0 ? "text-green-600" : "text-amber-600"
                           }`}
+                          title={`${gain >= 0 ? "+" : ""}${gainPercentage.toFixed(2)}%`}
                         >
                           {gain >= 0 ? "+" : ""}
                           {gainPercentage.toFixed(2)}%
@@ -325,19 +328,19 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                     {/* Full width content area */}
                     <div className="w-full">
                       <div className="space-y-2 text-sm">
-                        <div className="flex justify-between items-center w-full">
-                          <span className="text-muted-foreground">
+                        <div className="flex justify-between items-center w-full min-w-0">
+                          <span className="text-muted-foreground flex-shrink-0">
                             Current Value:
                           </span>
-                          <span className="font-semibold">
+                          <span className="font-semibold truncate ml-2" title={formatCurrency(currentValue)}>
                             {formatCurrency(currentValue)}
                           </span>
                         </div>
-                        <div className="flex justify-between items-center w-full">
-                          <span className="text-muted-foreground">
+                        <div className="flex justify-between items-center w-full min-w-0">
+                          <span className="text-muted-foreground flex-shrink-0">
                             Purchase Value:
                           </span>
-                          <span className="font-medium">
+                          <span className="font-medium truncate ml-2" title={formatCurrency(purchaseValue)}>
                             {formatCurrency(purchaseValue)}
                           </span>
                         </div>
@@ -382,16 +385,17 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                                 {getAssetTypeLabel(asset.type)}
                               </span>
                             </div>
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-1 min-w-0">
                               <span className="text-muted-foreground">
                                 Gain/Loss:
                               </span>
                               <span
-                                className={`font-medium ${
+                                className={`font-medium truncate ${
                                   gain >= 0
                                     ? "text-green-600"
                                     : "text-amber-600"
                                 }`}
+                                title={`${gain >= 0 ? "+" : ""}${formatCurrency(Math.abs(gain))} (${gainPercentage.toFixed(2)}%)`}
                               >
                                 {gain >= 0 ? "+" : ""}
                                 {formatCurrency(Math.abs(gain))} (
