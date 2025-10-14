@@ -13,6 +13,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useDeleteAsset } from "@/hooks/use-assets";
 import type { Asset } from "@/lib/types";
 import { formatCurrency, parseDateFromDatabase } from "@/lib/utils";
@@ -22,11 +30,12 @@ import {
   Coins,
   Edit,
   Plus,
+  Search,
   Trash2,
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { AddAssetDialog } from "./add-asset-dialog";
 import { EditAssetDialog } from "./edit-asset-dialog";
 
@@ -40,9 +49,62 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
   const [expandedAssets, setExpandedAssets] = useState<Set<string>>(new Set());
   const [deletingAssetId, setDeletingAssetId] = useState<string | null>(null);
   const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"name" | "value" | "gain" | "type">("name");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   // React Query mutations
   const deleteAssetMutation = useDeleteAsset();
+
+  // Filter and sort assets
+  const filteredAndSortedAssets = useMemo(() => {
+    let filtered = assets;
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = assets.filter(
+        (asset) =>
+          asset.name.toLowerCase().includes(query) ||
+          asset.type.toLowerCase().includes(query) ||
+          (asset.notes && asset.notes.toLowerCase().includes(query))
+      );
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      let aValue: string | number;
+      let bValue: string | number;
+
+      switch (sortBy) {
+        case "name":
+          aValue = a.name.toLowerCase();
+          bValue = b.name.toLowerCase();
+          break;
+        case "value":
+          aValue = Number(a.current_value);
+          bValue = Number(b.current_value);
+          break;
+        case "gain":
+          aValue = Number(a.current_value) - Number(a.purchase_value);
+          bValue = Number(b.current_value) - Number(b.purchase_value);
+          break;
+        case "type":
+          aValue = a.type.toLowerCase();
+          bValue = b.type.toLowerCase();
+          break;
+        default:
+          aValue = a.name.toLowerCase();
+          bValue = b.name.toLowerCase();
+      }
+
+      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    return filtered;
+  }, [assets, searchQuery, sortBy, sortOrder]);
 
   const toggleAssetExpansion = (assetId: string) => {
     setExpandedAssets((prev) => {
@@ -118,19 +180,73 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-            {assets.length === 0 ? (
+          {/* Search and Sort Controls */}
+          <div className="mb-6 space-y-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              {/* Search Input */}
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search assets by name, type, or notes..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              
+              {/* Sort Controls */}
+              <div className="flex gap-2 justify-end">
+                <Select value={sortBy} onValueChange={(value: "name" | "value" | "gain" | "type") => setSortBy(value)}>
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="value">Value</SelectItem>
+                    <SelectItem value="gain">Gain/Loss</SelectItem>
+                    <SelectItem value="type">Type</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Select value={sortOrder} onValueChange={(value: "asc" | "desc") => setSortOrder(value)}>
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue placeholder="Order" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="asc">Low to High</SelectItem>
+                    <SelectItem value="desc">High to Low</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            {/* Results count */}
+            {searchQuery && (
+              <p className="text-sm text-muted-foreground">
+                Showing {filteredAndSortedAssets.length} of {assets.length} assets
+              </p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {filteredAndSortedAssets.length === 0 ? (
               <div className="col-span-full py-8 text-center text-sm text-muted-foreground">
                 <Coins className="mx-auto mb-2 h-8 w-8 opacity-50" />
-                <p>No assets yet</p>
-                {isAdmin && (
-                  <p className="mt-1">
-                    Add your first asset to start tracking your wealth
-                  </p>
+                {searchQuery ? (
+                  <p>No assets found matching "{searchQuery}"</p>
+                ) : (
+                  <>
+                    <p>No assets yet</p>
+                    {isAdmin && (
+                      <p className="mt-1">
+                        Add your first asset to start tracking your wealth
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
             ) : (
-              assets.map((asset) => {
+              filteredAndSortedAssets.map((asset) => {
                 const currentValue = Number(asset.current_value);
                 const purchaseValue = Number(asset.purchase_value);
                 const gain = currentValue - purchaseValue;
