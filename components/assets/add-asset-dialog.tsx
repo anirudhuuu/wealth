@@ -110,7 +110,7 @@ function AssetForm({
             <FormItem>
               <FormLabel>Investment Name</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Fixed Deposit - Bank A" {...field} />
+                <Input placeholder="e.g., My Bank Savings" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

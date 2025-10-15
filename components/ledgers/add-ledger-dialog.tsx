@@ -85,7 +85,7 @@ function LedgerForm({
             <FormItem>
               <FormLabel>Budget Name</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Family Budget" {...field} />
+                <Input placeholder="e.g., My Family Account" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

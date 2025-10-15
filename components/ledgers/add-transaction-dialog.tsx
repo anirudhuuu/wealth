@@ -212,7 +212,7 @@ function TransactionForm({
               <FormLabel>Category</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="e.g., Food, Transport, Entertainment"
+                  placeholder="e.g., Food & Dining, Transport, Entertainment"
                   {...field}
                 />
               </FormControl>
