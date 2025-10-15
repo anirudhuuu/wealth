@@ -69,7 +69,7 @@ export function TransactionsList({
     new Set()
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<
     "date" | "amount" | "description" | "category" | "type"
@@ -199,7 +199,7 @@ export function TransactionsList({
                 title="Export transactions to CSV"
               >
                 <Download className="mr-2 h-4 w-4" />
-                Export CSV
+                Export
               </Button>
               {isAdmin && (
                 <Button size="sm" onClick={() => setShowAddDialog(true)}>
@@ -212,95 +212,88 @@ export function TransactionsList({
 
           {/* Search and Filter Controls */}
           <div className="mt-4 space-y-4">
-            <div className="flex flex-col lg:flex-row gap-4">
-              {/* Search Input */}
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search transactions by description, category, type, or notes..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="pl-10"
-                />
-              </div>
-
-              {/* All Dropdowns in a row on desktop */}
-              <div className="flex flex-col sm:flex-row gap-2 lg:flex-row lg:gap-2">
-                {/* Ledger Filter */}
-                <Select
-                  value={selectedLedgerId}
-                  onValueChange={handleLedgerFilterChange}
-                >
-                  <SelectTrigger className="w-full sm:w-[180px] lg:w-[160px]">
-                    <SelectValue placeholder="Filter by ledger" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Ledgers</SelectItem>
-                    {ledgers.map((ledger) => (
-                      <SelectItem key={ledger.id} value={ledger.id}>
-                        {ledger.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                {/* Sort By */}
-                <Select
-                  value={sortBy}
-                  onValueChange={(
-                    value:
-                      | "date"
-                      | "amount"
-                      | "description"
-                      | "category"
-                      | "type"
-                  ) => {
-                    setSortBy(value);
-                    setCurrentPage(1);
-                  }}
-                >
-                  <SelectTrigger className="w-full sm:w-[140px] lg:w-[130px]">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="date">Date</SelectItem>
-                    <SelectItem value="amount">Amount</SelectItem>
-                    <SelectItem value="description">Description</SelectItem>
-                    <SelectItem value="category">Category</SelectItem>
-                    <SelectItem value="type">Type</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                {/* Sort Order */}
-                <Select
-                  value={sortOrder}
-                  onValueChange={(value: "asc" | "desc") => {
-                    setSortOrder(value);
-                    setCurrentPage(1);
-                  }}
-                >
-                  <SelectTrigger className="w-full sm:w-[140px] lg:w-[130px]">
-                    <SelectValue placeholder="Order" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="asc">Low to High</SelectItem>
-                    <SelectItem value="desc">High to Low</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            {/* Search Input - Full width row */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search transactions by description, category, type, or notes..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="pl-10"
+              />
             </div>
 
-            {/* Results count */}
-            {(searchQuery || selectedLedgerId !== "all") && (
-              <p className="text-sm text-muted-foreground">
-                Showing {filteredAndSortedTransactions.length} of{" "}
-                {transactions.length} transactions
-              </p>
-            )}
+            {/* Filter Controls Row */}
+            <div className="flex flex-row gap-2 overflow-x-auto">
+              {/* Ledger Filter */}
+              <Select
+                value={selectedLedgerId}
+                onValueChange={handleLedgerFilterChange}
+              >
+                <SelectTrigger className="w-[160px] flex-shrink-0">
+                  <SelectValue placeholder="Filter by budget book" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Budget Books</SelectItem>
+                  {ledgers.map((ledger) => (
+                    <SelectItem key={ledger.id} value={ledger.id}>
+                      {ledger.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Sort By */}
+              <Select
+                value={sortBy}
+                onValueChange={(
+                  value: "date" | "amount" | "description" | "category" | "type"
+                ) => {
+                  setSortBy(value);
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger className="w-[120px] flex-shrink-0">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="date">Date</SelectItem>
+                  <SelectItem value="amount">Amount</SelectItem>
+                  <SelectItem value="description">Description</SelectItem>
+                  <SelectItem value="category">Category</SelectItem>
+                  <SelectItem value="type">Type</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Sort Order */}
+              <Select
+                value={sortOrder}
+                onValueChange={(value: "asc" | "desc") => {
+                  setSortOrder(value);
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger className="w-[130px] flex-shrink-0">
+                  <SelectValue placeholder="Order" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="asc">Low to High</SelectItem>
+                  <SelectItem value="desc">High to Low</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+
+          {/* Results count */}
+          {(searchQuery || selectedLedgerId !== "all") && (
+            <p className="text-sm text-muted-foreground">
+              Showing {filteredAndSortedTransactions.length} of{" "}
+              {transactions.length} transactions
+            </p>
+          )}
         </CardHeader>
         <CardContent>
           <div className="space-y-2">

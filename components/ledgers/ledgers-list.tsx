@@ -108,10 +108,10 @@ function EditLedgerForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ledger Name</FormLabel>
+              <FormLabel>Budget Name</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Enter ledger name"
+                  placeholder="Enter budget book name"
                   disabled={updateLedgerMutation.isPending}
                   {...field}
                 />
@@ -127,7 +127,7 @@ function EditLedgerForm({
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Type</FormLabel>
+                <FormLabel>Budget Type</FormLabel>
                 <Select
                   disabled={updateLedgerMutation.isPending}
                   onValueChange={field.onChange}
@@ -135,7 +135,7 @@ function EditLedgerForm({
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select ledger type" />
+                      <SelectValue placeholder="Select budget book type" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -154,7 +154,7 @@ function EditLedgerForm({
             name="currency"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Currency</FormLabel>
+                <FormLabel>Currency (₹, $, €, £)</FormLabel>
                 <Select
                   disabled={updateLedgerMutation.isPending}
                   onValueChange={field.onChange}
@@ -333,16 +333,16 @@ export function LedgersList({
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Ledgers</CardTitle>
+            <CardTitle>Budget Books</CardTitle>
             <div className="flex items-center gap-2">
               <Button
                 size="sm"
                 variant="outline"
                 onClick={() => exportLedgersToCsv(ledgers, transactions)}
-                title="Export ledgers to CSV"
+                title="Export budget books to CSV"
               >
                 <Download className="mr-2 h-4 w-4" />
-                Export CSV
+                Export
               </Button>
               {isAdmin && (
                 <Button size="sm" onClick={() => setShowAddDialog(true)}>
@@ -358,10 +358,10 @@ export function LedgersList({
             {ledgers.length === 0 ? (
               <div className="py-8 text-center text-sm text-muted-foreground">
                 <Wallet className="mx-auto mb-2 h-8 w-8 opacity-50" />
-                <p>No ledgers yet</p>
+                <p>No budget books yet</p>
                 {isAdmin && (
                   <p className="mt-1">
-                    Create your first ledger to get started
+                    Create your first budget book to get started
                   </p>
                 )}
               </div>

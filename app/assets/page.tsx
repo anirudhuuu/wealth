@@ -23,9 +23,9 @@ export default function AssetsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Assets</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Savings</h1>
           <p className="text-muted-foreground">
-            Track your investments and wealth
+            Track your investments and savings
           </p>
         </div>
         <div className="text-center py-8">
@@ -41,14 +41,14 @@ export default function AssetsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Assets</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Savings</h1>
           <p className="text-muted-foreground">
-            Track your investments and wealth
+            Track your investments and savings
           </p>
         </div>
         <div className="text-center py-8">
           <p className="text-muted-foreground">
-            Please sign in to view your assets.
+            Please sign in to view your savings.
           </p>
         </div>
       </div>
@@ -83,7 +83,7 @@ export default function AssetsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Assets</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Savings</h1>
         <p className="text-muted-foreground">
           Track your investments and wealth
         </p>
@@ -158,7 +158,7 @@ export default function AssetsPage() {
         </Card>
       </div>
 
-      {/* Assets List */}
+      {/* Savings List */}
       <AssetsList assets={assets} isAdmin={isAdmin} />
     </div>
   );

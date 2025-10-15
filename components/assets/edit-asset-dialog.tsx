@@ -110,9 +110,9 @@ function EditAssetForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Asset Name</FormLabel>
+              <FormLabel>Investment Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter asset name" {...field} />
+                <Input placeholder="Enter investment name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -125,7 +125,7 @@ function EditAssetForm({
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Asset Type</FormLabel>
+                <FormLabel>Investment Type</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -184,7 +184,7 @@ function EditAssetForm({
             name="currentValue"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Current Value</FormLabel>
+                <FormLabel>Current Worth</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -203,7 +203,7 @@ function EditAssetForm({
             name="purchaseValue"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Purchase Value</FormLabel>
+                <FormLabel>Original Cost</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -224,12 +224,12 @@ function EditAssetForm({
             name="purchaseDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Purchase Date</FormLabel>
+                <FormLabel>Investment Date</FormLabel>
                 <FormControl>
                   <DatePicker
                     value={field.value}
                     onChange={field.onChange}
-                    placeholder="Select purchase date"
+                    placeholder="Select investment date"
                   />
                 </FormControl>
                 <FormMessage />
@@ -242,12 +242,12 @@ function EditAssetForm({
             name="maturityDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Maturity Date (Optional)</FormLabel>
+                <FormLabel>End Date (Optional)</FormLabel>
                 <FormControl>
                   <DatePicker
                     value={field.value}
                     onChange={field.onChange}
-                    placeholder="Select maturity date"
+                    placeholder="Select end date"
                   />
                 </FormControl>
                 <FormMessage />
@@ -380,9 +380,9 @@ export function EditAssetDialog({
           showCloseButton={true}
         >
           <DialogHeader>
-            <DialogTitle>Edit Asset</DialogTitle>
+            <DialogTitle>Edit Investment</DialogTitle>
             <DialogDescription>
-              Update the details for this asset.
+              Update the details for this investment.
             </DialogDescription>
           </DialogHeader>
           <EditAssetForm
@@ -400,9 +400,9 @@ export function EditAssetDialog({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="max-h-[90vh]">
         <DrawerHeader className="text-left">
-          <DrawerTitle>Edit Asset</DrawerTitle>
+          <DrawerTitle>Edit Investment</DrawerTitle>
           <DrawerDescription>
-            Update the details for this asset.
+            Update the details for this investment.
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4 overflow-y-auto flex-1">

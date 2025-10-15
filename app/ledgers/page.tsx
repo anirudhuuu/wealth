@@ -34,10 +34,10 @@ export default function LedgersPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
-              Ledgers & Transactions
+              Budget Books & Transactions
             </h1>
             <p className="text-muted-foreground">
-              Manage your financial ledgers and track transactions
+              Manage your budget books and track transactions
             </p>
           </div>
         </div>
@@ -56,16 +56,16 @@ export default function LedgersPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
-              Ledgers & Transactions
+              Budget Books & Transactions
             </h1>
             <p className="text-muted-foreground">
-              Manage your financial ledgers and track transactions
+              Manage your budget books and track transactions
             </p>
           </div>
         </div>
         <div className="text-center py-8">
           <p className="text-muted-foreground">
-            Please sign in to view your ledgers.
+            Please sign in to view your budget books.
           </p>
         </div>
       </div>
@@ -77,7 +77,7 @@ export default function LedgersPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            Ledgers & Transactions
+            Budget Books & Transactions
           </h1>
           <p className="text-muted-foreground">
             Manage your financial ledgers and track transactions
@@ -88,7 +88,7 @@ export default function LedgersPage() {
       {!isAdmin && <SandboxBanner />}
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Ledgers Section */}
+        {/* Budget Books Section */}
         <div className="lg:col-span-1">
           <LedgersList
             ledgers={ledgers}

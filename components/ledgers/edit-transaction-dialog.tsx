@@ -100,11 +100,11 @@ function EditTransactionForm({
           name="ledger_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ledger</FormLabel>
+              <FormLabel>Budget</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a ledger" />
+                    <SelectValue placeholder="Select a budget book" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -132,7 +132,7 @@ function EditTransactionForm({
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Type</FormLabel>
+                <FormLabel>Transaction Type</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -154,7 +154,7 @@ function EditTransactionForm({
             name="amount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Amount</FormLabel>
+                <FormLabel>Amount (₹)</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -208,7 +208,10 @@ function EditTransactionForm({
             <FormItem>
               <FormLabel>Category</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Food" {...field} />
+                <Input
+                  placeholder="e.g., Food, Transport, Entertainment"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

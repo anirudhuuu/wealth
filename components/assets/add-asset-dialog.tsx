@@ -108,7 +108,7 @@ function AssetForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Asset Name</FormLabel>
+              <FormLabel>Investment Name</FormLabel>
               <FormControl>
                 <Input placeholder="e.g., Fixed Deposit - Bank A" {...field} />
               </FormControl>
@@ -123,7 +123,7 @@ function AssetForm({
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Asset Type</FormLabel>
+                <FormLabel>Investment Type</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -182,7 +182,7 @@ function AssetForm({
             name="currentValue"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Current Value</FormLabel>
+                <FormLabel>Current Worth</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -201,7 +201,7 @@ function AssetForm({
             name="purchaseValue"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Purchase Value</FormLabel>
+                <FormLabel>Original Cost</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -222,12 +222,12 @@ function AssetForm({
             name="purchaseDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Purchase Date</FormLabel>
+                <FormLabel>Investment Date</FormLabel>
                 <FormControl>
                   <DatePicker
                     value={field.value}
                     onChange={field.onChange}
-                    placeholder="Select purchase date"
+                    placeholder="Select investment date"
                   />
                 </FormControl>
                 <FormMessage />
@@ -240,12 +240,12 @@ function AssetForm({
             name="maturityDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Maturity Date (Optional)</FormLabel>
+                <FormLabel>End Date (Optional)</FormLabel>
                 <FormControl>
                   <DatePicker
                     value={field.value}
                     onChange={field.onChange}
-                    placeholder="Select maturity date"
+                    placeholder="Select end date"
                   />
                 </FormControl>
                 <FormMessage />
@@ -270,7 +270,7 @@ function AssetForm({
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button type="submit" disabled={createAssetMutation.isPending}>
-            {createAssetMutation.isPending ? "Adding..." : "Add Asset"}
+            {createAssetMutation.isPending ? "Adding..." : "Add Investment"}
           </Button>
           {showCancelButton && (
             <Button
@@ -344,9 +344,9 @@ export function AddAssetDialog({ open, onOpenChange }: AddAssetDialogProps) {
           showCloseButton={true}
         >
           <DialogHeader>
-            <DialogTitle>Add New Asset</DialogTitle>
+            <DialogTitle>Add New Investment</DialogTitle>
             <DialogDescription>
-              Create a new asset to track your wealth and investments.
+              Create a new investment to track your wealth and savings.
             </DialogDescription>
           </DialogHeader>
           <AssetForm
@@ -364,9 +364,9 @@ export function AddAssetDialog({ open, onOpenChange }: AddAssetDialogProps) {
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="max-h-[90vh]">
         <DrawerHeader className="text-left">
-          <DrawerTitle>Add New Asset</DrawerTitle>
+          <DrawerTitle>Add New Investment</DrawerTitle>
           <DrawerDescription>
-            Create a new asset to track your wealth and investments.
+            Create a new investment to track your wealth and savings.
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4 overflow-y-auto flex-1">

@@ -174,7 +174,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Your Assets</CardTitle>
+            <CardTitle>Your Savings</CardTitle>
             <div className="flex items-center gap-2">
               <Button
                 size="sm"
@@ -183,7 +183,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                 title="Export assets to CSV"
               >
                 <Download className="mr-2 h-4 w-4" />
-                Export CSV
+                Export
               </Button>
               {isAdmin && (
                 <Button size="sm" onClick={() => setShowAddDialog(true)}>
@@ -364,7 +364,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between items-center w-full min-w-0">
                           <span className="text-muted-foreground flex-shrink-0">
-                            Current Value:
+                            Current Worth:
                           </span>
                           <span
                             className="font-semibold truncate ml-2"
@@ -375,7 +375,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                         </div>
                         <div className="flex justify-between items-center w-full min-w-0">
                           <span className="text-muted-foreground flex-shrink-0">
-                            Purchase Value:
+                            Original Cost:
                           </span>
                           <span
                             className="font-medium truncate ml-2"
@@ -391,7 +391,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                           {asset.name.length > 20 && (
                             <div className="mb-3">
                               <span className="text-sm text-muted-foreground">
-                                Asset Name:
+                                Investment Name:
                               </span>
                               <p className="text-sm mt-1 p-2 bg-muted rounded-md break-words">
                                 {asset.name}
@@ -401,7 +401,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                           <div className="space-y-3 text-sm">
                             <div className="flex flex-col gap-1">
                               <span className="text-muted-foreground">
-                                Purchase Date:
+                                Investment Date:
                               </span>
                               <span className="font-medium">
                                 {formatDate(asset.purchase_date)}
@@ -410,7 +410,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                             {asset.maturity_date && (
                               <div className="flex flex-col gap-1">
                                 <span className="text-muted-foreground">
-                                  Maturity Date:
+                                  End Date:
                                 </span>
                                 <span className="font-medium">
                                   {formatDate(asset.maturity_date)}

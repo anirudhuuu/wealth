@@ -40,7 +40,7 @@ export default function DashboardPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Summary</h1>
           <p className="text-muted-foreground">
             Overview of your financial health
           </p>
@@ -58,7 +58,7 @@ export default function DashboardPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Summary</h1>
           <p className="text-muted-foreground">
             Overview of your financial health
           </p>
@@ -89,7 +89,7 @@ export default function DashboardPage() {
       <div>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Summary</h1>
             <p className="text-muted-foreground">
               Overview of your financial health
             </p>

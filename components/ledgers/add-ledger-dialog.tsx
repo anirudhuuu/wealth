@@ -83,7 +83,7 @@ function LedgerForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ledger Name</FormLabel>
+              <FormLabel>Budget Name</FormLabel>
               <FormControl>
                 <Input placeholder="e.g., Family Budget" {...field} />
               </FormControl>
@@ -98,7 +98,7 @@ function LedgerForm({
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Type</FormLabel>
+                <FormLabel>Budget Type</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -124,7 +124,7 @@ function LedgerForm({
             name="currency"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Currency</FormLabel>
+                <FormLabel>Currency (₹, $, €, £)</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -149,7 +149,9 @@ function LedgerForm({
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button type="submit" disabled={createLedgerMutation.isPending}>
-            {createLedgerMutation.isPending ? "Creating..." : "Create Ledger"}
+            {createLedgerMutation.isPending
+              ? "Creating..."
+              : "Create Budget Book"}
           </Button>
           {showCancelButton && (
             <Button
@@ -205,9 +207,9 @@ export function AddLedgerDialog({ open, onOpenChange }: AddLedgerDialogProps) {
           showCloseButton={true}
         >
           <DialogHeader>
-            <DialogTitle>Add New Ledger</DialogTitle>
+            <DialogTitle>Add New Budget Book</DialogTitle>
             <DialogDescription>
-              Create a new ledger to track your financial transactions.
+              Create a new budget book to track your financial transactions.
             </DialogDescription>
           </DialogHeader>
           <LedgerForm
@@ -225,9 +227,9 @@ export function AddLedgerDialog({ open, onOpenChange }: AddLedgerDialogProps) {
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Add New Ledger</DrawerTitle>
+          <DrawerTitle>Add New Budget Book</DrawerTitle>
           <DrawerDescription>
-            Create a new ledger to track your financial transactions.
+            Create a new budget book to track your financial transactions.
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4">

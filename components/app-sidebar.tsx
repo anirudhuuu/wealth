@@ -18,17 +18,17 @@ import {
 // Menu items.
 const items = [
   {
-    title: "Dashboard",
+    title: "Summary",
     url: "/dashboard",
     icon: LayoutDashboard,
   },
   {
-    title: "Ledgers",
+    title: "Budget Books",
     url: "/ledgers",
     icon: Wallet,
   },
   {
-    title: "Assets",
+    title: "Savings",
     url: "/assets",
     icon: TrendingUp,
   },

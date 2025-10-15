@@ -23,7 +23,7 @@ export function AssetsSkeleton() {
         ))}
       </div>
 
-      {/* Assets List */}
+      {/* Savings List */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
