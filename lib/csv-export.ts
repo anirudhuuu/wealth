@@ -1,5 +1,6 @@
 import type { Asset, Ledger, Transaction } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
+import { toast } from "sonner";
 
 /**
  * CSV Export Utilities
@@ -112,6 +113,7 @@ export function exportTransactionsToCsv(
   }.csv`;
 
   downloadCsv(csvContent, filename || defaultFilename);
+  toast.success(`Exported ${transactions.length} transactions to CSV`);
 }
 
 /**
@@ -157,6 +159,7 @@ export function exportAssetsToCsv(assets: Asset[], filename?: string): void {
   }.csv`;
 
   downloadCsv(csvContent, filename || defaultFilename);
+  toast.success(`Exported ${assets.length} assets to CSV`);
 }
 
 /**
@@ -211,6 +214,7 @@ export function exportLedgersToCsv(
   }.csv`;
 
   downloadCsv(csvContent, filename || defaultFilename);
+  toast.success(`Exported ${ledgers.length} ledgers to CSV`);
 }
 
 /**
@@ -230,4 +234,8 @@ export function exportAllDataToCsv(
   );
   exportAssetsToCsv(assets, `${datePrefix}_assets.csv`);
   exportLedgersToCsv(ledgers, transactions, `${datePrefix}_ledgers.csv`);
+
+  toast.success(
+    `Exported all data: ${transactions.length} transactions, ${assets.length} assets, ${ledgers.length} ledgers`
+  );
 }
