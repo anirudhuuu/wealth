@@ -11,8 +11,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
 import {
   Pagination,
@@ -299,23 +307,33 @@ export function TransactionsList({
         <CardContent>
           <div className="space-y-2">
             {paginatedTransactions.length === 0 ? (
-              <div className="py-8 text-center text-sm text-muted-foreground">
-                <Receipt className="mx-auto mb-2 h-8 w-8 opacity-50" />
-                {searchQuery ? (
-                  <p>No payments found matching "{searchQuery}"</p>
-                ) : selectedLedgerId !== "all" ? (
-                  <p>No payments for selected account</p>
-                ) : (
-                  <>
-                    <p>No payments yet</p>
-                    {isAdmin && (
-                      <p className="mt-1">
-                        Add your first payment to start tracking
-                      </p>
-                    )}
-                  </>
-                )}
-              </div>
+              <Empty>
+                <EmptyMedia variant="icon">
+                  <Receipt className="h-8 w-8 opacity-50" />
+                </EmptyMedia>
+                <EmptyContent>
+                  <EmptyTitle>
+                    {searchQuery
+                      ? `No payments found matching "${searchQuery}"`
+                      : selectedLedgerId !== "all"
+                      ? "No payments for selected account"
+                      : "No payments yet"}
+                  </EmptyTitle>
+                  <EmptyDescription>
+                    {searchQuery || selectedLedgerId !== "all"
+                      ? "Try adjusting your search or filter criteria"
+                      : isAdmin
+                      ? "Add your first payment to start tracking your expenses"
+                      : "Payments will appear here once they're added"}
+                  </EmptyDescription>
+                  {isAdmin && !searchQuery && selectedLedgerId === "all" && (
+                    <Button size="sm" onClick={() => setShowAddDialog(true)}>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Payment
+                    </Button>
+                  )}
+                </EmptyContent>
+              </Empty>
             ) : (
               paginatedTransactions.map((txn) => {
                 const isExpanded = expandedTransactions.has(txn.id);
@@ -346,10 +364,24 @@ export function TransactionsList({
                               ? `${txn.description.substring(0, 25)}...`
                               : txn.description}
                           </div>
-                          <div className="text-xs sm:text-sm text-muted-foreground mb-1">
-                            {txn.category.length > 15
-                              ? `${txn.category.substring(0, 15)}...`
-                              : txn.category}
+                          <div className="flex items-center gap-2 mb-1">
+                            <Badge
+                              variant={
+                                txn.type === "income" ? "default" : "secondary"
+                              }
+                              className={`text-xs ${
+                                txn.type === "income"
+                                  ? "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-950 dark:text-green-300"
+                                  : "bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-950 dark:text-amber-300"
+                              }`}
+                            >
+                              {txn.type === "income" ? "Income" : "Expense"}
+                            </Badge>
+                            <Badge variant="outline" className="text-xs">
+                              {txn.category.length > 15
+                                ? `${txn.category.substring(0, 15)}...`
+                                : txn.category}
+                            </Badge>
                           </div>
                           <div className="text-xs sm:text-sm text-muted-foreground truncate">
                             {formatDate(txn.date)}
