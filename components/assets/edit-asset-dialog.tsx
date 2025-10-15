@@ -48,8 +48,8 @@ import { z } from "zod";
 const assetSchema = z.object({
   name: z
     .string()
-    .min(1, "Asset name is required")
-    .max(255, "Asset name must be less than 255 characters"),
+    .min(1, "Investment name is required")
+    .max(255, "Investment name must be less than 255 characters"),
   type: z.enum([
     "fd",
     "mutual_fund",
@@ -61,20 +61,20 @@ const assetSchema = z.object({
   ]),
   currentValue: z
     .string()
-    .min(1, "Current value is required")
+    .min(1, "Current worth is required")
     .refine((val) => {
       const num = parseFloat(val);
       return !isNaN(num) && num >= 0;
     }, "Current value must be a non-negative number"),
   purchaseValue: z
     .string()
-    .min(1, "Purchase value is required")
+    .min(1, "Original cost is required")
     .refine((val) => {
       const num = parseFloat(val);
       return !isNaN(num) && num >= 0;
     }, "Purchase value must be a non-negative number"),
   purchaseDate: z.date({
-    message: "Purchase date is required",
+    message: "Investment date is required",
   }),
   maturityDate: z.date().optional(),
   currency: z.enum(["INR", "USD", "EUR", "GBP"]),

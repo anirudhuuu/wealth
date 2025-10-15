@@ -43,8 +43,8 @@ import { z } from "zod";
 const ledgerSchema = z.object({
   name: z
     .string()
-    .min(1, "Ledger name is required")
-    .max(100, "Ledger name must be less than 100 characters"),
+    .min(1, "Budget name is required")
+    .max(100, "Budget name must be less than 100 characters"),
   type: z.enum(["family", "personal", "loan"]),
   currency: z.enum(["INR", "USD", "EUR", "GBP"]),
 });

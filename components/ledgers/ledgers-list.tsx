@@ -68,10 +68,10 @@ import { AddLedgerDialog } from "./add-ledger-dialog";
 const ledgerEditSchema = z.object({
   name: z
     .string()
-    .min(1, "Ledger name is required")
-    .max(100, "Ledger name must be less than 100 characters"),
+    .min(1, "Budget name is required")
+    .max(100, "Budget name must be less than 100 characters"),
   type: z.enum(["family", "personal", "loan"], {
-    message: "Please select a ledger type",
+    message: "Please select a budget book type",
   }),
   currency: z
     .string()

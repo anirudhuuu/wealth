@@ -52,7 +52,7 @@ export class AssetRepository extends BaseRepository<Asset> {
     await this.validateUser(userId);
 
     if (!input.name?.trim()) {
-      throw new ValidationError("Asset name is required");
+      throw new ValidationError("Investment name is required");
     }
 
     if (!input.type) {

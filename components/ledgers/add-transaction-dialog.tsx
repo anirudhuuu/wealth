@@ -46,7 +46,7 @@ import { z } from "zod";
 
 // Validation schema
 const transactionSchema = z.object({
-  ledger_id: z.string().min(1, "Please select a ledger"),
+  ledger_id: z.string().min(1, "Please select a budget book"),
   date: z.date({
     message: "Date is required",
   }),
