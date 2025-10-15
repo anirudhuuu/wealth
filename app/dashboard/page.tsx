@@ -5,6 +5,15 @@ import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton";
 import { SandboxBanner } from "@/components/sandbox-banner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDashboardKPIs } from "@/hooks/use-dashboard";
 import { useUserWithProfile } from "@/hooks/use-user";
 import { exportAllDataToCsv } from "@/lib/csv-export";
@@ -87,7 +96,18 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <div className="flex items-center justify-between">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/dashboard">Summary</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Overview</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <div className="flex items-center justify-between mt-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Summary</h1>
             <p className="text-muted-foreground">
@@ -108,88 +128,99 @@ export default function DashboardPage() {
 
       {!isAdmin && <SandboxBanner />}
 
-      {/* KPI Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Money Earned
-            </CardTitle>
-            <ArrowUpRight className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div
-              className="text-2xl font-bold truncate"
-              title={formatCurrency(kpis.totalIncome)}
-            >
-              {formatCurrency(kpis.totalIncome)}
-            </div>
-          </CardContent>
-        </Card>
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        </TabsList>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Money Spent
-            </CardTitle>
-            <ArrowDownRight className="h-4 w-4 text-amber-600" />
-          </CardHeader>
-          <CardContent>
-            <div
-              className="text-2xl font-bold truncate"
-              title={formatCurrency(kpis.totalExpenses)}
-            >
-              {formatCurrency(kpis.totalExpenses)}
-            </div>
-          </CardContent>
-        </Card>
+        <TabsContent value="overview" className="space-y-6">
+          {/* KPI Cards */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Money Earned
+                </CardTitle>
+                <ArrowUpRight className="h-4 w-4 text-green-600" />
+              </CardHeader>
+              <CardContent>
+                <div
+                  className="text-2xl font-bold truncate"
+                  title={formatCurrency(kpis.totalIncome)}
+                >
+                  {formatCurrency(kpis.totalIncome)}
+                </div>
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Money Saved
-            </CardTitle>
-            <TrendingUp className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div
-              className="text-2xl font-bold truncate"
-              title={formatCurrency(kpis.netSavings)}
-            >
-              {formatCurrency(kpis.netSavings)}
-            </div>
-            <p
-              className="text-xs text-muted-foreground truncate"
-              title={`${kpis.savingsRate.toFixed(1)}% savings rate`}
-            >
-              {kpis.savingsRate.toFixed(1)}% how much you save
-            </p>
-          </CardContent>
-        </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Money Spent
+                </CardTitle>
+                <ArrowDownRight className="h-4 w-4 text-amber-600" />
+              </CardHeader>
+              <CardContent>
+                <div
+                  className="text-2xl font-bold truncate"
+                  title={formatCurrency(kpis.totalExpenses)}
+                >
+                  {formatCurrency(kpis.totalExpenses)}
+                </div>
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Investments
-            </CardTitle>
-            <Wallet className="h-4 w-4 text-purple-600" />
-          </CardHeader>
-          <CardContent>
-            <div
-              className="text-2xl font-bold truncate"
-              title={formatCurrency(kpis.totalAssets)}
-            >
-              {formatCurrency(kpis.totalAssets)}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Money Saved
+                </CardTitle>
+                <TrendingUp className="h-4 w-4 text-blue-600" />
+              </CardHeader>
+              <CardContent>
+                <div
+                  className="text-2xl font-bold truncate"
+                  title={formatCurrency(kpis.netSavings)}
+                >
+                  {formatCurrency(kpis.netSavings)}
+                </div>
+                <p
+                  className="text-xs text-muted-foreground truncate"
+                  title={`${kpis.savingsRate.toFixed(1)}% savings rate`}
+                >
+                  {kpis.savingsRate.toFixed(1)}% how much you save
+                </p>
+              </CardContent>
+            </Card>
 
-      {/* Charts */}
-      <DashboardCharts
-        transactions={transactions}
-        categoryData={categoryData}
-      />
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Total Investments
+                </CardTitle>
+                <Wallet className="h-4 w-4 text-purple-600" />
+              </CardHeader>
+              <CardContent>
+                <div
+                  className="text-2xl font-bold truncate"
+                  title={formatCurrency(kpis.totalAssets)}
+                >
+                  {formatCurrency(kpis.totalAssets)}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-6">
+          {/* Charts */}
+          <DashboardCharts
+            transactions={transactions}
+            categoryData={categoryData}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

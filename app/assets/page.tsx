@@ -3,6 +3,14 @@
 import { AssetsList } from "@/components/assets/assets-list";
 import { AssetsSkeleton } from "@/components/assets/assets-skeleton";
 import { SandboxBanner } from "@/components/sandbox-banner";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAssets } from "@/hooks/use-assets";
 import { useUserWithProfile } from "@/hooks/use-user";
@@ -22,6 +30,17 @@ export default function AssetsPage() {
   if (error) {
     return (
       <div className="space-y-6">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/dashboard">Summary</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Savings</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Savings</h1>
           <p className="text-muted-foreground">
@@ -40,6 +59,17 @@ export default function AssetsPage() {
   if (!user) {
     return (
       <div className="space-y-6">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/dashboard">Summary</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Savings</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Savings</h1>
           <p className="text-muted-foreground">
@@ -82,6 +112,17 @@ export default function AssetsPage() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/dashboard">Summary</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Savings</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Savings</h1>
         <p className="text-muted-foreground">
