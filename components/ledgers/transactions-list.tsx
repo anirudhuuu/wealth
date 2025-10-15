@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -516,7 +517,7 @@ export function TransactionsList({
         </CardContent>
       </Card>
 
-      {/* Simple Pagination */}
+      {/* Comprehensive Pagination */}
       {totalPages > 1 && (
         <div className="mt-4 sm:mt-6">
           <Pagination>
@@ -532,11 +533,151 @@ export function TransactionsList({
                 />
               </PaginationItem>
 
-              <PaginationItem>
-                <PaginationLink isActive={true} className="cursor-default">
-                  {currentPage} / {totalPages}
-                </PaginationLink>
-              </PaginationItem>
+              {/* Generate page numbers with ellipsis logic */}
+              {(() => {
+                const pages = [];
+                const maxVisiblePages = 5;
+                const halfVisible = Math.floor(maxVisiblePages / 2);
+
+                if (totalPages <= maxVisiblePages) {
+                  // Show all pages if total pages is small
+                  for (let i = 1; i <= totalPages; i++) {
+                    pages.push(
+                      <PaginationItem key={i}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(i)}
+                          isActive={currentPage === i}
+                          className="cursor-pointer"
+                        >
+                          {i}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  }
+                } else {
+                  // Complex pagination with ellipsis
+                  if (currentPage <= halfVisible + 1) {
+                    // Show first pages + ellipsis + last page
+                    for (let i = 1; i <= maxVisiblePages - 1; i++) {
+                      pages.push(
+                        <PaginationItem key={i}>
+                          <PaginationLink
+                            onClick={() => setCurrentPage(i)}
+                            isActive={currentPage === i}
+                            className="cursor-pointer"
+                          >
+                            {i}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    }
+                    pages.push(
+                      <PaginationItem key="ellipsis1">
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    );
+                    pages.push(
+                      <PaginationItem key={totalPages}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(totalPages)}
+                          isActive={currentPage === totalPages}
+                          className="cursor-pointer"
+                        >
+                          {totalPages}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  } else if (currentPage >= totalPages - halfVisible) {
+                    // Show first page + ellipsis + last pages
+                    pages.push(
+                      <PaginationItem key={1}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(1)}
+                          isActive={currentPage === 1}
+                          className="cursor-pointer"
+                        >
+                          1
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                    pages.push(
+                      <PaginationItem key="ellipsis1">
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    );
+                    for (
+                      let i = totalPages - maxVisiblePages + 2;
+                      i <= totalPages;
+                      i++
+                    ) {
+                      pages.push(
+                        <PaginationItem key={i}>
+                          <PaginationLink
+                            onClick={() => setCurrentPage(i)}
+                            isActive={currentPage === i}
+                            className="cursor-pointer"
+                          >
+                            {i}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    }
+                  } else {
+                    // Show first page + ellipsis + current page range + ellipsis + last page
+                    pages.push(
+                      <PaginationItem key={1}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(1)}
+                          isActive={currentPage === 1}
+                          className="cursor-pointer"
+                        >
+                          1
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                    pages.push(
+                      <PaginationItem key="ellipsis1">
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    );
+
+                    const startPage = Math.max(2, currentPage - 1);
+                    const endPage = Math.min(totalPages - 1, currentPage + 1);
+
+                    for (let i = startPage; i <= endPage; i++) {
+                      pages.push(
+                        <PaginationItem key={i}>
+                          <PaginationLink
+                            onClick={() => setCurrentPage(i)}
+                            isActive={currentPage === i}
+                            className="cursor-pointer"
+                          >
+                            {i}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    }
+
+                    pages.push(
+                      <PaginationItem key="ellipsis2">
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    );
+                    pages.push(
+                      <PaginationItem key={totalPages}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(totalPages)}
+                          isActive={currentPage === totalPages}
+                          className="cursor-pointer"
+                        >
+                          {totalPages}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  }
+                }
+                return pages;
+              })()}
 
               <PaginationItem>
                 <PaginationNext
