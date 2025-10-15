@@ -196,8 +196,8 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
         </CardHeader>
         <CardContent>
           {/* Search and Sort Controls */}
-          <div className="mb-6 space-y-4">
-            <div className="flex flex-col lg:flex-row gap-4">
+          <div className="mb-6 space-y-4 lg:space-y-0">
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-2">
               {/* Search Input */}
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -209,8 +209,8 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                 />
               </div>
 
-              {/* All Dropdowns in a row on desktop */}
-              <div className="flex flex-col sm:flex-row gap-2 lg:flex-row lg:gap-2">
+              {/* Sort Controls */}
+              <div className="flex flex-row gap-2 overflow-x-auto lg:overflow-x-visible">
                 {/* Sort By */}
                 <Select
                   value={sortBy}
@@ -218,7 +218,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                     setSortBy(value)
                   }
                 >
-                  <SelectTrigger className="w-full sm:w-[140px] lg:w-[130px]">
+                  <SelectTrigger className="w-[120px] flex-shrink-0">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
@@ -234,7 +234,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                   value={sortOrder}
                   onValueChange={(value: "asc" | "desc") => setSortOrder(value)}
                 >
-                  <SelectTrigger className="w-full sm:w-[140px] lg:w-[130px]">
+                  <SelectTrigger className="w-[130px] flex-shrink-0">
                     <SelectValue placeholder="Order" />
                   </SelectTrigger>
                   <SelectContent>
