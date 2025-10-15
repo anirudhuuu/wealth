@@ -55,11 +55,11 @@ const COLORS = [
 
 const chartConfig = {
   income: {
-    label: "Income",
+    label: "Money In",
     color: "#10b981", // Green color for income
   },
   expenses: {
-    label: "Expenses",
+    label: "Money Out",
     color: "#f59e0b", // Amber color for expenses
   },
 } satisfies ChartConfig;
@@ -176,7 +176,7 @@ export function DashboardCharts({
       <Card className="pt-0">
         <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
           <div className="grid flex-1 gap-1">
-            <CardTitle>Monthly Trend</CardTitle>
+            <CardTitle>Monthly Summary</CardTitle>
             <CardDescription>
               Showing income and expenses for the last{" "}
               {filteredMonthlyData.length} months
@@ -294,7 +294,7 @@ export function DashboardCharts({
       {/* Category Breakdown */}
       <Card className="flex flex-col">
         <CardHeader className="items-center pb-0">
-          <CardTitle>Expense by Category</CardTitle>
+          <CardTitle>Where Your Money Goes</CardTitle>
           <CardDescription>
             Showing expense breakdown by category
           </CardDescription>
