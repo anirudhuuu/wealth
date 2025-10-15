@@ -4,6 +4,7 @@ import { LayoutDashboard, Settings, TrendingUp, Wallet } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
@@ -46,9 +47,12 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary md:h-8 md:w-8">
-            <Wallet className="h-4 w-4 text-primary-foreground md:h-5 md:w-5" />
-          </div>
+          <Avatar className="h-6 w-6 md:h-8 md:w-8">
+            <AvatarImage src="/api/placeholder/32/32" />
+            <AvatarFallback className="bg-primary text-primary-foreground text-xs md:text-sm">
+              <Wallet className="h-3 w-3 md:h-4 md:w-4" />
+            </AvatarFallback>
+          </Avatar>
           <span className="text-base font-semibold md:text-lg">Wealth</span>
         </div>
       </SidebarHeader>
