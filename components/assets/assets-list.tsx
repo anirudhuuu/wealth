@@ -526,7 +526,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                                 className="bg-red-600 hover:bg-red-700"
                               >
                                 {deletingAssetId === asset.id
-                                  ? "Deleting..."
+                                  ? "Removing..."
                                   : "Delete Asset"}
                               </AlertDialogAction>
                             </AlertDialogFooter>

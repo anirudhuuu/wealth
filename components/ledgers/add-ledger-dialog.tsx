@@ -150,7 +150,7 @@ function LedgerForm({
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button type="submit" disabled={createLedgerMutation.isPending}>
             {createLedgerMutation.isPending
-              ? "Creating..."
+              ? "Saving..."
               : "Create Budget Book"}
           </Button>
           {showCancelButton && (

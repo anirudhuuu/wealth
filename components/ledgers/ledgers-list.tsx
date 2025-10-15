@@ -184,7 +184,9 @@ function EditLedgerForm({
             disabled={updateLedgerMutation.isPending}
             className="bg-primary hover:bg-primary/90"
           >
-            {updateLedgerMutation.isPending ? "Updating..." : "Update Ledger"}
+            {updateLedgerMutation.isPending
+              ? "Saving changes..."
+              : "Update Ledger"}
           </Button>
           {showCancelButton && (
             <Button
@@ -577,7 +579,7 @@ export function LedgersList({
               disabled={deleteLedgerMutation.isPending}
               className="bg-red-600 hover:bg-red-700"
             >
-              {deleteLedgerMutation.isPending ? "Deleting..." : "Delete Ledger"}
+              {deleteLedgerMutation.isPending ? "Removing..." : "Delete Ledger"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -235,7 +235,7 @@ function EditTransactionForm({
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button type="submit" disabled={updateTransactionMutation.isPending}>
             {updateTransactionMutation.isPending
-              ? "Updating..."
+              ? "Saving changes..."
               : "Update Payment"}
           </Button>
           {showCancelButton && (

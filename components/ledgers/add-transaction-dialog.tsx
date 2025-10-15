@@ -238,7 +238,7 @@ function TransactionForm({
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button type="submit" disabled={createTransactionMutation.isPending}>
             {createTransactionMutation.isPending
-              ? "Creating..."
+              ? "Saving..."
               : "Create Payment"}
           </Button>
           {showCancelButton && (

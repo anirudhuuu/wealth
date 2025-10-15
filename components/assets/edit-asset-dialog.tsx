@@ -277,7 +277,9 @@ function EditAssetForm({
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button type="submit" disabled={updateAssetMutation.isPending}>
-            {updateAssetMutation.isPending ? "Updating..." : "Update Asset"}
+            {updateAssetMutation.isPending
+              ? "Saving changes..."
+              : "Update Asset"}
           </Button>
           {showCancelButton && (
             <Button

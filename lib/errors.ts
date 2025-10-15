@@ -37,13 +37,13 @@ export class NotFoundError extends AppError {
 }
 
 export class AuthenticationError extends AppError {
-  constructor(message: string = "Authentication required") {
+  constructor(message: string = "Please sign in") {
     super(message, "AUTHENTICATION_ERROR", 401);
   }
 }
 
 export class AuthorizationError extends AppError {
-  constructor(message: string = "Insufficient permissions") {
+  constructor(message: string = "You don't have access") {
     super(message, "AUTHORIZATION_ERROR", 403);
   }
 }
@@ -65,13 +65,13 @@ export function handleError(error: unknown): AppError {
 export function getUserFriendlyMessage(error: AppError): string {
   switch (error.code) {
     case "DATABASE_ERROR":
-      return "A database error occurred. Please try again.";
+      return "System error, please try again later.";
     case "VALIDATION_ERROR":
-      return error.message; // Validation errors are usually user-friendly
+      return "Please check your input";
     case "AUTHENTICATION_ERROR":
       return "Please sign in to continue.";
     case "AUTHORIZATION_ERROR":
-      return "You don't have permission to perform this action.";
+      return "You don't have access";
     case "NOT_FOUND_ERROR":
       return "The requested resource was not found.";
     default:
