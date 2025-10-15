@@ -18,8 +18,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Wealth Manager",
-  description: "Track your expenses, assets, and build wealth",
+  title: "Wealth",
+  description: "Track your expenses, assets and build wealth",
+  openGraph: {
+    url: "https://wealth.anirudhjwala.in/",
+    type: "website",
+    title: "Wealth",
+    description: "Track your expenses, assets and build wealth",
+    images: ["/opengraph-image.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Wealth",
+    description: "Track your expenses, assets and build wealth",
+    images: ["/opengraph-image.png"],
+  },
 };
 
 export default function RootLayout({
