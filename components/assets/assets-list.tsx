@@ -11,8 +11,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -256,20 +264,32 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {filteredAndSortedAssets.length === 0 ? (
-              <div className="col-span-full py-8 text-center text-sm text-muted-foreground">
-                <Coins className="mx-auto mb-2 h-8 w-8 opacity-50" />
-                {searchQuery ? (
-                  <p>No assets found matching "{searchQuery}"</p>
-                ) : (
-                  <>
-                    <p>No assets yet</p>
-                    {isAdmin && (
-                      <p className="mt-1">
-                        Add your first asset to start tracking your wealth
-                      </p>
+              <div className="col-span-full">
+                <Empty>
+                  <EmptyMedia variant="icon">
+                    <Coins className="h-8 w-8 opacity-50" />
+                  </EmptyMedia>
+                  <EmptyContent>
+                    <EmptyTitle>
+                      {searchQuery
+                        ? `No assets found matching "${searchQuery}"`
+                        : "No assets yet"}
+                    </EmptyTitle>
+                    <EmptyDescription>
+                      {searchQuery
+                        ? "Try adjusting your search criteria"
+                        : isAdmin
+                        ? "Add your first asset to start tracking your wealth"
+                        : "Assets will appear here once they're added"}
+                    </EmptyDescription>
+                    {isAdmin && !searchQuery && (
+                      <Button size="sm" onClick={() => setShowAddDialog(true)}>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add Asset
+                      </Button>
                     )}
-                  </>
-                )}
+                  </EmptyContent>
+                </Empty>
               </div>
             ) : (
               filteredAndSortedAssets.map((asset) => {
@@ -348,15 +368,14 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                       </div>
                     </div>
 
-                    {/* Asset type pill */}
+                    {/* Asset type badge */}
                     <div className="flex justify-start ml-8 mb-3">
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-medium ${getAssetTypeColor(
-                          asset.type
-                        )}`}
+                      <Badge
+                        variant="outline"
+                        className={`text-xs ${getAssetTypeColor(asset.type)}`}
                       >
                         {getAssetTypeLabel(asset.type)}
-                      </span>
+                      </Badge>
                     </div>
 
                     {/* Full width content area */}
