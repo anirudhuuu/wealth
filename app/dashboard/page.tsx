@@ -113,7 +113,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Income
+              Money Earned
             </CardTitle>
             <ArrowUpRight className="h-4 w-4 text-green-600" />
           </CardHeader>
@@ -130,7 +130,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Expenses
+              Money Spent
             </CardTitle>
             <ArrowDownRight className="h-4 w-4 text-amber-600" />
           </CardHeader>
@@ -147,7 +147,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Net Savings
+              Money Saved
             </CardTitle>
             <TrendingUp className="h-4 w-4 text-blue-600" />
           </CardHeader>
@@ -162,7 +162,7 @@ export default function DashboardPage() {
               className="text-xs text-muted-foreground truncate"
               title={`${kpis.savingsRate.toFixed(1)}% savings rate`}
             >
-              {kpis.savingsRate.toFixed(1)}% savings rate
+              {kpis.savingsRate.toFixed(1)}% how much you save
             </p>
           </CardContent>
         </Card>
@@ -170,7 +170,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Assets
+              Total Investments
             </CardTitle>
             <Wallet className="h-4 w-4 text-purple-600" />
           </CardHeader>

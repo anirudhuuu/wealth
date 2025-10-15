@@ -126,8 +126,8 @@ export function exportAssetsToCsv(assets: Asset[], filename?: string): void {
     "Investment Date",
     "End Date",
     "Currency",
-    "Gain/Loss",
-    "Gain/Loss %",
+    "Profit/Loss",
+    "Profit/Loss %",
     "Notes",
   ];
 
@@ -171,8 +171,8 @@ export function exportLedgersToCsv(
     "Name",
     "Type",
     "Currency",
-    "Total Income",
-    "Total Expenses",
+    "Money Earned",
+    "Money Spent",
     "Net Amount",
     "Transaction Count",
     "Created Date",

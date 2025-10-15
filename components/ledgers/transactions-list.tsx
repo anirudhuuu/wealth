@@ -185,7 +185,7 @@ export function TransactionsList({
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>All Transactions</CardTitle>
+            <CardTitle>All Payments</CardTitle>
             <div className="flex items-center gap-2">
               <Button
                 size="sm"
@@ -196,7 +196,7 @@ export function TransactionsList({
                     ledgers
                   )
                 }
-                title="Export transactions to CSV"
+                title="Export payments to CSV"
               >
                 <Download className="mr-2 h-4 w-4" />
                 Export
@@ -291,7 +291,7 @@ export function TransactionsList({
           {(searchQuery || selectedLedgerId !== "all") && (
             <p className="text-sm text-muted-foreground">
               Showing {filteredAndSortedTransactions.length} of{" "}
-              {transactions.length} transactions
+              {transactions.length} payments
             </p>
           )}
         </CardHeader>
@@ -301,15 +301,15 @@ export function TransactionsList({
               <div className="py-8 text-center text-sm text-muted-foreground">
                 <Receipt className="mx-auto mb-2 h-8 w-8 opacity-50" />
                 {searchQuery ? (
-                  <p>No transactions found matching "{searchQuery}"</p>
+                  <p>No payments found matching "{searchQuery}"</p>
                 ) : selectedLedgerId !== "all" ? (
-                  <p>No transactions for selected ledger</p>
+                  <p>No payments for selected account</p>
                 ) : (
                   <>
-                    <p>No transactions yet</p>
+                    <p>No payments yet</p>
                     {isAdmin && (
                       <p className="mt-1">
-                        Add your first transaction to start tracking
+                        Add your first payment to start tracking
                       </p>
                     )}
                   </>
@@ -430,7 +430,7 @@ export function TransactionsList({
                                       }
                                       className="bg-red-600 hover:bg-red-700"
                                     >
-                                      Delete Transaction
+                                      Delete Payment
                                     </AlertDialogAction>
                                   </AlertDialogFooter>
                                 </AlertDialogContent>

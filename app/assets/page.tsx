@@ -112,7 +112,7 @@ export default function AssetsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Gain/Loss
+              Total Profit/Loss
             </CardTitle>
           </CardHeader>
           <CardContent>

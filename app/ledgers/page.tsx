@@ -97,7 +97,7 @@ export default function LedgersPage() {
           />
         </div>
 
-        {/* Transactions Section */}
+        {/* Payments Section */}
         <div className="lg:col-span-2">
           <TransactionsList
             transactions={transactions}

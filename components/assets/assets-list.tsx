@@ -224,7 +224,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                   <SelectContent>
                     <SelectItem value="name">Name</SelectItem>
                     <SelectItem value="value">Value</SelectItem>
-                    <SelectItem value="gain">Gain/Loss</SelectItem>
+                    <SelectItem value="gain">Profit/Loss</SelectItem>
                     <SelectItem value="type">Type</SelectItem>
                   </SelectContent>
                 </Select>
@@ -427,7 +427,7 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                             </div>
                             <div className="flex flex-col gap-1 min-w-0">
                               <span className="text-muted-foreground">
-                                Gain/Loss:
+                                Profit/Loss:
                               </span>
                               <span
                                 className={`font-medium truncate ${

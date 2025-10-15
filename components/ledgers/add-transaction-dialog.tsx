@@ -239,7 +239,7 @@ function TransactionForm({
           <Button type="submit" disabled={createTransactionMutation.isPending}>
             {createTransactionMutation.isPending
               ? "Creating..."
-              : "Create Transaction"}
+              : "Create Payment"}
           </Button>
           {showCancelButton && (
             <Button
@@ -324,9 +324,9 @@ export function AddTransactionDialog({
           showCloseButton={true}
         >
           <DialogHeader>
-            <DialogTitle>Add Transaction</DialogTitle>
+            <DialogTitle>Add Payment</DialogTitle>
             <DialogDescription>
-              Create a new transaction to track your financial activity.
+              Create a new payment to track your financial activity.
             </DialogDescription>
           </DialogHeader>
           <TransactionForm
@@ -345,9 +345,9 @@ export function AddTransactionDialog({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="max-h-[90vh]">
         <DrawerHeader className="text-left">
-          <DrawerTitle>Add Transaction</DrawerTitle>
+          <DrawerTitle>Add Payment</DrawerTitle>
           <DrawerDescription>
-            Create a new transaction to track your financial activity.
+            Create a new payment to track your financial activity.
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4 overflow-y-auto flex-1">

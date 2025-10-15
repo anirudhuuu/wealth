@@ -37,7 +37,7 @@ export function LedgersSkeleton() {
           </Card>
         </div>
 
-        {/* Transactions Section */}
+        {/* Payments Section */}
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>

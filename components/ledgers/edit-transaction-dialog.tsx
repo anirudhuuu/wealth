@@ -236,7 +236,7 @@ function EditTransactionForm({
           <Button type="submit" disabled={updateTransactionMutation.isPending}>
             {updateTransactionMutation.isPending
               ? "Updating..."
-              : "Update Transaction"}
+              : "Update Payment"}
           </Button>
           {showCancelButton && (
             <Button
@@ -332,9 +332,9 @@ export function EditTransactionDialog({
           showCloseButton={true}
         >
           <DialogHeader>
-            <DialogTitle>Edit Transaction</DialogTitle>
+            <DialogTitle>Edit Payment</DialogTitle>
             <DialogDescription>
-              Update the details for this transaction.
+              Update the details for this payment.
             </DialogDescription>
           </DialogHeader>
           <EditTransactionForm
@@ -353,9 +353,9 @@ export function EditTransactionDialog({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="max-h-[90vh]">
         <DrawerHeader className="text-left">
-          <DrawerTitle>Edit Transaction</DrawerTitle>
+          <DrawerTitle>Edit Payment</DrawerTitle>
           <DrawerDescription>
-            Update the details for this transaction.
+            Update the details for this payment.
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4 overflow-y-auto flex-1">
