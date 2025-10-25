@@ -14,6 +14,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Menu items.
 const items = [
@@ -61,22 +66,29 @@ export function AppSidebar() {
             <SidebarMenu className="space-y-1">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname === item.url}
-                    size="lg"
-                    className="h-12 md:h-8 text-base md:text-sm"
-                  >
-                    <Link
-                      href={item.url}
-                      className="flex items-center gap-3 px-3 py-2 md:px-2 md:py-1"
-                    >
-                      <item.icon className="h-6 w-6 md:h-4 md:w-4" />
-                      <span className="text-base font-medium md:text-sm md:font-normal">
-                        {item.title}
-                      </span>
-                    </Link>
-                  </SidebarMenuButton>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === item.url}
+                        size="lg"
+                        className="h-12 md:h-8 text-base md:text-sm"
+                      >
+                        <Link
+                          href={item.url}
+                          className="flex items-center gap-3 px-3 py-2 md:px-2 md:py-1"
+                        >
+                          <item.icon className="h-6 w-6 md:h-4 md:w-4" />
+                          <span className="text-base font-medium md:text-sm md:font-normal">
+                            {item.title}
+                          </span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p>{item.title}</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
