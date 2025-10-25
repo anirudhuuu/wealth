@@ -45,7 +45,7 @@ import {
   ArrowDownRight,
   ArrowUpRight,
   ChevronDown,
-  ChevronRight,
+  ChevronUp,
   Edit,
   Plus,
   Receipt,
@@ -206,7 +206,7 @@ export function TransactionsList({
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search transactions by description, category, type, or notes..."
+                placeholder="Search transactions..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -217,14 +217,14 @@ export function TransactionsList({
             </div>
 
             {/* Filter Controls Row */}
-            <div className="flex flex-row gap-2 overflow-x-auto">
+            <div className="flex flex-row gap-2 overflow-x-auto pb-2">
               {/* Ledger Filter */}
               <Select
                 value={selectedLedgerId}
                 onValueChange={handleLedgerFilterChange}
               >
-                <SelectTrigger className="w-[160px] flex-shrink-0">
-                  <SelectValue placeholder="Filter by budget book" />
+                <SelectTrigger className="w-[140px] sm:w-[160px] flex-shrink-0">
+                  <SelectValue placeholder="All" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All</SelectItem>
@@ -246,8 +246,8 @@ export function TransactionsList({
                   setCurrentPage(1);
                 }}
               >
-                <SelectTrigger className="w-[120px] flex-shrink-0">
-                  <SelectValue placeholder="Sort by" />
+                <SelectTrigger className="w-[100px] sm:w-[120px] flex-shrink-0">
+                  <SelectValue placeholder="Date" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="date">Date</SelectItem>
@@ -266,8 +266,8 @@ export function TransactionsList({
                   setCurrentPage(1);
                 }}
               >
-                <SelectTrigger className="w-[130px] flex-shrink-0">
-                  <SelectValue placeholder="Order" />
+                <SelectTrigger className="w-[110px] sm:w-[130px] flex-shrink-0">
+                  <SelectValue placeholder="High to Low" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="asc">Low to High</SelectItem>
@@ -286,7 +286,7 @@ export function TransactionsList({
           )}
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
+          <div className="space-y-4">
             {paginatedTransactions.length === 0 ? (
               <Empty>
                 <EmptyMedia variant="icon">
@@ -320,10 +320,10 @@ export function TransactionsList({
                 return (
                   <div
                     key={txn.id}
-                    className="rounded-lg border p-3 sm:p-4 overflow-hidden"
+                    className="rounded-lg border p-4 sm:p-5 overflow-hidden mb-3"
                   >
-                    <div className="flex items-start justify-between gap-2 sm:gap-3 min-w-0">
-                      <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-3 sm:gap-4 min-w-0">
+                      <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0 overflow-hidden">
                         <div
                           className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full flex-shrink-0 relative ${
                             txn.type === "income"
@@ -343,17 +343,17 @@ export function TransactionsList({
                           )}
                         </div>
                         <div className="flex-1 min-w-0 overflow-hidden">
-                          <div className="font-semibold text-sm sm:text-base mb-1">
-                            {txn.description.length > 25
-                              ? `${txn.description.substring(0, 25)}...`
+                          <div className="font-semibold text-xs sm:text-base mb-2 truncate">
+                            {txn.description.length > 20
+                              ? `${txn.description.substring(0, 20)}...`
                               : txn.description}
                           </div>
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
                             <Badge
                               variant={
                                 txn.type === "income" ? "default" : "secondary"
                               }
-                              className={`text-xs ${
+                              className={`text-xs flex-shrink-0 ${
                                 txn.type === "income"
                                   ? "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-950 dark:text-green-300"
                                   : "bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-950 dark:text-amber-300"
@@ -361,9 +361,12 @@ export function TransactionsList({
                             >
                               {txn.type === "income" ? "Income" : "Expense"}
                             </Badge>
-                            <Badge variant="outline" className="text-xs">
-                              {txn.category.length > 15
-                                ? `${txn.category.substring(0, 15)}...`
+                            <Badge
+                              variant="outline"
+                              className="text-xs truncate max-w-[80px] sm:max-w-none"
+                            >
+                              {txn.category.length > 12
+                                ? `${txn.category.substring(0, 12)}...`
                                 : txn.category}
                             </Badge>
                             {txn.template_id && (
@@ -378,9 +381,9 @@ export function TransactionsList({
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col items-end gap-1 sm:gap-2 min-w-0 flex-shrink-0">
+                      <div className="flex flex-col items-end gap-2 sm:gap-3 min-w-0 flex-shrink-0">
                         <div
-                          className={`text-base sm:text-lg font-bold truncate ${
+                          className={`text-sm sm:text-lg font-bold truncate max-w-[100px] sm:max-w-none ${
                             txn.type === "income"
                               ? "text-green-600"
                               : "text-amber-600"
@@ -392,7 +395,7 @@ export function TransactionsList({
                           {txn.type === "income" ? "+" : "-"}
                           {formatCurrency(Number(txn.amount))}
                         </div>
-                        <div className="flex items-center gap-0.5 sm:gap-1">
+                        <div className="flex items-center gap-1 sm:gap-2">
                           <Button
                             variant="ghost"
                             size="sm"
@@ -400,9 +403,9 @@ export function TransactionsList({
                             className="h-7 w-7 sm:h-8 sm:w-8 p-0"
                           >
                             {isExpanded ? (
-                              <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
+                              <ChevronUp className="h-3 w-3 sm:h-4 sm:w-4" />
                             ) : (
-                              <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
+                              <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
                             )}
                           </Button>
                           <>
@@ -440,13 +443,15 @@ export function TransactionsList({
                                     records.
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogFooter className="flex flex-row gap-2">
+                                  <AlertDialogCancel className="flex-1">
+                                    Cancel
+                                  </AlertDialogCancel>
                                   <AlertDialogAction
                                     onClick={() =>
                                       handleDeleteTransaction(txn.id)
                                     }
-                                    className="bg-red-600 hover:bg-red-700"
+                                    className="bg-red-600 hover:bg-red-700 flex-1"
                                   >
                                     Delete Payment
                                   </AlertDialogAction>
@@ -459,26 +464,26 @@ export function TransactionsList({
                     </div>
 
                     {isExpanded && (
-                      <div className="mt-3 space-y-2 border-t pt-3">
-                        <div className="mb-3">
+                      <div className="mt-4 space-y-3 border-t pt-4">
+                        <div className="mb-4">
                           <span className="text-sm text-muted-foreground">
                             Description:
                           </span>
-                          <p className="text-sm mt-1 p-2 bg-muted rounded-md break-words">
+                          <p className="text-sm mt-2 p-3 bg-muted rounded-md break-words">
                             {txn.description}
                           </p>
                         </div>
                         {txn.category.length > 20 && (
-                          <div className="mb-3">
+                          <div className="mb-4">
                             <span className="text-sm text-muted-foreground">
                               Category:
                             </span>
-                            <p className="text-sm mt-1 p-2 bg-muted rounded-md break-words">
+                            <p className="text-sm mt-2 p-3 bg-muted rounded-md break-words">
                               {txn.category}
                             </p>
                           </div>
                         )}
-                        <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="grid grid-cols-2 gap-3 text-sm">
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">
                               Ledger:
@@ -514,11 +519,11 @@ export function TransactionsList({
                           </div>
                         </div>
                         {txn.notes && (
-                          <div className="mt-2">
+                          <div className="mt-3">
                             <span className="text-sm text-muted-foreground">
                               Notes:
                             </span>
-                            <p className="text-sm mt-1 p-2 bg-muted rounded-md">
+                            <p className="text-sm mt-2 p-3 bg-muted rounded-md">
                               {txn.notes}
                             </p>
                           </div>
@@ -713,10 +718,17 @@ export function TransactionsList({
       )}
 
       {/* Pagination Controls */}
-      <div className="mt-4 flex items-center justify-between">
-        <div className="flex items-center gap-1 sm:gap-2">
-          <span className="text-sm text-muted-foreground whitespace-nowrap">
-            Show:
+      <div className="mt-4 flex flex-row items-center justify-between gap-2">
+        {totalItems > 0 && (
+          <div className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex-shrink-0">
+            Viewing {startIndex + 1}-{Math.min(endIndex, totalItems)} of{" "}
+            {totalItems} payments
+          </div>
+        )}
+
+        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+          <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
+            Per page:
           </span>
           <Select
             value={itemsPerPage.toString()}
@@ -736,13 +748,6 @@ export function TransactionsList({
             </SelectContent>
           </Select>
         </div>
-
-        {totalItems > 0 && (
-          <div className="text-sm text-muted-foreground">
-            Showing {startIndex + 1}-{Math.min(endIndex, totalItems)} of{" "}
-            {totalItems} transactions
-          </div>
-        )}
       </div>
 
       <>

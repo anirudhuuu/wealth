@@ -331,21 +331,28 @@ function TransactionForm({
           )}
         </div>
 
-        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button type="submit" disabled={createTransactionMutation.isPending}>
-            {createTransactionMutation.isPending ? "Saving..." : "Add Payment"}
-          </Button>
-          {showCancelButton && (
+        {showCancelButton && (
+          <div className="flex flex-row gap-2">
+            <Button
+              type="submit"
+              disabled={createTransactionMutation.isPending}
+              className="flex-1"
+            >
+              {createTransactionMutation.isPending
+                ? "Saving..."
+                : "Add Payment"}
+            </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={createTransactionMutation.isPending}
+              className="flex-1"
             >
               Cancel
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </form>
     </Form>
   );
@@ -478,12 +485,22 @@ export function AddTransactionDialog({
             showCancelButton={false}
           />
         </div>
-        <DrawerFooter className="pt-2">
+        <DrawerFooter className="pt-2 flex flex-row gap-2">
           <DrawerClose asChild>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="flex-1">
               Cancel
             </Button>
           </DrawerClose>
+          <Button
+            type="submit"
+            disabled={createTransactionMutation.isPending}
+            className="flex-1"
+            onClick={() => {
+              form.handleSubmit(onSubmit)();
+            }}
+          >
+            {createTransactionMutation.isPending ? "Saving..." : "Add Payment"}
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

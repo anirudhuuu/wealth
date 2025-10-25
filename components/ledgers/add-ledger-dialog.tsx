@@ -92,7 +92,7 @@ function LedgerForm({
           )}
         />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name="type"
@@ -104,7 +104,7 @@ function LedgerForm({
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
                   </FormControl>
@@ -130,7 +130,7 @@ function LedgerForm({
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
                   </FormControl>
@@ -147,23 +147,28 @@ function LedgerForm({
           />
         </div>
 
-        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button type="submit" disabled={createLedgerMutation.isPending}>
-            {createLedgerMutation.isPending
-              ? "Saving..."
-              : "Create Budget Book"}
-          </Button>
-          {showCancelButton && (
+        {showCancelButton && (
+          <div className="flex flex-row gap-2">
+            <Button
+              type="submit"
+              disabled={createLedgerMutation.isPending}
+              className="flex-1"
+            >
+              {createLedgerMutation.isPending
+                ? "Saving..."
+                : "Create Budget Book"}
+            </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={createLedgerMutation.isPending}
+              className="flex-1"
             >
               Cancel
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </form>
     </Form>
   );
@@ -241,12 +246,24 @@ export function AddLedgerDialog({ open, onOpenChange }: AddLedgerDialogProps) {
             showCancelButton={false}
           />
         </div>
-        <DrawerFooter className="pt-2">
+        <DrawerFooter className="pt-2 flex flex-row gap-2">
           <DrawerClose asChild>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="flex-1">
               Cancel
             </Button>
           </DrawerClose>
+          <Button
+            type="submit"
+            disabled={createLedgerMutation.isPending}
+            className="flex-1"
+            onClick={() => {
+              form.handleSubmit(onSubmit)();
+            }}
+          >
+            {createLedgerMutation.isPending
+              ? "Saving..."
+              : "Create Budget Book"}
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

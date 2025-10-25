@@ -116,7 +116,7 @@ function EditTransactionForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className={`space-y-4 ${className || ""}`}
       >
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name="ledger_id"
@@ -173,7 +173,7 @@ function EditTransactionForm({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name="amount"
@@ -283,7 +283,7 @@ function EditTransactionForm({
           />
 
           {form.watch("is_recurring") && (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-2">
               <FormField
                 control={form.control}
                 name="recurring_frequency"
@@ -331,23 +331,28 @@ function EditTransactionForm({
           )}
         </div>
 
-        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button type="submit" disabled={updateTransactionMutation.isPending}>
-            {updateTransactionMutation.isPending
-              ? "Saving changes..."
-              : "Update Payment"}
-          </Button>
-          {showCancelButton && (
+        {showCancelButton && (
+          <div className="flex flex-row gap-2">
+            <Button
+              type="submit"
+              disabled={updateTransactionMutation.isPending}
+              className="flex-1"
+            >
+              {updateTransactionMutation.isPending
+                ? "Saving changes..."
+                : "Update Payment"}
+            </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={updateTransactionMutation.isPending}
+              className="flex-1"
             >
               Cancel
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </form>
     </Form>
   );
@@ -519,12 +524,24 @@ export function EditTransactionDialog({
             />
           )}
         </div>
-        <DrawerFooter className="pt-2">
+        <DrawerFooter className="pt-2 flex flex-row gap-2">
           <DrawerClose asChild>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="flex-1">
               Cancel
             </Button>
           </DrawerClose>
+          <Button
+            type="submit"
+            disabled={updateTransactionMutation.isPending}
+            className="flex-1"
+            onClick={() => {
+              form.handleSubmit(onSubmit)();
+            }}
+          >
+            {updateTransactionMutation.isPending
+              ? "Saving changes..."
+              : "Update Payment"}
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

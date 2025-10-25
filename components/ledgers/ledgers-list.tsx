@@ -51,7 +51,7 @@ import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ChevronDown,
-  ChevronRight,
+  ChevronUp,
   Edit,
   Plus,
   Trash2,
@@ -119,7 +119,7 @@ function EditLedgerForm({
           )}
         />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name="type"
@@ -132,7 +132,7 @@ function EditLedgerForm({
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select budget book type" />
                     </SelectTrigger>
                   </FormControl>
@@ -159,7 +159,7 @@ function EditLedgerForm({
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select currency" />
                     </SelectTrigger>
                   </FormControl>
@@ -176,27 +176,28 @@ function EditLedgerForm({
           />
         </div>
 
-        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button
-            type="submit"
-            disabled={updateLedgerMutation.isPending}
-            className="bg-primary hover:bg-primary/90"
-          >
-            {updateLedgerMutation.isPending
-              ? "Saving changes..."
-              : "Update Ledger"}
-          </Button>
-          {showCancelButton && (
+        {showCancelButton && (
+          <div className="flex flex-row gap-2">
+            <Button
+              type="submit"
+              disabled={updateLedgerMutation.isPending}
+              className="bg-primary hover:bg-primary/90 flex-1"
+            >
+              {updateLedgerMutation.isPending
+                ? "Saving changes..."
+                : "Update Ledger"}
+            </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={updateLedgerMutation.isPending}
+              className="flex-1"
             >
               Cancel
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </form>
     </Form>
   );
@@ -338,7 +339,7 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {ledgers.length === 0 ? (
               <div className="py-8 text-center text-sm text-muted-foreground">
                 <Wallet className="mx-auto mb-2 h-8 w-8 opacity-50" />
@@ -352,16 +353,19 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                 const spending = getLedgerSpending(ledger.id);
                 const isExpanded = expandedLedgers.has(ledger.id);
                 return (
-                  <div key={ledger.id} className="rounded-lg border p-3">
-                    <div className="flex items-start justify-between gap-2">
+                  <div
+                    key={ledger.id}
+                    className="rounded-lg border p-4 sm:p-5 mb-3"
+                  >
+                    <div className="flex items-start justify-between gap-3 sm:gap-4">
                       <div className="flex-1 min-w-0">
                         <div
-                          className="font-medium truncate"
+                          className="font-medium truncate mb-2"
                           title={ledger.name}
                         >
                           {ledger.name}
                         </div>
-                        <div className="mt-1 flex items-center gap-2">
+                        <div className="flex items-center gap-2 sm:gap-3">
                           <span
                             className={`rounded-full px-2 py-0.5 text-xs font-medium ${getLedgerTypeColor(
                               ledger.type
@@ -375,7 +379,7 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                           </span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1 flex-shrink-0">
+                      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
                         <>
                           <Button
                             variant="ghost"
@@ -408,9 +412,9 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                             className="h-8 w-8 p-0"
                           >
                             {isExpanded ? (
-                              <ChevronDown className="h-4 w-4" />
+                              <ChevronUp className="h-4 w-4" />
                             ) : (
-                              <ChevronRight className="h-4 w-4" />
+                              <ChevronDown className="h-4 w-4" />
                             )}
                           </Button>
                         )}
@@ -418,8 +422,8 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                     </div>
 
                     {spending.transactionCount > 0 && isExpanded && (
-                      <div className="mt-3 space-y-2">
-                        <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="mt-4 space-y-3 border-t pt-4">
+                        <div className="grid grid-cols-2 gap-3 text-sm">
                           <div className="flex justify-between min-w-0">
                             <span className="text-muted-foreground flex-shrink-0">
                               Income:
@@ -443,7 +447,7 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                             </span>
                           </div>
                         </div>
-                        <div className="flex justify-between border-t pt-2 min-w-0">
+                        <div className="flex justify-between border-t pt-3 min-w-0">
                           <span className="text-sm font-medium flex-shrink-0">
                             Net:
                           </span>
@@ -458,7 +462,7 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                             {formatCurrency(spending.net)}
                           </span>
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-muted-foreground mt-2">
                           {spending.transactionCount} transaction
                           {spending.transactionCount !== 1 ? "s" : ""}
                         </div>
@@ -516,12 +520,24 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                 showCancelButton={false}
               />
             </div>
-            <DrawerFooter className="pt-2">
+            <DrawerFooter className="pt-2 flex flex-row gap-2">
               <DrawerClose asChild>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="flex-1">
                   Cancel
                 </Button>
               </DrawerClose>
+              <Button
+                type="submit"
+                disabled={updateLedgerMutation.isPending}
+                className="bg-primary hover:bg-primary/90 flex-1"
+                onClick={() => {
+                  form.handleSubmit(handleEditLedger)();
+                }}
+              >
+                {updateLedgerMutation.isPending
+                  ? "Saving changes..."
+                  : "Update Ledger"}
+              </Button>
             </DrawerFooter>
           </DrawerContent>
         </Drawer>
@@ -546,14 +562,17 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
               <strong>This action cannot be undone.</strong>
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteLedgerMutation.isPending}>
+          <AlertDialogFooter className="flex flex-row gap-2">
+            <AlertDialogCancel
+              disabled={deleteLedgerMutation.isPending}
+              className="flex-1"
+            >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteLedger}
               disabled={deleteLedgerMutation.isPending}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-red-600 hover:bg-red-700 flex-1"
             >
               {deleteLedgerMutation.isPending ? "Removing..." : "Delete Ledger"}
             </AlertDialogAction>
