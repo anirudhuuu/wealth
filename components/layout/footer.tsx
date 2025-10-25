@@ -12,7 +12,7 @@ export function Footer() {
               </span>
             </div>
             <span className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Wealth Manager. All rights reserved.
+              © {new Date().getFullYear()} Wealth. All rights reserved.
             </span>
           </div>
 

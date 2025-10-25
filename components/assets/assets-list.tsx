@@ -30,14 +30,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDeleteAsset } from "@/hooks/use-assets";
-import { exportAssetsToCsv } from "@/lib/csv-export";
 import type { Asset } from "@/lib/types";
 import { formatCurrency, parseDateFromDatabase } from "@/lib/utils";
 import {
   ChevronDown,
   ChevronRight,
   Coins,
-  Download,
   Edit,
   Plus,
   Search,
@@ -51,10 +49,9 @@ import { EditAssetDialog } from "./edit-asset-dialog";
 
 interface AssetsListProps {
   assets: Asset[];
-  isAdmin: boolean;
 }
 
-export function AssetsList({ assets, isAdmin }: AssetsListProps) {
+export function AssetsList({ assets }: AssetsListProps) {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [expandedAssets, setExpandedAssets] = useState<Set<string>>(new Set());
   const [deletingAssetId, setDeletingAssetId] = useState<string | null>(null);
@@ -184,21 +181,10 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
           <div className="flex items-center justify-between">
             <CardTitle>Your Savings</CardTitle>
             <div className="flex items-center gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => exportAssetsToCsv(filteredAndSortedAssets)}
-                title="Export assets to CSV"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Export
+              <Button size="sm" onClick={() => setShowAddDialog(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Asset
               </Button>
-              {isAdmin && (
-                <Button size="sm" onClick={() => setShowAddDialog(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Asset
-                </Button>
-              )}
             </div>
           </div>
         </CardHeader>
@@ -278,11 +264,11 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                     <EmptyDescription>
                       {searchQuery
                         ? "Try adjusting your search criteria"
-                        : isAdmin
+                        : true
                         ? "Add your first asset to start tracking your wealth"
                         : "Assets will appear here once they're added"}
                     </EmptyDescription>
-                    {isAdmin && !searchQuery && (
+                    {!searchQuery && (
                       <Button size="sm" onClick={() => setShowAddDialog(true)}>
                         <Plus className="mr-2 h-4 w-4" />
                         Add Asset
@@ -367,7 +353,6 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                         </div>
                       </div>
                     </div>
-
                     {/* Asset type badge */}
                     <div className="flex justify-start ml-8 mb-3">
                       <Badge
@@ -377,7 +362,6 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                         {getAssetTypeLabel(asset.type)}
                       </Badge>
                     </div>
-
                     {/* Full width content area */}
                     <div className="w-full">
                       <div className="space-y-2 text-sm">
@@ -496,63 +480,60 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
                         </div>
                       )}
                     </div>
+                    {/* Action buttons at bottom */}(
+                    <div className="flex justify-end gap-2 mt-3 pt-3 border-t">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setEditingAsset(asset)}
+                        className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                        title="Edit asset"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                            title="Delete asset"
+                            disabled={deletingAssetId === asset.id}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
 
-                    {/* Action buttons at bottom */}
-                    {isAdmin && (
-                      <div className="flex justify-end gap-2 mt-3 pt-3 border-t">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setEditingAsset(asset)}
-                          className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                          title="Edit asset"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                              title="Delete asset"
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Asset</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to delete "{asset.name}"?
+                              This will permanently delete the asset.
+                              <br />
+                              <br />
+                              <strong>This action cannot be undone.</strong>
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel
                               disabled={deletingAssetId === asset.id}
                             >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Delete Asset</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Are you sure you want to delete "{asset.name}"?
-                                This will permanently delete the asset.
-                                <br />
-                                <br />
-                                <strong>This action cannot be undone.</strong>
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel
-                                disabled={deletingAssetId === asset.id}
-                              >
-                                Cancel
-                              </AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => handleDeleteAsset(asset.id)}
-                                disabled={deletingAssetId === asset.id}
-                                className="bg-red-600 hover:bg-red-700"
-                              >
-                                {deletingAssetId === asset.id
-                                  ? "Removing..."
-                                  : "Delete Asset"}
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </div>
-                    )}
+                              Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDeleteAsset(asset.id)}
+                              disabled={deletingAssetId === asset.id}
+                              className="bg-red-600 hover:bg-red-700"
+                            >
+                              {deletingAssetId === asset.id
+                                ? "Removing..."
+                                : "Delete Asset"}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </div>
                 );
               })
@@ -561,17 +542,13 @@ export function AssetsList({ assets, isAdmin }: AssetsListProps) {
         </CardContent>
       </Card>
 
-      {isAdmin && (
-        <AddAssetDialog open={showAddDialog} onOpenChange={setShowAddDialog} />
-      )}
+      <AddAssetDialog open={showAddDialog} onOpenChange={setShowAddDialog} />
 
-      {isAdmin && (
-        <EditAssetDialog
-          open={!!editingAsset}
-          onOpenChange={(open) => !open && setEditingAsset(null)}
-          asset={editingAsset}
-        />
-      )}
+      <EditAssetDialog
+        open={!!editingAsset}
+        onOpenChange={(open) => !open && setEditingAsset(null)}
+        asset={editingAsset}
+      />
     </>
   );
 }

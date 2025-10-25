@@ -37,7 +37,7 @@ type ProfileFormData = z.infer<typeof profileSchema>;
 
 interface ProfileSettingsProps {
   user: User;
-  profile: { display_name: string | null; is_admin: boolean } | null;
+  profile: { display_name: string | null } | null;
 }
 
 export function ProfileSettings({ user, profile }: ProfileSettingsProps) {

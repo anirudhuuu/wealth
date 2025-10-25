@@ -46,14 +46,12 @@ import {
 } from "@/components/ui/select";
 import { useDeleteLedger, useUpdateLedger } from "@/hooks/use-ledgers";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { exportLedgersToCsv } from "@/lib/csv-export";
 import type { Ledger, Transaction } from "@/lib/types";
 import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ChevronDown,
   ChevronRight,
-  Download,
   Edit,
   Plus,
   Trash2,
@@ -207,14 +205,9 @@ function EditLedgerForm({
 interface LedgersListProps {
   ledgers: Ledger[];
   transactions: Transaction[];
-  isAdmin: boolean;
 }
 
-export function LedgersList({
-  ledgers,
-  transactions,
-  isAdmin,
-}: LedgersListProps) {
+export function LedgersList({ ledgers, transactions }: LedgersListProps) {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [expandedLedgers, setExpandedLedgers] = useState<Set<string>>(
     new Set()
@@ -337,21 +330,10 @@ export function LedgersList({
           <div className="flex items-center justify-between">
             <CardTitle>Budget Books</CardTitle>
             <div className="flex items-center gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => exportLedgersToCsv(ledgers, transactions)}
-                title="Export budget books to CSV"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Export
+              <Button size="sm" onClick={() => setShowAddDialog(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add
               </Button>
-              {isAdmin && (
-                <Button size="sm" onClick={() => setShowAddDialog(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add
-                </Button>
-              )}
             </div>
           </div>
         </CardHeader>
@@ -361,11 +343,9 @@ export function LedgersList({
               <div className="py-8 text-center text-sm text-muted-foreground">
                 <Wallet className="mx-auto mb-2 h-8 w-8 opacity-50" />
                 <p>No budget books yet</p>
-                {isAdmin && (
-                  <p className="mt-1">
-                    Create your first budget book to get started
-                  </p>
-                )}
+                <p className="mt-1">
+                  Create your first budget book to get started
+                </p>
               </div>
             ) : (
               ledgers.map((ledger) => {
@@ -373,8 +353,8 @@ export function LedgersList({
                 const isExpanded = expandedLedgers.has(ledger.id);
                 return (
                   <div key={ledger.id} className="rounded-lg border p-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
                         <div
                           className="font-medium truncate"
                           title={ledger.name}
@@ -395,33 +375,31 @@ export function LedgersList({
                           </span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        {isAdmin && (
-                          <>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => openEditDialog(ledger)}
-                              className="h-8 w-8 p-0"
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setDeletingLedger(ledger)}
-                              disabled={spending.transactionCount > 0}
-                              className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:bg-transparent"
-                              title={
-                                spending.transactionCount > 0
-                                  ? "Cannot delete ledger with transactions"
-                                  : "Delete ledger"
-                              }
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </>
-                        )}
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openEditDialog(ledger)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setDeletingLedger(ledger)}
+                            disabled={spending.transactionCount > 0}
+                            className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:bg-transparent"
+                            title={
+                              spending.transactionCount > 0
+                                ? "Cannot delete ledger with transactions"
+                                : "Delete ledger"
+                            }
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </>
                         {spending.transactionCount > 0 && (
                           <Button
                             variant="ghost"
@@ -494,9 +472,7 @@ export function LedgersList({
         </CardContent>
       </Card>
 
-      {isAdmin && (
-        <AddLedgerDialog open={showAddDialog} onOpenChange={setShowAddDialog} />
-      )}
+      <AddLedgerDialog open={showAddDialog} onOpenChange={setShowAddDialog} />
 
       {/* Edit Ledger Dialog/Drawer */}
       {isDesktop ? (

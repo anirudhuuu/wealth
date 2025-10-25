@@ -39,7 +39,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDeleteTransaction } from "@/hooks/use-transactions";
-import { exportTransactionsToCsv } from "@/lib/csv-export";
 import type { Ledger, Transaction } from "@/lib/types";
 import { formatCurrency, parseDateFromDatabase } from "@/lib/utils";
 import {
@@ -47,7 +46,6 @@ import {
   ArrowUpRight,
   ChevronDown,
   ChevronRight,
-  Download,
   Edit,
   Plus,
   Receipt,
@@ -61,13 +59,11 @@ import { EditTransactionDialog } from "./edit-transaction-dialog";
 interface TransactionsListProps {
   transactions: Transaction[];
   ledgers: Ledger[];
-  isAdmin: boolean;
 }
 
 export function TransactionsList({
   transactions,
   ledgers,
-  isAdmin,
 }: TransactionsListProps) {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -196,26 +192,10 @@ export function TransactionsList({
           <div className="flex items-center justify-between">
             <CardTitle>All Payments</CardTitle>
             <div className="flex items-center gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() =>
-                  exportTransactionsToCsv(
-                    filteredAndSortedTransactions,
-                    ledgers
-                  )
-                }
-                title="Export payments to CSV"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Export
+              <Button size="sm" onClick={() => setShowAddDialog(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add
               </Button>
-              {isAdmin && (
-                <Button size="sm" onClick={() => setShowAddDialog(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add
-                </Button>
-              )}
             </div>
           </div>
 
@@ -246,7 +226,7 @@ export function TransactionsList({
                   <SelectValue placeholder="Filter by budget book" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Budget Books</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
                   {ledgers.map((ledger) => (
                     <SelectItem key={ledger.id} value={ledger.id}>
                       {ledger.name}
@@ -322,11 +302,9 @@ export function TransactionsList({
                   <EmptyDescription>
                     {searchQuery || selectedLedgerId !== "all"
                       ? "Try adjusting your search or filter criteria"
-                      : isAdmin
-                      ? "Add your first payment to start tracking your expenses"
-                      : "Payments will appear here once they're added"}
+                      : "Add your first payment to start tracking your expenses"}
                   </EmptyDescription>
-                  {isAdmin && !searchQuery && selectedLedgerId === "all" && (
+                  {!searchQuery && selectedLedgerId === "all" && (
                     <Button size="sm" onClick={() => setShowAddDialog(true)}>
                       <Plus className="mr-2 h-4 w-4" />
                       Add Payment
@@ -415,61 +393,55 @@ export function TransactionsList({
                               <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
                             )}
                           </Button>
-                          {isAdmin && (
-                            <>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedTransaction(txn);
-                                  setShowEditDialog(true);
-                                }}
-                                className="h-7 w-7 sm:h-8 sm:w-8 p-0"
-                              >
-                                <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
-                              </Button>
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    disabled={
-                                      deleteTransactionMutation.isPending
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedTransaction(txn);
+                                setShowEditDialog(true);
+                              }}
+                              className="h-7 w-7 sm:h-8 sm:w-8 p-0"
+                            >
+                              <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  disabled={deleteTransactionMutation.isPending}
+                                  className="h-7 w-7 sm:h-8 sm:w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                >
+                                  <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    Are you absolutely sure?
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone. This will
+                                    permanently delete the transaction "
+                                    {txn.description}" and remove it from your
+                                    records.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() =>
+                                      handleDeleteTransaction(txn.id)
                                     }
-                                    className="h-7 w-7 sm:h-8 sm:w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    className="bg-red-600 hover:bg-red-700"
                                   >
-                                    <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>
-                                      Are you absolutely sure?
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      This action cannot be undone. This will
-                                      permanently delete the transaction "
-                                      {txn.description}" and remove it from your
-                                      records.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>
-                                      Cancel
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={() =>
-                                        handleDeleteTransaction(txn.id)
-                                      }
-                                      className="bg-red-600 hover:bg-red-700"
-                                    >
-                                      Delete Payment
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </>
-                          )}
+                                    Delete Payment
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </>
                         </div>
                       </div>
                     </div>
@@ -761,21 +733,19 @@ export function TransactionsList({
         )}
       </div>
 
-      {isAdmin && (
-        <>
-          <AddTransactionDialog
-            open={showAddDialog}
-            onOpenChange={setShowAddDialog}
-            ledgers={ledgers}
-          />
-          <EditTransactionDialog
-            open={showEditDialog}
-            onOpenChange={setShowEditDialog}
-            transaction={selectedTransaction}
-            ledgers={ledgers}
-          />
-        </>
-      )}
+      <>
+        <AddTransactionDialog
+          open={showAddDialog}
+          onOpenChange={setShowAddDialog}
+          ledgers={ledgers}
+        />
+        <EditTransactionDialog
+          open={showEditDialog}
+          onOpenChange={setShowEditDialog}
+          transaction={selectedTransaction}
+          ledgers={ledgers}
+        />
+      </>
     </>
   );
 }

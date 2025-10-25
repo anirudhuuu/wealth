@@ -109,13 +109,11 @@ function EditTransactionForm({
                 </FormControl>
                 <SelectContent>
                   {ledgers.map((ledger) => (
-                    <SelectItem
-                      key={ledger.id}
-                      value={ledger.id}
-                      className="truncate"
-                    >
-                      <span className="truncate" title={ledger.name}>
-                        {ledger.name}
+                    <SelectItem key={ledger.id} value={ledger.id}>
+                      <span title={ledger.name}>
+                        {ledger.name.length > 30
+                          ? `${ledger.name.substring(0, 30)}...`
+                          : ledger.name}
                       </span>
                     </SelectItem>
                   ))}

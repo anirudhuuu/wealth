@@ -109,13 +109,11 @@ function TransactionForm({
                 </FormControl>
                 <SelectContent>
                   {ledgers.map((ledger) => (
-                    <SelectItem
-                      key={ledger.id}
-                      value={ledger.id}
-                      className="truncate"
-                    >
-                      <span className="truncate" title={ledger.name}>
-                        {ledger.name}
+                    <SelectItem key={ledger.id} value={ledger.id}>
+                      <span title={ledger.name}>
+                        {ledger.name.length > 30
+                          ? `${ledger.name.substring(0, 30)}...`
+                          : ledger.name}
                       </span>
                     </SelectItem>
                   ))}
@@ -237,9 +235,7 @@ function TransactionForm({
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button type="submit" disabled={createTransactionMutation.isPending}>
-            {createTransactionMutation.isPending
-              ? "Saving..."
-              : "Create Payment"}
+            {createTransactionMutation.isPending ? "Saving..." : "Add Payment"}
           </Button>
           {showCancelButton && (
             <Button
