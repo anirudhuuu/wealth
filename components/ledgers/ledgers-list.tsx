@@ -58,7 +58,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { AddLedgerDialog } from "./add-ledger-dialog";
 
@@ -88,9 +88,9 @@ function EditLedgerForm({
   className,
   showCancelButton = true,
 }: {
-  form: any;
+  form: UseFormReturn<LedgerEditFormData>;
   onSubmit: (data: LedgerEditFormData) => void;
-  updateLedgerMutation: any;
+  updateLedgerMutation: ReturnType<typeof useUpdateLedger>;
   onOpenChange: (open: boolean) => void;
   className?: string;
   showCancelButton?: boolean;

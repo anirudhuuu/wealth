@@ -118,7 +118,10 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       throw new ValidationError("Transaction amount must be greater than 0");
     }
 
-    const transactionData: any = {
+    const transactionData: Omit<
+      Transaction,
+      "id" | "created_at" | "updated_at" | "recurring_transactions"
+    > = {
       user_id: userId,
       ledger_id: input.ledgerId,
       date: formatDateForDatabase(input.date),
@@ -126,7 +129,8 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       category: input.category.trim(),
       amount: input.amount,
       type: input.type,
-      notes: input.notes,
+      notes: input.notes || null,
+      template_id: null,
     };
 
     // If this is a recurring transaction, create a recurring template

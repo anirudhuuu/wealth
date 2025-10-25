@@ -98,10 +98,6 @@ export async function getDashboardData(
   const netSavings = roundToTwoDecimals(totalIncome - totalExpenses);
   const savingsRate = totalIncome > 0 ? (netSavings / totalIncome) * 100 : 0;
 
-  const totalAssets = roundToTwoDecimals(
-    assetData.reduce((sum: number, a) => sum + Number(a.current_value), 0)
-  );
-
   // Calculate asset metrics
   const totalAssetValue = roundToTwoDecimals(
     assetData.reduce(
@@ -118,9 +114,12 @@ export async function getDashboardData(
     )
   );
 
+  // Calculate average return percentage (only for assets with valid purchase values)
+  let validAssetsCount = 0;
   const gainPercentage = assetData.reduce((sum: number, asset) => {
     const purchaseValue = Number(asset.purchase_value);
     if (purchaseValue === 0) return sum;
+    validAssetsCount++;
     return (
       sum +
       ((Number(asset.current_value) - purchaseValue) / purchaseValue) * 100
@@ -128,7 +127,7 @@ export async function getDashboardData(
   }, 0);
 
   const avgReturnPercentage =
-    assetData.length > 0 ? gainPercentage / assetData.length : 0;
+    validAssetsCount > 0 ? gainPercentage / validAssetsCount : 0;
 
   // Calculate category breakdown
   const categoryData: Record<string, number> = {};
@@ -145,7 +144,7 @@ export async function getDashboardData(
       totalIncome,
       totalExpenses,
       netSavings,
-      totalAssets,
+      totalAssets: totalAssetValue, // Use the same calculation
       savingsRate,
       totalAssetValue,
       totalProfit,

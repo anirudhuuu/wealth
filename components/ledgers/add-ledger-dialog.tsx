@@ -36,7 +36,7 @@ import {
 import { useCreateLedger } from "@/hooks/use-ledgers";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 // Validation schema
@@ -65,9 +65,9 @@ function LedgerForm({
   className,
   showCancelButton = true,
 }: {
-  form: any;
+  form: UseFormReturn<LedgerFormData>;
   onSubmit: (data: LedgerFormData) => void;
-  createLedgerMutation: any;
+  createLedgerMutation: ReturnType<typeof useCreateLedger>;
   onOpenChange: (open: boolean) => void;
   className?: string;
   showCancelButton?: boolean;

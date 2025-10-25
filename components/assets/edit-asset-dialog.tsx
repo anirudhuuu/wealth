@@ -41,7 +41,7 @@ import type { Asset } from "@/lib/types";
 import { parseAndRoundAmount, parseDateFromDatabase } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 // Validation schema
@@ -92,9 +92,9 @@ function EditAssetForm({
   className,
   showCancelButton = true,
 }: {
-  form: any;
+  form: UseFormReturn<AssetFormData>;
   onSubmit: (data: AssetFormData) => void;
-  updateAssetMutation: any;
+  updateAssetMutation: ReturnType<typeof useUpdateAsset>;
   onOpenChange: (open: boolean) => void;
   className?: string;
   showCancelButton?: boolean;

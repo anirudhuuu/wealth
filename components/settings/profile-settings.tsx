@@ -21,7 +21,6 @@ import { useUpdateProfile } from "@/hooks/use-user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { User } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
 
 // Validation schema
@@ -51,16 +50,9 @@ export function ProfileSettings({ user, profile }: ProfileSettingsProps) {
   });
 
   const onSubmit = async (data: ProfileFormData) => {
-    updateProfileMutation.mutate(
-      {
-        displayName: data.display_name,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Profile updated successfully");
-        },
-      }
-    );
+    updateProfileMutation.mutate({
+      displayName: data.display_name,
+    });
   };
 
   return (

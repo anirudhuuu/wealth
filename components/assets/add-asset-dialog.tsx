@@ -39,7 +39,7 @@ import { useCreateAsset } from "@/hooks/use-assets";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { parseAndRoundAmount } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 // Validation schema
@@ -90,9 +90,9 @@ function AssetForm({
   className,
   showCancelButton = true,
 }: {
-  form: any;
+  form: UseFormReturn<AssetFormData>;
   onSubmit: (data: AssetFormData) => void;
-  createAssetMutation: any;
+  createAssetMutation: ReturnType<typeof useCreateAsset>;
   onOpenChange: (open: boolean) => void;
   className?: string;
   showCancelButton?: boolean;
