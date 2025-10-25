@@ -329,7 +329,7 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Budget Books</CardTitle>
+            <CardTitle>Ledgers</CardTitle>
             <div className="flex items-center gap-2">
               <Button size="sm" onClick={() => setShowAddDialog(true)}>
                 <Plus className="mr-2 h-4 w-4" />
@@ -343,7 +343,7 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
             {ledgers.length === 0 ? (
               <div className="py-8 text-center text-sm text-muted-foreground">
                 <Wallet className="mx-auto mb-2 h-8 w-8 opacity-50" />
-                <p>No budget books yet</p>
+                <p>No ledgers yet</p>
                 <p className="mt-1">
                   Create your first budget book to get started
                 </p>

@@ -345,7 +345,7 @@ export function TransactionsList({
                             <ArrowDownRight className="h-5 w-5 sm:h-6 sm:w-6" />
                           )}
                           {txn.template_id && (
-                            <div className="absolute -top-1 -right-1 h-4 w-4 bg-blue-500 rounded-full flex items-center justify-center">
+                            <div className="absolute -top-[0.2px] -right-1 h-4 w-4 bg-blue-500 rounded-full flex items-center justify-center">
                               <Repeat className="h-2 w-2 text-white" />
                             </div>
                           )}

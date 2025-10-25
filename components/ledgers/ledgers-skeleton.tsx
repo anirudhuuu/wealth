@@ -12,7 +12,7 @@ export function LedgersSkeleton() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Budget Books Section */}
+        {/* Ledgers Section */}
         <div className="lg:col-span-1">
           <Card>
             <CardHeader>

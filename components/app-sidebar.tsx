@@ -24,7 +24,7 @@ const items = [
     icon: LayoutDashboard,
   },
   {
-    title: "Budget Books",
+    title: "Ledgers",
     url: "/ledgers",
     icon: Wallet,
   },

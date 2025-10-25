@@ -37,7 +37,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { useTransaction, useUpdateTransaction } from "@/hooks/use-transactions";
+import { useUpdateTransaction } from "@/hooks/use-transactions";
 import type { Ledger, Transaction } from "@/lib/types";
 import { parseAndRoundAmount, parseDateFromDatabase } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -375,12 +375,6 @@ export function EditTransactionDialog({
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [isClosing, setIsClosing] = useState(false);
 
-  // Fetch transaction with recurring data when dialog opens
-  const {
-    data: transactionWithRecurringData,
-    isLoading: isLoadingTransaction,
-  } = useTransaction(transaction?.id || "");
-
   const form = useForm<TransactionFormData>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
@@ -399,30 +393,26 @@ export function EditTransactionDialog({
 
   // Populate form when transaction changes
   useEffect(() => {
-    if (transactionWithRecurringData) {
+    if (transaction) {
       const formData = {
-        ledger_id: transactionWithRecurringData.ledger_id,
-        date: parseDateFromDatabase(transactionWithRecurringData.date),
-        description: transactionWithRecurringData.description,
-        category: transactionWithRecurringData.category,
-        amount: transactionWithRecurringData.amount.toString(),
-        type: transactionWithRecurringData.type,
-        notes: transactionWithRecurringData.notes || "",
-        is_recurring: !!transactionWithRecurringData.template_id,
+        ledger_id: transaction.ledger_id,
+        date: parseDateFromDatabase(transaction.date),
+        description: transaction.description,
+        category: transaction.category,
+        amount: transaction.amount.toString(),
+        type: transaction.type,
+        notes: transaction.notes || "",
+        is_recurring: !!transaction.template_id,
         recurring_frequency:
-          transactionWithRecurringData.recurring_transactions?.frequency ||
-          undefined,
-        recurring_end_date: transactionWithRecurringData.recurring_transactions
-          ?.end_date
-          ? parseDateFromDatabase(
-              transactionWithRecurringData.recurring_transactions.end_date
-            )
+          transaction.recurring_transactions?.frequency || undefined,
+        recurring_end_date: transaction.recurring_transactions?.end_date
+          ? parseDateFromDatabase(transaction.recurring_transactions.end_date)
           : undefined,
       };
 
       form.reset(formData);
     }
-  }, [transactionWithRecurringData, form, ledgers]);
+  }, [transaction, form, ledgers]);
 
   // Reset isClosing state when dialog closes
   useEffect(() => {
@@ -432,11 +422,11 @@ export function EditTransactionDialog({
   }, [open]);
 
   const onSubmit = async (data: TransactionFormData) => {
-    if (!transactionWithRecurringData) return;
+    if (!transaction) return;
 
     updateTransactionMutation.mutate(
       {
-        id: transactionWithRecurringData.id,
+        id: transaction.id,
         input: {
           ledgerId: data.ledger_id,
           date: data.date,
@@ -479,20 +469,14 @@ export function EditTransactionDialog({
               Update the details for this payment.
             </DialogDescription>
           </DialogHeader>
-          {isLoadingTransaction ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="text-sm text-muted-foreground">Loading...</div>
-            </div>
-          ) : (
-            <EditTransactionForm
-              form={form}
-              onSubmit={onSubmit}
-              updateTransactionMutation={updateTransactionMutation}
-              onOpenChange={onOpenChange}
-              ledgers={ledgers}
-              transaction={transactionWithRecurringData || null}
-            />
-          )}
+          <EditTransactionForm
+            form={form}
+            onSubmit={onSubmit}
+            updateTransactionMutation={updateTransactionMutation}
+            onOpenChange={onOpenChange}
+            ledgers={ledgers}
+            transaction={transaction}
+          />
         </DialogContent>
       </Dialog>
     );
@@ -508,21 +492,15 @@ export function EditTransactionDialog({
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4 overflow-y-auto flex-1">
-          {isLoadingTransaction ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="text-sm text-muted-foreground">Loading...</div>
-            </div>
-          ) : (
-            <EditTransactionForm
-              form={form}
-              onSubmit={onSubmit}
-              updateTransactionMutation={updateTransactionMutation}
-              onOpenChange={onOpenChange}
-              ledgers={ledgers}
-              transaction={transactionWithRecurringData || null}
-              showCancelButton={false}
-            />
-          )}
+          <EditTransactionForm
+            form={form}
+            onSubmit={onSubmit}
+            updateTransactionMutation={updateTransactionMutation}
+            onOpenChange={onOpenChange}
+            ledgers={ledgers}
+            transaction={transaction}
+            showCancelButton={false}
+          />
         </div>
         <DrawerFooter className="pt-2 flex flex-row gap-2">
           <DrawerClose asChild>

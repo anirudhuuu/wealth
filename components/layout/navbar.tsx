@@ -4,25 +4,17 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { TooltipWrapper } from "@/components/ui/tooltip-wrapper";
+import { signOut } from "@/lib/actions/auth-actions";
 import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
 export function Navbar() {
-  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-  const handleSignOut = async () => {
-    try {
-      const response = await fetch("/api/auth/signout", {
-        method: "POST",
-      });
-
-      if (response.ok) {
-        router.push("/sign-in");
-        router.refresh();
-      }
-    } catch (error) {
-      console.error("Sign out error:", error);
-    }
+  const handleSignOut = () => {
+    startTransition(async () => {
+      await signOut();
+    });
   };
 
   return (
@@ -43,9 +35,11 @@ export function Navbar() {
               variant="ghost"
               size="sm"
               onClick={handleSignOut}
+              disabled={isPending}
               className="gap-2"
             >
               <LogOut className="h-4 w-4" />
+              {isPending && <span className="text-xs">...</span>}
             </Button>
           </TooltipWrapper>
         </div>
