@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { NotFoundError, ValidationError } from "../errors";
+import { ValidationError } from "../errors";
 import { CreateProfileInput, Profile, UpdateProfileInput } from "../types";
 import { BaseRepository } from "./base-repository";
 
@@ -40,7 +40,6 @@ export class UserRepository extends BaseRepository<Profile> {
       id: userId,
       email: input.email.trim(),
       display_name: input.displayName?.trim() || null,
-      is_admin: input.isAdmin || false,
     };
 
     return this.executeMutation(
@@ -65,9 +64,6 @@ export class UserRepository extends BaseRepository<Profile> {
     if (input.displayName !== undefined) {
       updateData.display_name = input.displayName?.trim() || null;
     }
-    if (input.isAdmin !== undefined) {
-      updateData.is_admin = input.isAdmin;
-    }
 
     return this.executeMutation(
       async () =>
@@ -81,20 +77,6 @@ export class UserRepository extends BaseRepository<Profile> {
     );
   }
 
-  async isAdmin(userId: string): Promise<boolean> {
-    await this.validateUser(userId);
-
-    try {
-      const profile = await this.getProfile(userId);
-      return profile.is_admin;
-    } catch (error) {
-      if (error instanceof NotFoundError) {
-        return false;
-      }
-      throw error;
-    }
-  }
-
   async getAllUsers(): Promise<Profile[]> {
     return this.executeQueryList(
       async () =>
@@ -103,48 +85,6 @@ export class UserRepository extends BaseRepository<Profile> {
           .select("*")
           .order("created_at", { ascending: false }),
       "fetch all users"
-    );
-  }
-
-  async getAdmins(): Promise<Profile[]> {
-    return this.executeQueryList(
-      async () =>
-        await this.supabase
-          .from("profiles")
-          .select("*")
-          .eq("is_admin", true)
-          .order("created_at", { ascending: false }),
-      "fetch admin users"
-    );
-  }
-
-  async promoteToAdmin(userId: string): Promise<Profile> {
-    await this.validateUser(userId);
-
-    return this.executeMutation(
-      async () =>
-        await this.supabase
-          .from("profiles")
-          .update({ is_admin: true })
-          .eq("id", userId)
-          .select()
-          .single(),
-      "promote user to admin"
-    );
-  }
-
-  async demoteFromAdmin(userId: string): Promise<Profile> {
-    await this.validateUser(userId);
-
-    return this.executeMutation(
-      async () =>
-        await this.supabase
-          .from("profiles")
-          .update({ is_admin: false })
-          .eq("id", userId)
-          .select()
-          .single(),
-      "demote user from admin"
     );
   }
 

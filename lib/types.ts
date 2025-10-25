@@ -2,7 +2,6 @@ export interface Profile {
   id: string;
   email: string;
   display_name: string | null;
-  is_admin: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -125,12 +124,10 @@ export interface UpdateTransactionInput {
 export interface CreateProfileInput {
   email: string;
   displayName?: string | null;
-  isAdmin?: boolean;
 }
 
 export interface UpdateProfileInput {
   displayName?: string | null;
-  isAdmin?: boolean;
 }
 
 // Filter types

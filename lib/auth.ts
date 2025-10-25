@@ -32,8 +32,3 @@ export async function getProfile(userId: string) {
 
   return profile;
 }
-
-export async function isAdmin(userId: string) {
-  const profile = await getProfile(userId);
-  return profile?.is_admin ?? false;
-}
