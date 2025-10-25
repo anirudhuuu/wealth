@@ -11,9 +11,10 @@ function LogoIllustration() {
   return (
     <div className="relative h-full w-full group">
       <Image
-        src="/login-logo.png"
-        alt="Wealth Logo"
         fill
+        alt="Wealth Logo"
+        src="/login-logo.webp"
+        quality={100}
         className="object-cover object-center grayscale group-hover:grayscale-0 transition-all duration-300"
       />
     </div>

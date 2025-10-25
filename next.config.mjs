@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    unoptimized: true,
-  },
-}
+  // Image optimization is now enabled for better performance
+};
 
-export default nextConfig
+export default nextConfig;

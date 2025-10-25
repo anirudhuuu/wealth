@@ -13,7 +13,7 @@ A personal finance management application that helps you track expenses, manage 
 
 **Budget Management**
 
-- Create multiple budget books for different purposes
+- Create multiple ledgers for different purposes
 - Organize expenses by personal, family, or loan categories
 - Monitor spending against budget limits
 - Track income and expense flows
