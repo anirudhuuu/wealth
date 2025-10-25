@@ -119,7 +119,7 @@ function EditAssetForm({
           )}
         />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name="type"
@@ -131,7 +131,7 @@ function EditAssetForm({
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select asset type" />
                     </SelectTrigger>
                   </FormControl>
@@ -161,7 +161,7 @@ function EditAssetForm({
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select currency" />
                     </SelectTrigger>
                   </FormControl>
@@ -178,7 +178,7 @@ function EditAssetForm({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name="currentValue"
@@ -218,7 +218,7 @@ function EditAssetForm({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name="purchaseDate"
@@ -275,23 +275,28 @@ function EditAssetForm({
           )}
         />
 
-        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button type="submit" disabled={updateAssetMutation.isPending}>
-            {updateAssetMutation.isPending
-              ? "Saving changes..."
-              : "Update Asset"}
-          </Button>
-          {showCancelButton && (
+        {showCancelButton && (
+          <div className="flex flex-row gap-2">
+            <Button
+              type="submit"
+              disabled={updateAssetMutation.isPending}
+              className="flex-1"
+            >
+              {updateAssetMutation.isPending
+                ? "Saving changes..."
+                : "Update Asset"}
+            </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={updateAssetMutation.isPending}
+              className="flex-1"
             >
               Cancel
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </form>
     </Form>
   );
@@ -416,12 +421,24 @@ export function EditAssetDialog({
             showCancelButton={false}
           />
         </div>
-        <DrawerFooter className="pt-2">
+        <DrawerFooter className="pt-2 flex flex-row gap-2">
           <DrawerClose asChild>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="flex-1">
               Cancel
             </Button>
           </DrawerClose>
+          <Button
+            type="submit"
+            disabled={updateAssetMutation.isPending}
+            className="flex-1"
+            onClick={() => {
+              form.handleSubmit(onSubmit)();
+            }}
+          >
+            {updateAssetMutation.isPending
+              ? "Saving changes..."
+              : "Update Asset"}
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

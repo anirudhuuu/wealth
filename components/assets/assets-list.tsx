@@ -34,7 +34,7 @@ import type { Asset } from "@/lib/types";
 import { formatCurrency, parseDateFromDatabase } from "@/lib/utils";
 import {
   ChevronDown,
-  ChevronRight,
+  ChevronUp,
   Coins,
   Edit,
   Plus,
@@ -305,9 +305,9 @@ export function AssetsList({ assets }: AssetsListProps) {
                           className="h-6 w-6 p-0 hover:bg-transparent flex-shrink-0"
                         >
                           {isExpanded ? (
-                            <ChevronDown className="h-4 w-4" />
+                            <ChevronUp className="h-4 w-4" />
                           ) : (
-                            <ChevronRight className="h-4 w-4" />
+                            <ChevronDown className="h-4 w-4" />
                           )}
                         </Button>
                         <h3 className="font-semibold">
@@ -484,13 +484,13 @@ export function AssetsList({ assets }: AssetsListProps) {
                         </div>
                       )}
                     </div>
-                    {/* Action buttons at bottom */}(
+                    {/* Action buttons at bottom */}
                     <div className="flex justify-end gap-2 mt-3 pt-3 border-t">
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => setEditingAsset(asset)}
-                        className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                        className="h-8 w-8 p-0"
                         title="Edit asset"
                       >
                         <Edit className="h-4 w-4" />
@@ -519,16 +519,17 @@ export function AssetsList({ assets }: AssetsListProps) {
                               <strong>This action cannot be undone.</strong>
                             </AlertDialogDescription>
                           </AlertDialogHeader>
-                          <AlertDialogFooter>
+                          <AlertDialogFooter className="flex flex-row gap-2">
                             <AlertDialogCancel
                               disabled={deletingAssetId === asset.id}
+                              className="flex-1"
                             >
                               Cancel
                             </AlertDialogCancel>
                             <AlertDialogAction
                               onClick={() => handleDeleteAsset(asset.id)}
                               disabled={deletingAssetId === asset.id}
-                              className="bg-red-600 hover:bg-red-700"
+                              className="bg-red-600 hover:bg-red-700 flex-1"
                             >
                               {deletingAssetId === asset.id
                                 ? "Removing..."
