@@ -26,7 +26,15 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       async () =>
         await this.supabase
           .from("transactions")
-          .select("*")
+          .select(
+            `
+            *,
+            recurring_transactions!template_id (
+              frequency,
+              end_date
+            )
+          `
+          )
           .eq("user_id", userId)
           .order("date", { ascending: false }),
       "fetch transactions by user"
@@ -68,7 +76,15 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       async () =>
         await this.supabase
           .from("transactions")
-          .select("*")
+          .select(
+            `
+            *,
+            recurring_transactions!template_id (
+              frequency,
+              end_date
+            )
+          `
+          )
           .eq("ledger_id", ledgerId)
           .eq("user_id", userId)
           .order("date", { ascending: false }),
@@ -282,7 +298,15 @@ export class TransactionRepository extends BaseRepository<Transaction> {
 
     let query = this.supabase
       .from("transactions")
-      .select("*")
+      .select(
+        `
+        *,
+        recurring_transactions!template_id (
+          frequency,
+          end_date
+        )
+      `
+      )
       .eq("user_id", userId);
 
     if (filters.ledgerId) {

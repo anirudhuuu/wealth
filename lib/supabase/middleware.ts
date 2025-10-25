@@ -33,12 +33,18 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Redirect root to appropriate page based on auth status
+  if (request.nextUrl.pathname === "/") {
+    const url = request.nextUrl.clone();
+    url.pathname = user ? "/dashboard" : "/sign-in";
+    return NextResponse.redirect(url);
+  }
+
   // Redirect to sign-in if not authenticated and not on auth pages
   if (
     !user &&
     !request.nextUrl.pathname.startsWith("/sign-in") &&
-    !request.nextUrl.pathname.startsWith("/auth/callback") &&
-    request.nextUrl.pathname !== "/"
+    !request.nextUrl.pathname.startsWith("/auth/callback")
   ) {
     const url = request.nextUrl.clone();
     url.pathname = "/sign-in";
