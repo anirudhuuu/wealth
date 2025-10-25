@@ -381,11 +381,25 @@ export function AddTransactionDialog({
     },
   });
 
-  // Set default ledger when dialog opens and ledgers are available
+  // Reset form and set default ledger when dialog opens
   useEffect(() => {
-    if (open && ledgers.length > 0) {
-      const currentLedgerId = form.getValues("ledger_id");
-      if (!currentLedgerId) {
+    if (open) {
+      // Reset form to default values when dialog opens
+      form.reset({
+        ledger_id: "",
+        date: new Date(),
+        description: "",
+        category: "",
+        amount: "",
+        type: "expense",
+        notes: "",
+        is_recurring: false,
+        recurring_frequency: undefined,
+        recurring_end_date: undefined,
+      });
+
+      // Set default ledger if available
+      if (ledgers.length > 0) {
         form.setValue("ledger_id", ledgers[0].id);
       }
     }
@@ -412,7 +426,6 @@ export function AddTransactionDialog({
       },
       {
         onSuccess: () => {
-          form.reset();
           onOpenChange(false);
         },
       }

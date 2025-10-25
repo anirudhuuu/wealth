@@ -29,6 +29,11 @@ export interface Transaction {
   template_id?: string | null;
   created_at: string;
   updated_at: string;
+  // Recurring data (only present when template_id exists)
+  recurring_transactions?: {
+    frequency: "weekly" | "monthly" | "yearly";
+    end_date: string | null;
+  } | null;
 }
 
 export interface Asset {

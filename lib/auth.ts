@@ -26,7 +26,6 @@ export async function getProfile(userId: string) {
     .single();
 
   if (error) {
-    console.error("Error fetching profile:", error);
     return null;
   }
 

@@ -41,7 +41,7 @@ import { useTransaction, useUpdateTransaction } from "@/hooks/use-transactions";
 import type { Ledger, Transaction } from "@/lib/types";
 import { parseAndRoundAmount, parseDateFromDatabase } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
@@ -123,7 +123,11 @@ function EditTransactionForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Budget</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  key={field.value} // Force re-render when value changes
+                  onValueChange={field.onChange}
+                  value={field.value || ""}
+                >
                   <FormControl>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select a budget book" />
@@ -364,6 +368,7 @@ export function EditTransactionDialog({
 }: EditTransactionDialogProps) {
   const updateTransactionMutation = useUpdateTransaction();
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [isClosing, setIsClosing] = useState(false);
 
   // Fetch transaction with recurring data when dialog opens
   const {
@@ -410,9 +415,19 @@ export function EditTransactionDialog({
           : undefined,
       };
 
-      form.reset(formData);
+      // Small delay to ensure proper rendering
+      setTimeout(() => {
+        form.reset(formData);
+      }, 10);
     }
-  }, [transactionWithRecurringData, form]);
+  }, [transactionWithRecurringData, form, ledgers]);
+
+  // Reset isClosing state when dialog closes
+  useEffect(() => {
+    if (!open) {
+      setIsClosing(false);
+    }
+  }, [open]);
 
   const onSubmit = async (data: TransactionFormData) => {
     if (!transactionWithRecurringData) return;
@@ -440,6 +455,7 @@ export function EditTransactionDialog({
       },
       {
         onSuccess: () => {
+          setIsClosing(true);
           onOpenChange(false);
         },
       }
@@ -448,7 +464,7 @@ export function EditTransactionDialog({
 
   if (isDesktop) {
     return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open && !isClosing} onOpenChange={onOpenChange}>
         <DialogContent
           className="max-h-[90vh] overflow-y-auto"
           onEscapeKeyDown={(e) => e.preventDefault()}
@@ -461,21 +477,27 @@ export function EditTransactionDialog({
               Update the details for this payment.
             </DialogDescription>
           </DialogHeader>
-          <EditTransactionForm
-            form={form}
-            onSubmit={onSubmit}
-            updateTransactionMutation={updateTransactionMutation}
-            onOpenChange={onOpenChange}
-            ledgers={ledgers}
-            transaction={transactionWithRecurringData || null}
-          />
+          {isLoadingTransaction ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-sm text-muted-foreground">Loading...</div>
+            </div>
+          ) : (
+            <EditTransactionForm
+              form={form}
+              onSubmit={onSubmit}
+              updateTransactionMutation={updateTransactionMutation}
+              onOpenChange={onOpenChange}
+              ledgers={ledgers}
+              transaction={transactionWithRecurringData || null}
+            />
+          )}
         </DialogContent>
       </Dialog>
     );
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
+    <Drawer open={open && !isClosing} onOpenChange={onOpenChange}>
       <DrawerContent className="max-h-[90vh]">
         <DrawerHeader className="text-left">
           <DrawerTitle>Edit Payment</DrawerTitle>
@@ -484,15 +506,21 @@ export function EditTransactionDialog({
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4 overflow-y-auto flex-1">
-          <EditTransactionForm
-            form={form}
-            onSubmit={onSubmit}
-            updateTransactionMutation={updateTransactionMutation}
-            onOpenChange={onOpenChange}
-            ledgers={ledgers}
-            transaction={transactionWithRecurringData || null}
-            showCancelButton={false}
-          />
+          {isLoadingTransaction ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-sm text-muted-foreground">Loading...</div>
+            </div>
+          ) : (
+            <EditTransactionForm
+              form={form}
+              onSubmit={onSubmit}
+              updateTransactionMutation={updateTransactionMutation}
+              onOpenChange={onOpenChange}
+              ledgers={ledgers}
+              transaction={transactionWithRecurringData || null}
+              showCancelButton={false}
+            />
+          )}
         </div>
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>

@@ -16,8 +16,6 @@ export abstract class BaseRepository<T> {
     error: SupabaseError,
     operation: string
   ): Promise<never> {
-    console.error(`System error during ${operation}:`, error);
-
     if (error.code === "PGRST116") {
       throw new NotFoundError(this.getTableName());
     }

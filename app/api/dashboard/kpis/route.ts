@@ -127,7 +127,6 @@ export async function GET(request: NextRequest) {
       timeRange,
     });
   } catch (error) {
-    console.error("Dashboard KPIs error:", error);
     return NextResponse.json(
       {
         error:
