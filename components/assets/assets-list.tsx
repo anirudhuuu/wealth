@@ -202,7 +202,7 @@ export function AssetsList({ assets }: AssetsListProps) {
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search assets by name, type, or notes..."
+                  placeholder="Search investments by name, type, or notes..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -332,7 +332,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                       <div className="text-right min-w-0 flex-shrink-0">
                         <div
                           className={`flex items-center gap-1 text-base md:text-lg font-bold ${
-                            gain >= 0 ? "text-green-600" : "text-amber-600"
+                            gain >= 0 ? "text-green-600" : "text-red-600"
                           }`}
                         >
                           {gain >= 0 ? (
@@ -352,7 +352,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                         </div>
                         <div
                           className={`text-xs md:text-sm truncate ${
-                            gain >= 0 ? "text-green-600" : "text-amber-600"
+                            gain >= 0 ? "text-green-600" : "text-red-600"
                           }`}
                           title={`${
                             gain >= 0 ? "+" : ""
@@ -444,9 +444,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                               </span>
                               <span
                                 className={`font-medium truncate ${
-                                  gain >= 0
-                                    ? "text-green-600"
-                                    : "text-amber-600"
+                                  gain >= 0 ? "text-green-600" : "text-red-600"
                                 }`}
                                 title={`${gain >= 0 ? "+" : ""}${formatCurrency(
                                   Math.abs(gain)

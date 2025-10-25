@@ -212,7 +212,7 @@ export function TransactionsList({
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search transactions..."
+                placeholder="Search payments by description or category..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -434,9 +434,9 @@ export function TransactionsList({
                                   variant="ghost"
                                   size="sm"
                                   disabled={deleteTransactionMutation.isPending}
-                                  className="h-7 w-7 sm:h-8 sm:w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
                                 >
-                                  <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                                  <Trash2 className="h-4 w-4" />
                                 </Button>
                               </AlertDialogTrigger>
                               <AlertDialogContent>

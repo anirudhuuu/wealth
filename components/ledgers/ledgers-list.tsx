@@ -20,6 +20,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import {
   Drawer,
   DrawerClose,
   DrawerContent,
@@ -341,13 +348,21 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
         <CardContent>
           <div className="space-y-4">
             {ledgers.length === 0 ? (
-              <div className="py-8 text-center text-sm text-muted-foreground">
-                <Wallet className="mx-auto mb-2 h-8 w-8 opacity-50" />
-                <p>No ledgers yet</p>
-                <p className="mt-1">
-                  Create your first budget book to get started
-                </p>
-              </div>
+              <Empty>
+                <EmptyMedia variant="icon">
+                  <Wallet className="h-8 w-8 opacity-50" />
+                </EmptyMedia>
+                <EmptyContent>
+                  <EmptyTitle>No ledgers yet</EmptyTitle>
+                  <EmptyDescription>
+                    Create your first budget book to get started
+                  </EmptyDescription>
+                  <Button size="sm" onClick={() => setShowAddDialog(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Ledger
+                  </Button>
+                </EmptyContent>
+              </Empty>
             ) : (
               ledgers.map((ledger) => {
                 const spending = getLedgerSpending(ledger.id);

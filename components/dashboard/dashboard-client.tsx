@@ -38,11 +38,7 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard">Summary</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Overview</BreadcrumbPage>
+              <BreadcrumbPage>Summary</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -143,10 +139,11 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
           {/* Investment Performance Row */}
           <div className="grid gap-4 md:grid-cols-3">
             <Card>
-              <CardHeader className="pb-2">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Portfolio Value
                 </CardTitle>
+                <Wallet className="h-4 w-4 text-purple-600" />
               </CardHeader>
               <CardContent>
                 <div
@@ -162,10 +159,15 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
             </Card>
 
             <Card>
-              <CardHeader className="pb-2">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Total Profit/Loss
                 </CardTitle>
+                {kpis.totalProfit >= 0 ? (
+                  <TrendingUp className="h-4 w-4 text-green-600" />
+                ) : (
+                  <TrendingDown className="h-4 w-4 text-red-600" />
+                )}
               </CardHeader>
               <CardContent>
                 <div
@@ -193,10 +195,11 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
             </Card>
 
             <Card>
-              <CardHeader className="pb-2">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Average Return
                 </CardTitle>
+                <TrendingUpDown className="h-4 w-4 text-blue-600" />
               </CardHeader>
               <CardContent>
                 <div
