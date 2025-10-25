@@ -41,7 +41,15 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       async () =>
         await this.supabase
           .from("transactions")
-          .select("*")
+          .select(
+            `
+            *,
+            recurring_transactions!template_id (
+              frequency,
+              end_date
+            )
+          `
+          )
           .eq("id", id)
           .eq("user_id", userId)
           .single(),

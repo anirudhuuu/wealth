@@ -37,7 +37,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { useUpdateTransaction } from "@/hooks/use-transactions";
+import { useTransaction, useUpdateTransaction } from "@/hooks/use-transactions";
 import type { Ledger, Transaction } from "@/lib/types";
 import { parseAndRoundAmount, parseDateFromDatabase } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -365,6 +365,12 @@ export function EditTransactionDialog({
   const updateTransactionMutation = useUpdateTransaction();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
+  // Fetch transaction with recurring data when dialog opens
+  const {
+    data: transactionWithRecurringData,
+    isLoading: isLoadingTransaction,
+  } = useTransaction(transaction?.id || "");
+
   const form = useForm<TransactionFormData>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
@@ -383,28 +389,37 @@ export function EditTransactionDialog({
 
   // Populate form when transaction changes
   useEffect(() => {
-    if (transaction) {
-      form.reset({
-        ledger_id: transaction.ledger_id,
-        date: parseDateFromDatabase(transaction.date),
-        description: transaction.description,
-        category: transaction.category,
-        amount: transaction.amount.toString(),
-        type: transaction.type,
-        notes: transaction.notes || "",
-        is_recurring: !!transaction.template_id,
-        recurring_frequency: undefined,
-        recurring_end_date: undefined,
-      });
+    if (transactionWithRecurringData) {
+      const formData = {
+        ledger_id: transactionWithRecurringData.ledger_id,
+        date: parseDateFromDatabase(transactionWithRecurringData.date),
+        description: transactionWithRecurringData.description,
+        category: transactionWithRecurringData.category,
+        amount: transactionWithRecurringData.amount.toString(),
+        type: transactionWithRecurringData.type,
+        notes: transactionWithRecurringData.notes || "",
+        is_recurring: !!transactionWithRecurringData.template_id,
+        recurring_frequency:
+          transactionWithRecurringData.recurring_transactions?.frequency ||
+          undefined,
+        recurring_end_date: transactionWithRecurringData.recurring_transactions
+          ?.end_date
+          ? parseDateFromDatabase(
+              transactionWithRecurringData.recurring_transactions.end_date
+            )
+          : undefined,
+      };
+
+      form.reset(formData);
     }
-  }, [transaction, form]);
+  }, [transactionWithRecurringData, form]);
 
   const onSubmit = async (data: TransactionFormData) => {
-    if (!transaction) return;
+    if (!transactionWithRecurringData) return;
 
     updateTransactionMutation.mutate(
       {
-        id: transaction.id,
+        id: transactionWithRecurringData.id,
         input: {
           ledgerId: data.ledger_id,
           date: data.date,
@@ -452,7 +467,7 @@ export function EditTransactionDialog({
             updateTransactionMutation={updateTransactionMutation}
             onOpenChange={onOpenChange}
             ledgers={ledgers}
-            transaction={transaction}
+            transaction={transactionWithRecurringData || null}
           />
         </DialogContent>
       </Dialog>
@@ -475,7 +490,7 @@ export function EditTransactionDialog({
             updateTransactionMutation={updateTransactionMutation}
             onOpenChange={onOpenChange}
             ledgers={ledgers}
-            transaction={transaction}
+            transaction={transactionWithRecurringData || null}
             showCancelButton={false}
           />
         </div>
