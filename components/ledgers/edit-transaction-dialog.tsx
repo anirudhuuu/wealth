@@ -415,10 +415,7 @@ export function EditTransactionDialog({
           : undefined,
       };
 
-      // Small delay to ensure proper rendering
-      setTimeout(() => {
-        form.reset(formData);
-      }, 10);
+      form.reset(formData);
     }
   }, [transactionWithRecurringData, form, ledgers]);
 

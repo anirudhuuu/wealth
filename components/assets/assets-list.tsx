@@ -44,6 +44,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useDebounce } from "@/hooks/use-performance";
 import { AddAssetDialog } from "./add-asset-dialog";
 import { EditAssetDialog } from "./edit-asset-dialog";
 
@@ -65,13 +66,16 @@ export function AssetsList({ assets }: AssetsListProps) {
   // React Query mutations
   const deleteAssetMutation = useDeleteAsset();
 
+  // Debounce search query to improve performance
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
   // Filter and sort assets
   const filteredAndSortedAssets = useMemo(() => {
     let filtered = assets;
 
     // Apply search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
+    if (debouncedSearchQuery.trim()) {
+      const query = debouncedSearchQuery.toLowerCase();
       filtered = assets.filter(
         (asset) =>
           asset.name.toLowerCase().includes(query) ||
@@ -113,7 +117,7 @@ export function AssetsList({ assets }: AssetsListProps) {
     });
 
     return filtered;
-  }, [assets, searchQuery, sortBy, sortOrder]);
+  }, [assets, debouncedSearchQuery, sortBy, sortOrder]);
 
   const toggleAssetExpansion = (assetId: string) => {
     setExpandedAssets((prev) => {
