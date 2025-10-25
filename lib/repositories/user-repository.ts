@@ -91,16 +91,6 @@ export class UserRepository extends BaseRepository<Profile> {
   async deleteUser(userId: string): Promise<void> {
     await this.validateUser(userId);
 
-    // Delete user settings first
-    const { error: settingsError } = await this.supabase
-      .from("user_settings")
-      .delete()
-      .eq("user_id", userId);
-
-    if (settingsError) {
-      await this.handleError(settingsError, "delete user settings");
-    }
-
     // Delete profile
     const { error: profileError } = await this.supabase
       .from("profiles")
