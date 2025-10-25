@@ -1,37 +1,45 @@
-# Wealth
+# Expense Tracker
 
-A simple web app to help you track your money, expenses, and investments.
+A personal finance management application that helps you track expenses, manage budgets, and monitor investments in one place.
 
-## What You Can Do
+## Features
 
-- **See Your Money** - View all your finances in one place with easy-to-read charts
-- **Track Spending** - Organize your expenses by categories like groceries, rent, entertainment
-- **Monitor Investments** - Keep track of your stocks, mutual funds, gold, and other assets
-- **Personalize** - Set your preferred currency and customize the app to your liking
+**Expense Management**
 
-## What Makes This App Special
+- Track daily expenses with categories and descriptions
+- Set up recurring transactions for bills and subscriptions
+- Filter and search through transaction history
+- View spending patterns with visual charts
 
-- **Safe & Secure** - Your data is protected with Google sign-in
-- **Easy to Use** - Simple charts and graphs show your money at a glance
-- **Works Everywhere** - Use it on your phone, tablet, or computer
-- **Your Currency** - Track money in dollars, euros, rupees, or any currency you prefer
-- **Investment Tracking** - See how your stocks and investments are doing
-- **Dark Mode** - Switch between light and dark themes for comfortable viewing
+**Budget Management**
 
-## For Developers
+- Create multiple budget books for different purposes
+- Organize expenses by personal, family, or loan categories
+- Monitor spending against budget limits
+- Track income and expense flows
 
-This app is built with modern web technologies:
+**Investment Tracking**
 
-- Next.js and React for the user interface
-- Supabase for secure data storage
-- Tailwind CSS for styling
-- Google OAuth for secure login
+- Record investments across different asset types
+- Track current value vs purchase price
+- Monitor profit and loss on investments
+- Support for stocks, mutual funds, gold, real estate, and more
 
-## Setup Requirements
+**User Experience**
 
-You'll need these account details to run the app:
+- Clean, responsive design that works on all devices
+- Dark and light theme support
+- Secure Google OAuth authentication
+- Real-time data synchronization
 
-```
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies: `bun install`
+3. Set up environment variables:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+4. Run database migrations from the `scripts/` directory
+5. Start the development server: `bun dev`
