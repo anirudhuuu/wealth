@@ -62,6 +62,5 @@ export function useUserWithProfile() {
     profile: profileQuery.data,
     isLoading: userQuery.isLoading || profileQuery.isLoading,
     error: userQuery.error || profileQuery.error,
-    isAdmin: profileQuery.data?.is_admin ?? false,
   };
 }
