@@ -39,6 +39,8 @@ import {
   Edit,
   Plus,
   Search,
+  SortAsc,
+  SortDesc,
   Trash2,
   TrendingDown,
   TrendingUp,
@@ -227,19 +229,23 @@ export function AssetsList({ assets }: AssetsListProps) {
                   </SelectContent>
                 </Select>
 
-                {/* Sort Order */}
-                <Select
-                  value={sortOrder}
-                  onValueChange={(value: "asc" | "desc") => setSortOrder(value)}
+                {/* Sort Order - Icon Button */}
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+                  }
+                  className="w-[40px] sm:w-[44px] h-9 flex-shrink-0 p-0"
+                  title={
+                    sortOrder === "asc" ? "Sort ascending" : "Sort descending"
+                  }
                 >
-                  <SelectTrigger className="w-[130px] flex-shrink-0">
-                    <SelectValue placeholder="Order" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="asc">Low to High</SelectItem>
-                    <SelectItem value="desc">High to Low</SelectItem>
-                  </SelectContent>
-                </Select>
+                  {sortOrder === "asc" ? (
+                    <SortAsc className="h-4 w-4" />
+                  ) : (
+                    <SortDesc className="h-4 w-4" />
+                  )}
+                </Button>
               </div>
             </div>
 

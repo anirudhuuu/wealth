@@ -51,6 +51,8 @@ import {
   Receipt,
   Repeat,
   Search,
+  SortAsc,
+  SortDesc,
   Trash2,
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -190,14 +192,18 @@ export function TransactionsList({
     <>
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>All Payments</CardTitle>
-            <div className="flex items-center gap-2">
-              <Button size="sm" onClick={() => setShowAddDialog(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add
-              </Button>
-            </div>
+          <div className="flex items-center justify-between gap-2">
+            <CardTitle className="text-lg sm:text-xl flex-shrink-0">
+              All Payments
+            </CardTitle>
+            <Button
+              size="sm"
+              onClick={() => setShowAddDialog(true)}
+              className="flex-shrink-0"
+            >
+              <Plus className="mr-1 sm:mr-2 h-4 w-4" />
+              Add
+            </Button>
           </div>
 
           {/* Search and Filter Controls */}
@@ -217,13 +223,13 @@ export function TransactionsList({
             </div>
 
             {/* Filter Controls Row */}
-            <div className="flex flex-row gap-2 overflow-x-auto pb-2">
+            <div className="flex flex-row gap-1 sm:gap-2 overflow-x-auto pb-2">
               {/* Ledger Filter */}
               <Select
                 value={selectedLedgerId}
                 onValueChange={handleLedgerFilterChange}
               >
-                <SelectTrigger className="w-[140px] sm:w-[160px] flex-shrink-0">
+                <SelectTrigger className="w-[120px] sm:w-[140px] flex-shrink-0">
                   <SelectValue placeholder="All" />
                 </SelectTrigger>
                 <SelectContent>
@@ -246,7 +252,7 @@ export function TransactionsList({
                   setCurrentPage(1);
                 }}
               >
-                <SelectTrigger className="w-[100px] sm:w-[120px] flex-shrink-0">
+                <SelectTrigger className="w-[90px] sm:w-[100px] flex-shrink-0">
                   <SelectValue placeholder="Date" />
                 </SelectTrigger>
                 <SelectContent>
@@ -258,22 +264,24 @@ export function TransactionsList({
                 </SelectContent>
               </Select>
 
-              {/* Sort Order */}
-              <Select
-                value={sortOrder}
-                onValueChange={(value: "asc" | "desc") => {
-                  setSortOrder(value);
+              {/* Sort Order - Icon Button */}
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSortOrder(sortOrder === "asc" ? "desc" : "asc");
                   setCurrentPage(1);
                 }}
+                className="w-[40px] sm:w-[44px] h-9 flex-shrink-0 p-0"
+                title={
+                  sortOrder === "asc" ? "Sort ascending" : "Sort descending"
+                }
               >
-                <SelectTrigger className="w-[110px] sm:w-[130px] flex-shrink-0">
-                  <SelectValue placeholder="High to Low" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="asc">Low to High</SelectItem>
-                  <SelectItem value="desc">High to Low</SelectItem>
-                </SelectContent>
-              </Select>
+                {sortOrder === "asc" ? (
+                  <SortAsc className="h-4 w-4" />
+                ) : (
+                  <SortDesc className="h-4 w-4" />
+                )}
+              </Button>
             </div>
           </div>
 
