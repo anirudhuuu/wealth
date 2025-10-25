@@ -1,9 +1,9 @@
-import { AppLayoutClient } from "@/components/layout/app-layout-client";
+import { AppLayout } from "@/components/layout/app-layout";
 import type { Metadata } from "next";
 import type React from "react";
 
 export const metadata: Metadata = {
-  title: "Budget Books - Wealth",
+  title: "Ledgers - Wealth",
   description: "Manage your ledgers and transactions",
 };
 
@@ -12,5 +12,5 @@ export default function LedgersLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <AppLayoutClient>{children}</AppLayoutClient>;
+  return <AppLayout>{children}</AppLayout>;
 }

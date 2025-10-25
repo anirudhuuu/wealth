@@ -1,117 +1,16 @@
-"use client";
+import { SettingsClient } from "@/components/settings/settings-client";
+import { getProfile } from "@/lib/actions/user-actions";
+import { getUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
-import { ProfileSettings } from "@/components/settings/profile-settings";
-import { SettingsSkeleton } from "@/components/settings/settings-skeleton";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { useUserWithProfile } from "@/hooks/use-user";
-
-export default function SettingsPage() {
-  const { user, profile, isLoading, error } = useUserWithProfile();
-
-  if (isLoading) {
-    return <SettingsSkeleton />;
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-6">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard">Summary</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Settings</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-          <p className="text-muted-foreground">
-            Manage your account and preferences
-          </p>
-        </div>
-        <div className="text-center py-8">
-          <p className="text-red-600">
-            Failed to load settings data. Please try again.
-          </p>
-        </div>
-      </div>
-    );
-  }
+export default async function SettingsPage() {
+  const user = await getUser();
 
   if (!user) {
-    return (
-      <div className="space-y-6">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard">Summary</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Settings</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-          <p className="text-muted-foreground">
-            Manage your account and preferences
-          </p>
-        </div>
-        <div className="text-center py-8">
-          <p className="text-muted-foreground">
-            Please sign in to view your settings.
-          </p>
-        </div>
-      </div>
-    );
+    redirect("/sign-in");
   }
 
-  return (
-    <div className="space-y-6">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard">Summary</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Settings</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-          <p className="text-muted-foreground">
-            Manage your account and preferences
-          </p>
-        </div>
-      </div>
+  const profile = await getProfile();
 
-      {/* Profile Information */}
-      <div>
-        <ProfileSettings
-          user={user}
-          profile={
-            profile
-              ? {
-                  display_name: profile.display_name,
-                }
-              : null
-          }
-        />
-      </div>
-    </div>
-  );
+  return <SettingsClient user={user} profile={profile} />;
 }

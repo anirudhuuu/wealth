@@ -1,4 +1,4 @@
-import { AppLayoutClient } from "@/components/layout/app-layout-client";
+import { AppLayout } from "@/components/layout/app-layout";
 import type { Metadata } from "next";
 import type React from "react";
 
@@ -12,5 +12,5 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <AppLayoutClient>{children}</AppLayoutClient>;
+  return <AppLayout>{children}</AppLayout>;
 }
