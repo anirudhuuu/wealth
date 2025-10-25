@@ -45,16 +45,18 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="flex items-center gap-2 px-2 py-2">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 px-2 py-2 rounded-md transition-colors hover:bg-sidebar-accent"
+        >
           <div className="flex h-6 w-6 md:h-8 md:w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
             <Wallet className="h-3 w-3 md:h-4 md:w-4" />
           </div>
           <span className="text-base font-semibold md:text-lg">Wealth</span>
-        </div>
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          {/* <SidebarGroupLabel>Application</SidebarGroupLabel> */}
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
               {items.map((item) => (
