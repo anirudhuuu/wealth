@@ -4,7 +4,13 @@ import type React from "react";
 
 export const metadata: Metadata = {
   title: "Summary - Wealth",
-  description: "View your financial overview",
+  description:
+    "Complete financial overview - track your income, expenses, savings, investments, and portfolio performance all in one place",
+  openGraph: {
+    title: "Summary - Wealth",
+    description:
+      "Complete financial overview - track your income, expenses, savings, investments, and portfolio performance all in one place",
+  },
 };
 
 export default function DashboardLayout({

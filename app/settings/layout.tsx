@@ -4,7 +4,13 @@ import type React from "react";
 
 export const metadata: Metadata = {
   title: "Settings - Wealth",
-  description: "Manage your account settings",
+  description:
+    "Manage your account settings and preferences for Wealth expense tracker",
+  openGraph: {
+    title: "Settings - Wealth",
+    description:
+      "Manage your account settings and preferences for Wealth expense tracker",
+  },
 };
 
 export default function SettingsLayout({
