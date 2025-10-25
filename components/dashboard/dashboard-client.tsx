@@ -1,14 +1,6 @@
 "use client";
 
 import { DashboardCharts } from "@/components/dashboard/dashboard-charts";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { DashboardKPIs } from "@/lib/actions/dashboard-actions";
@@ -17,11 +9,11 @@ import type { User } from "@supabase/supabase-js";
 import {
   ArrowDownRight,
   ArrowUpRight,
+  PiggyBank,
   TrendingDown,
   TrendingUp,
-  Wallet,
-  PiggyBank,
   TrendingUpDown,
+  Wallet,
 } from "lucide-react";
 
 interface DashboardClientProps {
@@ -35,13 +27,6 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
   return (
     <div className="space-y-6">
       <div>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbPage>Summary</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
         <div className="flex items-center justify-between mt-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Summary</h1>
