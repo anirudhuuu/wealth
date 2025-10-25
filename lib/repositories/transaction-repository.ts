@@ -197,8 +197,9 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       updateData.notes = input.notes;
     }
 
-    // If this is a recurring transaction, create a recurring template
+    // Handle recurring transaction logic
     if (input.isRecurring && input.recurringFrequency) {
+      // User wants to make this recurring - create a recurring template
       const recurringData = {
         user_id: userId,
         ledger_id: input.ledgerId || updateData.ledger_id,
@@ -232,6 +233,9 @@ export class TransactionRepository extends BaseRepository<Transaction> {
 
       // Add template_id to the transaction
       updateData.template_id = recurringTxn.id;
+    } else if (input.isRecurring === false) {
+      // User explicitly turned OFF recurring - remove template_id
+      updateData.template_id = null;
     }
 
     return this.executeMutation(
