@@ -3,7 +3,6 @@
 import { LedgersList } from "@/components/ledgers/ledgers-list";
 import { LedgersSkeleton } from "@/components/ledgers/ledgers-skeleton";
 import { TransactionsList } from "@/components/ledgers/transactions-list";
-import { SandboxBanner } from "@/components/sandbox-banner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,7 +16,7 @@ import { useTransactions } from "@/hooks/use-transactions";
 import { useUserWithProfile } from "@/hooks/use-user";
 
 export default function LedgersPage() {
-  const { user, isLoading: userLoading, isAdmin } = useUserWithProfile();
+  const { user, isLoading: userLoading } = useUserWithProfile();
   const {
     data: ledgers = [],
     isLoading: ledgersLoading,
@@ -52,11 +51,9 @@ export default function LedgersPage() {
         </Breadcrumb>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              Budget Books & Transactions
-            </h1>
+            <h1 className="text-3xl font-bold tracking-tight">Budget Books</h1>
             <p className="text-muted-foreground">
-              Manage your budget books and track transactions
+              Manage your budget books and track payments
             </p>
           </div>
         </div>
@@ -85,11 +82,9 @@ export default function LedgersPage() {
         </Breadcrumb>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              Budget Books & Transactions
-            </h1>
+            <h1 className="text-3xl font-bold tracking-tight">Budget Books</h1>
             <p className="text-muted-foreground">
-              Manage your budget books and track transactions
+              Manage your budget books and track payments
             </p>
           </div>
         </div>
@@ -117,34 +112,22 @@ export default function LedgersPage() {
       </Breadcrumb>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Budget Books & Transactions
-          </h1>
+          <h1 className="text-3xl font-bold tracking-tight">Budget Books</h1>
           <p className="text-muted-foreground">
-            Manage your financial ledgers and track transactions
+            Manage your financial ledgers and track payments
           </p>
         </div>
       </div>
 
-      {!isAdmin && <SandboxBanner />}
-
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Budget Books Section */}
         <div className="lg:col-span-1">
-          <LedgersList
-            ledgers={ledgers}
-            transactions={transactions}
-            isAdmin={isAdmin}
-          />
+          <LedgersList ledgers={ledgers} transactions={transactions} />
         </div>
 
         {/* Payments Section */}
         <div className="lg:col-span-2">
-          <TransactionsList
-            transactions={transactions}
-            ledgers={ledgers}
-            isAdmin={isAdmin}
-          />
+          <TransactionsList transactions={transactions} ledgers={ledgers} />
         </div>
       </div>
     </div>

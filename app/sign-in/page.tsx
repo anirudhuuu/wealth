@@ -100,10 +100,6 @@ export default function SignInPage() {
               </>
             )}
           </Button>
-          <p className="text-center text-xs text-muted-foreground">
-            Admin users get full access. Guest users can explore with sample
-            data.
-          </p>
         </CardContent>
       </Card>
     </div>

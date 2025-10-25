@@ -2,7 +2,6 @@
 
 import { AssetsList } from "@/components/assets/assets-list";
 import { AssetsSkeleton } from "@/components/assets/assets-skeleton";
-import { SandboxBanner } from "@/components/sandbox-banner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,7 +17,7 @@ import { formatCurrency, roundToTwoDecimals } from "@/lib/utils";
 import { TrendingDown, TrendingUp } from "lucide-react";
 
 export default function AssetsPage() {
-  const { user, isLoading: userLoading, isAdmin } = useUserWithProfile();
+  const { user, isLoading: userLoading } = useUserWithProfile();
   const { data: assets = [], isLoading: assetsLoading, error } = useAssets();
 
   const isLoading = userLoading || assetsLoading;
@@ -123,14 +122,16 @@ export default function AssetsPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Savings</h1>
-        <p className="text-muted-foreground">
-          Track your investments and wealth
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Savings & Investments
+          </h1>
+          <p className="text-muted-foreground">
+            Track your investments and wealth
+          </p>
+        </div>
       </div>
-
-      {!isAdmin && <SandboxBanner />}
 
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-3">
@@ -200,7 +201,9 @@ export default function AssetsPage() {
       </div>
 
       {/* Savings List */}
-      <AssetsList assets={assets} isAdmin={isAdmin} />
+      <div>
+        <AssetsList assets={assets} />
+      </div>
     </div>
   );
 }

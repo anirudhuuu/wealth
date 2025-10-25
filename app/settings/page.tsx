@@ -90,25 +90,28 @@ export default function SettingsPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your account and preferences
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+          <p className="text-muted-foreground">
+            Manage your account and preferences
+          </p>
+        </div>
       </div>
 
       {/* Profile Information */}
-      <ProfileSettings
-        user={user}
-        profile={
-          profile
-            ? {
-                display_name: profile.display_name,
-                is_admin: profile.is_admin,
-              }
-            : null
-        }
-      />
+      <div>
+        <ProfileSettings
+          user={user}
+          profile={
+            profile
+              ? {
+                  display_name: profile.display_name,
+                }
+              : null
+          }
+        />
+      </div>
     </div>
   );
 }

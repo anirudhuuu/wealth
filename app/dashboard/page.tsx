@@ -2,8 +2,6 @@
 
 import { DashboardCharts } from "@/components/dashboard/dashboard-charts";
 import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton";
-import { SandboxBanner } from "@/components/sandbox-banner";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Breadcrumb,
@@ -16,23 +14,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDashboardKPIs } from "@/hooks/use-dashboard";
 import { useUserWithProfile } from "@/hooks/use-user";
-import { exportAllDataToCsv } from "@/lib/csv-export";
 import { formatCurrency } from "@/lib/utils";
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  Download,
-  TrendingUp,
-  Wallet,
-} from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, TrendingUp, Wallet } from "lucide-react";
 
 export default function DashboardPage() {
-  const {
-    user,
-    profile,
-    isLoading: userLoading,
-    isAdmin,
-  } = useUserWithProfile();
+  const { user, profile, isLoading: userLoading } = useUserWithProfile();
   const {
     data: dashboardData,
     isLoading: dashboardLoading,
@@ -114,19 +100,8 @@ export default function DashboardPage() {
               Overview of your financial health
             </p>
           </div>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => exportAllDataToCsv(transactions, [], [])}
-            title="Export all data to CSV files"
-          >
-            <Download className="mr-2 h-4 w-4" />
-            Export All Data
-          </Button>
         </div>
       </div>
-
-      {!isAdmin && <SandboxBanner />}
 
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
