@@ -49,6 +49,7 @@ import {
   Edit,
   Plus,
   Receipt,
+  Repeat,
   Search,
   Trash2,
 } from "lucide-react";
@@ -324,7 +325,7 @@ export function TransactionsList({
                     <div className="flex items-start justify-between gap-2 sm:gap-3 min-w-0">
                       <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
                         <div
-                          className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full flex-shrink-0 ${
+                          className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full flex-shrink-0 relative ${
                             txn.type === "income"
                               ? "bg-green-100 text-green-600 dark:bg-green-950 dark:text-green-400"
                               : "bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-400"
@@ -334,6 +335,11 @@ export function TransactionsList({
                             <ArrowUpRight className="h-5 w-5 sm:h-6 sm:w-6" />
                           ) : (
                             <ArrowDownRight className="h-5 w-5 sm:h-6 sm:w-6" />
+                          )}
+                          {txn.template_id && (
+                            <div className="absolute -top-1 -right-1 h-4 w-4 bg-blue-500 rounded-full flex items-center justify-center">
+                              <Repeat className="h-2 w-2 text-white" />
+                            </div>
                           )}
                         </div>
                         <div className="flex-1 min-w-0 overflow-hidden">
@@ -360,6 +366,12 @@ export function TransactionsList({
                                 ? `${txn.category.substring(0, 15)}...`
                                 : txn.category}
                             </Badge>
+                            {txn.template_id && (
+                              <div className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400">
+                                <Repeat className="h-3 w-3" />
+                                <span>Recurring</span>
+                              </div>
+                            )}
                           </div>
                           <div className="text-xs sm:text-sm text-muted-foreground truncate">
                             {formatDate(txn.date)}

@@ -94,7 +94,7 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       throw new ValidationError("Transaction amount must be greater than 0");
     }
 
-    const transactionData = {
+    const transactionData: any = {
       user_id: userId,
       ledger_id: input.ledgerId,
       date: formatDateForDatabase(input.date),
@@ -104,6 +104,43 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       type: input.type,
       notes: input.notes,
     };
+
+    // If this is a recurring transaction, create a recurring template
+    if (input.isRecurring && input.recurringFrequency) {
+      const recurringData = {
+        user_id: userId,
+        ledger_id: input.ledgerId,
+        description: input.description.trim(),
+        category: input.category.trim(),
+        amount: input.amount,
+        type: input.type,
+        notes: input.notes,
+        frequency: input.recurringFrequency,
+        interval_count: 1,
+        start_date: formatDateForDatabase(input.date),
+        end_date: input.recurringEndDate
+          ? formatDateForDatabase(input.recurringEndDate)
+          : null,
+        next_due_date: formatDateForDatabase(input.date),
+        is_active: true,
+      };
+
+      // Create recurring transaction first
+      const { data: recurringTxn, error: recurringError } = await this.supabase
+        .from("recurring_transactions")
+        .insert(recurringData)
+        .select()
+        .single();
+
+      if (recurringError) {
+        throw new ValidationError(
+          `Failed to create recurring transaction: ${recurringError.message}`
+        );
+      }
+
+      // Add template_id to the transaction
+      transactionData.template_id = recurringTxn.id;
+    }
 
     return this.executeMutation(
       async () =>
@@ -158,6 +195,43 @@ export class TransactionRepository extends BaseRepository<Transaction> {
     }
     if (input.notes !== undefined) {
       updateData.notes = input.notes;
+    }
+
+    // If this is a recurring transaction, create a recurring template
+    if (input.isRecurring && input.recurringFrequency) {
+      const recurringData = {
+        user_id: userId,
+        ledger_id: input.ledgerId || updateData.ledger_id,
+        description: input.description?.trim() || updateData.description,
+        category: input.category?.trim() || updateData.category,
+        amount: input.amount || updateData.amount,
+        type: input.type || updateData.type,
+        notes: input.notes || updateData.notes,
+        frequency: input.recurringFrequency,
+        interval_count: 1,
+        start_date: formatDateForDatabase(input.date || new Date()),
+        end_date: input.recurringEndDate
+          ? formatDateForDatabase(input.recurringEndDate)
+          : null,
+        next_due_date: formatDateForDatabase(input.date || new Date()),
+        is_active: true,
+      };
+
+      // Create recurring transaction first
+      const { data: recurringTxn, error: recurringError } = await this.supabase
+        .from("recurring_transactions")
+        .insert(recurringData)
+        .select()
+        .single();
+
+      if (recurringError) {
+        throw new ValidationError(
+          `Failed to create recurring transaction: ${recurringError.message}`
+        );
+      }
+
+      // Add template_id to the transaction
+      updateData.template_id = recurringTxn.id;
     }
 
     return this.executeMutation(

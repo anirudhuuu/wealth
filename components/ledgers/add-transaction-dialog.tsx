@@ -35,6 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useCreateTransaction } from "@/hooks/use-transactions";
 import type { Ledger } from "@/lib/types";
@@ -45,29 +46,47 @@ import { useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 // Validation schema
-const transactionSchema = z.object({
-  ledger_id: z.string().min(1, "Please select a budget book"),
-  date: z.date({
-    message: "Date is required",
-  }),
-  description: z
-    .string()
-    .min(1, "Description is required")
-    .max(255, "Description must be less than 255 characters"),
-  category: z
-    .string()
-    .min(1, "Category is required")
-    .max(100, "Category must be less than 100 characters"),
-  amount: z
-    .string()
-    .min(1, "Amount is required")
-    .refine((val) => {
-      const num = parseFloat(val);
-      return !isNaN(num) && num > 0;
-    }, "Amount must be a positive number"),
-  type: z.enum(["income", "expense"]),
-  notes: z.string().optional(),
-});
+const transactionSchema = z
+  .object({
+    ledger_id: z.string().min(1, "Please select a budget book"),
+    date: z.date({
+      message: "Date is required",
+    }),
+    description: z
+      .string()
+      .min(1, "Description is required")
+      .max(255, "Description must be less than 255 characters"),
+    category: z
+      .string()
+      .min(1, "Category is required")
+      .max(100, "Category must be less than 100 characters"),
+    amount: z
+      .string()
+      .min(1, "Amount is required")
+      .refine((val) => {
+        const num = parseFloat(val);
+        return !isNaN(num) && num > 0;
+      }, "Amount must be a positive number"),
+    type: z.enum(["income", "expense"]),
+    notes: z.string().optional(),
+    is_recurring: z.boolean().optional(),
+    recurring_frequency: z.enum(["weekly", "monthly", "yearly"]).optional(),
+    recurring_end_date: z.date().optional(),
+  })
+  .refine(
+    (data) => {
+      // If is_recurring is true, recurring_frequency is required
+      if (data.is_recurring && !data.recurring_frequency) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message:
+        "Recurring frequency is required when making transaction recurring",
+      path: ["recurring_frequency"],
+    }
+  );
 
 type TransactionFormData = z.infer<typeof transactionSchema>;
 
@@ -95,36 +114,39 @@ function TransactionForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className={`space-y-4 ${className || ""}`}
       >
-        <FormField
-          control={form.control}
-          name="ledger_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Budget</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a budget book" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {ledgers.map((ledger) => (
-                    <SelectItem key={ledger.id} value={ledger.id}>
-                      <span title={ledger.name}>
-                        {ledger.name.length > 30
-                          ? `${ledger.name.substring(0, 30)}...`
-                          : ledger.name}
-                      </span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="ledger_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Budget</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a budget book" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {ledgers.map((ledger) => (
+                      <SelectItem key={ledger.id} value={ledger.id}>
+                        <span title={ledger.name}>
+                          {ledger.name.length > 30
+                            ? `${ledger.name.substring(0, 30)}...`
+                            : ledger.name}
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="type"
@@ -136,7 +158,7 @@ function TransactionForm({
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
                   </FormControl>
@@ -149,7 +171,9 @@ function TransactionForm({
               </FormItem>
             )}
           />
+        </div>
 
+        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="amount"
@@ -168,25 +192,25 @@ function TransactionForm({
               </FormItem>
             )}
           />
-        </div>
 
-        <FormField
-          control={form.control}
-          name="date"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Date</FormLabel>
-              <FormControl>
-                <DatePicker
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Select transaction date"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date</FormLabel>
+                <FormControl>
+                  <DatePicker
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="Select transaction date"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}
@@ -233,6 +257,80 @@ function TransactionForm({
           )}
         />
 
+        {/* Recurring Transaction Section */}
+        <div className="space-y-4 border-t pt-4">
+          <FormField
+            control={form.control}
+            name="is_recurring"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                <div className="space-y-0.5">
+                  <FormLabel className="text-base">
+                    Make this recurring
+                  </FormLabel>
+                  <div className="text-sm text-muted-foreground">
+                    Automatically create this transaction on a schedule
+                  </div>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          {form.watch("is_recurring") && (
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="recurring_frequency"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Repeat every</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select frequency" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="weekly">Week</SelectItem>
+                        <SelectItem value="monthly">Month</SelectItem>
+                        <SelectItem value="yearly">Year</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="recurring_end_date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>End date (Optional)</FormLabel>
+                    <FormControl>
+                      <DatePicker
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="Select end date"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+        </div>
+
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button type="submit" disabled={createTransactionMutation.isPending}>
             {createTransactionMutation.isPending ? "Saving..." : "Add Payment"}
@@ -277,6 +375,9 @@ export function AddTransactionDialog({
       amount: "",
       type: "expense",
       notes: "",
+      is_recurring: false,
+      recurring_frequency: undefined,
+      recurring_end_date: undefined,
     },
   });
 
@@ -300,6 +401,14 @@ export function AddTransactionDialog({
         amount: parseAndRoundAmount(data.amount),
         type: data.type,
         notes: data.notes || null,
+        // Add recurring transaction data if enabled
+        isRecurring: data.is_recurring || false,
+        recurringFrequency: data.is_recurring
+          ? data.recurring_frequency
+          : undefined,
+        recurringEndDate: data.is_recurring
+          ? data.recurring_end_date
+          : undefined,
       },
       {
         onSuccess: () => {

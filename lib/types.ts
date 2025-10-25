@@ -26,6 +26,7 @@ export interface Transaction {
   amount: number;
   type: "income" | "expense";
   notes: string | null;
+  template_id?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -109,6 +110,9 @@ export interface CreateTransactionInput {
   amount: number;
   type: "income" | "expense";
   notes?: string | null;
+  isRecurring?: boolean;
+  recurringFrequency?: "weekly" | "monthly" | "yearly";
+  recurringEndDate?: Date | null;
 }
 
 export interface UpdateTransactionInput {
@@ -119,6 +123,9 @@ export interface UpdateTransactionInput {
   amount?: number;
   type?: "income" | "expense";
   notes?: string | null;
+  isRecurring?: boolean;
+  recurringFrequency?: "weekly" | "monthly" | "yearly";
+  recurringEndDate?: Date | null;
 }
 
 export interface CreateProfileInput {
