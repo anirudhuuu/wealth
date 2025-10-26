@@ -483,7 +483,11 @@ export function EditTransactionDialog({
   }
 
   return (
-    <Drawer open={open && !isClosing} onOpenChange={onOpenChange}>
+    <Drawer
+      open={open && !isClosing}
+      onOpenChange={onOpenChange}
+      repositionInputs={false}
+    >
       <DrawerContent className="max-h-[90vh]">
         <DrawerHeader className="text-left">
           <DrawerTitle>Edit Payment</DrawerTitle>

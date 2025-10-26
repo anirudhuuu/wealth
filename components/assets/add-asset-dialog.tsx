@@ -366,7 +366,7 @@ export function AddAssetDialog({ open, onOpenChange }: AddAssetDialogProps) {
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
+    <Drawer open={open} onOpenChange={onOpenChange} repositionInputs={false}>
       <DrawerContent className="max-h-[90vh]">
         <DrawerHeader className="text-left">
           <DrawerTitle>Add New Investment</DrawerTitle>

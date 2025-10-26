@@ -229,7 +229,7 @@ export function AddLedgerDialog({ open, onOpenChange }: AddLedgerDialogProps) {
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
+    <Drawer open={open} onOpenChange={onOpenChange} repositionInputs={false}>
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>Add New Budget Book</DrawerTitle>
