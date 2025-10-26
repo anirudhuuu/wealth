@@ -200,11 +200,14 @@ function TransactionForm({
               <FormItem>
                 <FormLabel>Date</FormLabel>
                 <FormControl>
-                  <DatePicker
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="Select transaction date"
-                  />
+                  <div className="w-full min-w-0">
+                    <DatePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Select transaction date"
+                      className="w-full min-w-0"
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
