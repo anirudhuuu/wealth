@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -62,7 +63,17 @@ export default function SignInPage() {
       {/* Right Section - Login Form */}
       <div className="flex w-full flex-col justify-center items-center px-12 py-16 lg:w-1/2 lg:px-20 min-h-screen">
         <div className="w-full max-w-sm">
-          <div className="mb-1 text-center">
+          <div className="mb-14 text-center">
+            <div className="mb-4 flex justify-center lg:hidden">
+              <Image
+                src="/login-logo-mobile.webp"
+                alt="Wealth"
+                width={100}
+                height={100}
+                quality={100}
+                className="w-full h-[150px] object-contain"
+              />
+            </div>
             <h1 className="mb-1 text-4xl font-bold text-gray-900 dark:text-white">
               Wealth
             </h1>
@@ -94,7 +105,7 @@ export default function SignInPage() {
             size="lg"
           >
             {isLoading ? (
-              "Redirecting..."
+              "Connecting to Google..."
             ) : (
               <>
                 <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24">
@@ -115,13 +126,26 @@ export default function SignInPage() {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                Sign in with Google
+                Continue with Google
               </>
             )}
           </Button>
 
           <p className="mt-4 text-xs text-gray-500 dark:text-gray-400 text-center">
-            By continuing, you accept our Terms of Service and Privacy Policy
+            By continuing, you accept our{" "}
+            <Link
+              href="/terms"
+              className="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+            >
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link
+              href="/privacy"
+              className="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+            >
+              Privacy Policy
+            </Link>
           </p>
         </div>
       </div>

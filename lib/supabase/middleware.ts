@@ -40,11 +40,13 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Redirect to sign-in if not authenticated and not on auth pages
+  // Redirect to sign-in if not authenticated and not on public pages
   if (
     !user &&
     !request.nextUrl.pathname.startsWith("/sign-in") &&
-    !request.nextUrl.pathname.startsWith("/auth/callback")
+    !request.nextUrl.pathname.startsWith("/auth/callback") &&
+    !request.nextUrl.pathname.startsWith("/terms") &&
+    !request.nextUrl.pathname.startsWith("/privacy")
   ) {
     const url = request.nextUrl.clone();
     url.pathname = "/sign-in";
