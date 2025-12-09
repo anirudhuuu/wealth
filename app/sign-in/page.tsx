@@ -54,7 +54,7 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col lg:flex-row mesh-gradient">
+    <div className="flex min-h-screen flex-col lg:flex-row bg-background">
       {/* Left Section - Illustration */}
       <div className="hidden w-1/2 lg:flex">
         <LogoIllustration />
@@ -74,7 +74,7 @@ export default function SignInPage() {
                 className="w-full h-[150px] object-contain"
               />
             </div>
-            <h1 className="font-display mb-2 text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <h1 className="font-display mb-2 text-5xl font-bold text-primary">
               Wealth
             </h1>
             <p className="text-lg text-foreground/80 italic">

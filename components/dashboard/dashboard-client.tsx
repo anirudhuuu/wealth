@@ -29,7 +29,7 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
       <div>
         <div className="flex items-center justify-between mt-4">
           <div>
-            <h1 className="font-display text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <h1 className="font-display text-4xl font-bold tracking-tight">
               Financial Summary
             </h1>
             <p className="text-muted-foreground text-lg mt-1">
@@ -53,7 +53,7 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Money Earned
                 </CardTitle>
-                <ArrowUpRight className="h-4 w-4 text-green-600" />
+                <ArrowUpRight className="h-4 w-4 text-secondary" />
               </CardHeader>
               <CardContent>
                 <div
@@ -70,7 +70,7 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Money Spent
                 </CardTitle>
-                <ArrowDownRight className="h-4 w-4 text-amber-600" />
+                <ArrowDownRight className="h-4 w-4 text-primary" />
               </CardHeader>
               <CardContent>
                 <div
@@ -87,7 +87,7 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Money Saved
                 </CardTitle>
-                <PiggyBank className="h-4 w-4 text-blue-600" />
+                <PiggyBank className="h-4 w-4 text-accent" />
               </CardHeader>
               <CardContent>
                 <div
@@ -110,7 +110,7 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Total Investments
                 </CardTitle>
-                <Wallet className="h-4 w-4 text-purple-600" />
+                <Wallet className="h-4 w-4 text-primary" />
               </CardHeader>
               <CardContent>
                 <div
@@ -130,7 +130,7 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Portfolio Value
                 </CardTitle>
-                <Wallet className="h-4 w-4 text-purple-600" />
+                <Wallet className="h-4 w-4 text-primary" />
               </CardHeader>
               <CardContent>
                 <div
@@ -151,15 +151,17 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
                   Total Profit/Loss
                 </CardTitle>
                 {kpis.totalProfit >= 0 ? (
-                  <TrendingUp className="h-4 w-4 text-green-600" />
+                  <TrendingUp className="h-4 w-4 text-secondary" />
                 ) : (
-                  <TrendingDown className="h-4 w-4 text-red-600" />
+                  <TrendingDown className="h-4 w-4 text-destructive" />
                 )}
               </CardHeader>
               <CardContent>
                 <div
                   className={`flex items-center gap-2 font-mono text-2xl font-bold ${
-                    kpis.totalProfit >= 0 ? "text-secondary" : "text-destructive"
+                    kpis.totalProfit >= 0
+                      ? "text-secondary"
+                      : "text-destructive"
                   }`}
                 >
                   {kpis.totalProfit >= 0 ? (
@@ -186,7 +188,7 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Average Return
                 </CardTitle>
-                <TrendingUpDown className="h-4 w-4 text-blue-600" />
+                <TrendingUpDown className="h-4 w-4 text-accent" />
               </CardHeader>
               <CardContent>
                 <div

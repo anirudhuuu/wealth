@@ -335,17 +335,17 @@ export function TransactionsList({
                         <div
                           className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full flex-shrink-0 relative ${
                             txn.type === "income"
-                              ? "bg-green-100 text-green-600 dark:bg-green-950 dark:text-green-400"
-                              : "bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-400"
+                              ? "bg-secondary/10 text-secondary"
+                              : "bg-primary/10 text-primary"
                           }`}
                         >
                           {txn.type === "income" ? (
-                            <ArrowUpRight className="h-5 w-5 sm:h-6 sm:w-6" />
-                          ) : (
                             <ArrowDownRight className="h-5 w-5 sm:h-6 sm:w-6" />
+                          ) : (
+                            <ArrowUpRight className="h-5 w-5 sm:h-6 sm:w-6" />
                           )}
                           {txn.template_id && (
-                            <div className="absolute -top-[0.2px] -right-1 h-4 w-4 bg-blue-500 rounded-full flex items-center justify-center">
+                            <div className="absolute -top-[0.2px] -right-1 h-4 w-4 bg-accent rounded-full flex items-center justify-center">
                               <Repeat className="h-2 w-2 text-white" />
                             </div>
                           )}
@@ -363,8 +363,8 @@ export function TransactionsList({
                               }
                               className={`text-xs flex-shrink-0 ${
                                 txn.type === "income"
-                                  ? "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-950 dark:text-green-300"
-                                  : "bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-950 dark:text-amber-300"
+                                  ? "bg-secondary/10 text-secondary hover:bg-secondary/20"
+                                  : "bg-primary/10 text-primary hover:bg-primary/20"
                               }`}
                             >
                               {txn.type === "income" ? "Income" : "Expense"}
@@ -378,7 +378,7 @@ export function TransactionsList({
                                 : txn.category}
                             </Badge>
                             {txn.template_id && (
-                              <div className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400">
+                              <div className="flex items-center gap-1 text-xs text-accent">
                                 <Repeat className="h-3 w-3" />
                                 <span>Recurring</span>
                               </div>
@@ -393,8 +393,8 @@ export function TransactionsList({
                         <div
                           className={`text-sm sm:text-lg font-bold truncate max-w-[100px] sm:max-w-none ${
                             txn.type === "income"
-                              ? "text-green-600"
-                              : "text-amber-600"
+                              ? "text-secondary"
+                              : "text-primary"
                           }`}
                           title={`${
                             txn.type === "income" ? "+" : "-"
@@ -434,7 +434,7 @@ export function TransactionsList({
                                   variant="ghost"
                                   size="sm"
                                   disabled={deleteTransactionMutation.isPending}
-                                  className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  className="h-8 w-8 p-0 text-destructive hover:text-destructive/80 hover:bg-destructive/10"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>

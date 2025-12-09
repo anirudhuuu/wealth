@@ -166,16 +166,13 @@ export function AssetsList({ assets }: AssetsListProps) {
 
   const getAssetTypeColor = (type: string) => {
     const colors: Record<string, string> = {
-      fd: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
-      mutual_fund:
-        "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300",
-      stock:
-        "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300",
-      gold: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
-      real_estate:
-        "bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300",
-      crypto: "bg-cyan-100 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300",
-      other: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+      fd: "bg-primary/10 text-primary",
+      mutual_fund: "bg-accent/10 text-accent",
+      stock: "bg-secondary/10 text-secondary",
+      gold: "bg-chart-4/10 text-chart-4",
+      real_estate: "bg-chart-5/10 text-chart-5",
+      crypto: "bg-accent/10 text-accent",
+      other: "bg-muted text-muted-foreground",
     };
     return colors[type] || colors.other;
   };
@@ -332,7 +329,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                       <div className="text-right min-w-0 flex-shrink-0">
                         <div
                           className={`flex items-center gap-1 text-base md:text-lg font-bold ${
-                            gain >= 0 ? "text-green-600" : "text-red-600"
+                            gain >= 0 ? "text-secondary" : "text-destructive"
                           }`}
                         >
                           {gain >= 0 ? (
@@ -352,7 +349,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                         </div>
                         <div
                           className={`text-xs md:text-sm truncate ${
-                            gain >= 0 ? "text-green-600" : "text-red-600"
+                            gain >= 0 ? "text-secondary" : "text-destructive"
                           }`}
                           title={`${
                             gain >= 0 ? "+" : ""
@@ -444,7 +441,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                               </span>
                               <span
                                 className={`font-medium truncate ${
-                                  gain >= 0 ? "text-green-600" : "text-red-600"
+                                  gain >= 0 ? "text-secondary" : "text-destructive"
                                 }`}
                                 title={`${gain >= 0 ? "+" : ""}${formatCurrency(
                                   Math.abs(gain)
@@ -504,7 +501,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                            className="h-8 w-8 p-0 text-destructive hover:text-destructive/80 hover:bg-destructive/10"
                             title="Delete asset"
                             disabled={deletingAssetId === asset.id}
                           >

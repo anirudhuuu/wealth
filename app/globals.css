@@ -50,76 +50,76 @@
 }
 
 :root {
-  /* Light Theme - Financial Trust Palette */
-  --background: 210 40% 98%;
-  --foreground: 222 47% 11%;
+  /* Light Theme - Refined Palette */
+  --background: 0 0% 100%;
+  --foreground: 224 71% 4%;
   --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
+  --card-foreground: 224 71% 4%;
   --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
-  --primary: 217 91% 48%;
+  --popover-foreground: 224 71% 4%;
+  --primary: 221 83% 53%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 155 60% 45%;
+  --secondary: 142 76% 36%;
   --secondary-foreground: 0 0% 100%;
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
-  --accent: 185 75% 45%;
+  --muted: 220 14% 96%;
+  --muted-foreground: 220 9% 46%;
+  --accent: 212 95% 51%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 217 91% 48%;
-  --chart-1: 217 91% 48%;
-  --chart-2: 155 60% 45%;
-  --chart-3: 185 75% 45%;
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 221 83% 53%;
+  --chart-1: 221 83% 53%;
+  --chart-2: 142 76% 36%;
+  --chart-3: 173 58% 39%;
   --chart-4: 45 93% 47%;
   --chart-5: 280 70% 50%;
   --radius: 0.5rem;
-  --sidebar: 210 40% 98%;
-  --sidebar-foreground: 222 47% 11%;
-  --sidebar-primary: 217 91% 48%;
+  --sidebar: 0 0% 98%;
+  --sidebar-foreground: 224 71% 4%;
+  --sidebar-primary: 221 83% 53%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 210 40% 96%;
-  --sidebar-accent-foreground: 222 47% 11%;
-  --sidebar-border: 214 32% 91%;
-  --sidebar-ring: 217 91% 48%;
+  --sidebar-accent: 220 14% 96%;
+  --sidebar-accent-foreground: 224 71% 4%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 221 83% 53%;
 }
 
 .dark {
-  /* Dark Theme - Rich, Atmospheric */
-  --background: 222 47% 8%;
+  /* Dark Theme - Refined */
+  --background: 224 71% 4%;
   --foreground: 210 40% 98%;
-  --card: 222 47% 11%;
+  --card: 224 71% 7%;
   --card-foreground: 210 40% 98%;
-  --popover: 222 47% 11%;
+  --popover: 224 71% 7%;
   --popover-foreground: 210 40% 98%;
-  --primary: 217 91% 60%;
-  --primary-foreground: 222 47% 11%;
-  --secondary: 155 60% 50%;
-  --secondary-foreground: 222 47% 11%;
-  --muted: 217 33% 17%;
-  --muted-foreground: 215 20% 65%;
-  --accent: 185 75% 50%;
-  --accent-foreground: 222 47% 11%;
+  --primary: 221 83% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 142 71% 45%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 215 28% 17%;
+  --muted-foreground: 217 11% 65%;
+  --accent: 212 95% 60%;
+  --accent-foreground: 0 0% 100%;
   --destructive: 0 62% 50%;
   --destructive-foreground: 210 40% 98%;
-  --border: 217 33% 17%;
-  --input: 217 33% 17%;
-  --ring: 217 91% 60%;
-  --chart-1: 217 91% 60%;
-  --chart-2: 155 60% 50%;
-  --chart-3: 185 75% 50%;
+  --border: 215 28% 17%;
+  --input: 215 28% 17%;
+  --ring: 221 83% 60%;
+  --chart-1: 221 83% 60%;
+  --chart-2: 142 71% 45%;
+  --chart-3: 173 58% 39%;
   --chart-4: 45 93% 58%;
   --chart-5: 280 70% 60%;
-  --sidebar: 222 47% 11%;
+  --sidebar: 224 71% 7%;
   --sidebar-foreground: 210 40% 98%;
-  --sidebar-primary: 217 91% 60%;
-  --sidebar-primary-foreground: 222 47% 11%;
-  --sidebar-accent: 217 33% 17%;
+  --sidebar-primary: 221 83% 60%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 215 28% 17%;
   --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-border: 217 33% 17%;
-  --sidebar-ring: 217 91% 60%;
+  --sidebar-border: 215 28% 17%;
+  --sidebar-ring: 221 83% 60%;
 }
 
 @theme inline {
@@ -169,15 +169,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply text-foreground;
-    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(210 40% 96%) 100%);
-    background-attachment: fixed;
-  }
-  
-  /* Dark mode background gradient */
-  .dark body {
-    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(222 47% 11%) 100%);
-    background-attachment: fixed;
+    @apply bg-background text-foreground;
   }
   
   /* Typography utilities */
@@ -196,51 +188,5 @@
   .font-mono {
     font-family: var(--font-mono);
     font-feature-settings: 'tnum' on, 'lnum' on;
-  }
-  
-  /* Gradient text effect */
-  .text-gradient {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  
-  /* Card gradient backgrounds */
-  .card-gradient {
-    background: linear-gradient(135deg, 
-      hsl(var(--card)) 0%, 
-      hsl(210 40% 99%) 100%
-    );
-  }
-  
-  .dark .card-gradient {
-    background: linear-gradient(135deg, 
-      hsl(var(--card)) 0%, 
-      hsl(222 47% 13%) 100%
-    );
-  }
-  
-  /* Mesh gradient for hero sections */
-  .mesh-gradient {
-    background: 
-      radial-gradient(at 27% 37%, hsla(217, 91%, 60%, 0.12) 0px, transparent 50%),
-      radial-gradient(at 97% 21%, hsla(155, 60%, 50%, 0.12) 0px, transparent 50%),
-      radial-gradient(at 52% 99%, hsla(185, 75%, 50%, 0.12) 0px, transparent 50%),
-      radial-gradient(at 10% 29%, hsla(217, 91%, 48%, 0.12) 0px, transparent 50%),
-      radial-gradient(at 97% 96%, hsla(155, 60%, 45%, 0.12) 0px, transparent 50%),
-      radial-gradient(at 33% 50%, hsla(185, 75%, 45%, 0.12) 0px, transparent 50%),
-      radial-gradient(at 79% 53%, hsla(217, 91%, 60%, 0.12) 0px, transparent 50%);
-  }
-  
-  .dark .mesh-gradient {
-    background: 
-      radial-gradient(at 27% 37%, hsla(217, 91%, 60%, 0.15) 0px, transparent 50%),
-      radial-gradient(at 97% 21%, hsla(155, 60%, 50%, 0.15) 0px, transparent 50%),
-      radial-gradient(at 52% 99%, hsla(185, 75%, 50%, 0.15) 0px, transparent 50%),
-      radial-gradient(at 10% 29%, hsla(217, 91%, 48%, 0.15) 0px, transparent 50%),
-      radial-gradient(at 97% 96%, hsla(155, 60%, 45%, 0.15) 0px, transparent 50%),
-      radial-gradient(at 33% 50%, hsla(185, 75%, 45%, 0.15) 0px, transparent 50%),
-      radial-gradient(at 79% 53%, hsla(217, 91%, 60%, 0.15) 0px, transparent 50%);
   }
 }

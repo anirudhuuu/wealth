@@ -277,13 +277,13 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
   const getLedgerTypeColor = (type: string) => {
     switch (type) {
       case "family":
-        return "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300";
+        return "bg-primary/10 text-primary";
       case "personal":
-        return "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300";
+        return "bg-secondary/10 text-secondary";
       case "loan":
-        return "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300";
+        return "bg-accent/10 text-accent";
       default:
-        return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -409,7 +409,7 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                             size="sm"
                             onClick={() => setDeletingLedger(ledger)}
                             disabled={spending.transactionCount > 0}
-                            className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:bg-transparent"
+                            className="h-8 w-8 p-0 text-destructive hover:text-destructive/80 hover:bg-destructive/10 disabled:text-muted-foreground disabled:hover:text-muted-foreground disabled:hover:bg-transparent"
                             title={
                               spending.transactionCount > 0
                                 ? "Cannot delete ledger with transactions"
@@ -444,7 +444,7 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                               Income:
                             </span>
                             <span
-                              className="font-medium text-green-600 truncate ml-2"
+                              className="font-medium text-secondary truncate ml-2"
                               title={formatCurrency(spending.income)}
                             >
                               {formatCurrency(spending.income)}
@@ -455,7 +455,7 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                               Expenses:
                             </span>
                             <span
-                              className="font-medium text-amber-600 truncate ml-2"
+                              className="font-medium text-primary truncate ml-2"
                               title={formatCurrency(spending.expenses)}
                             >
                               {formatCurrency(spending.expenses)}
@@ -469,8 +469,8 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                           <span
                             className={`text-sm font-semibold truncate ml-2 ${
                               spending.net >= 0
-                                ? "text-green-600"
-                                : "text-amber-600"
+                                ? "text-secondary"
+                                : "text-primary"
                             }`}
                             title={formatCurrency(spending.net)}
                           >

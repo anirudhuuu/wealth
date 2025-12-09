@@ -43,9 +43,9 @@ interface DashboardChartsProps {
 }
 
 const COLORS = [
-  "hsl(217 91% 48%)",    // Primary blue
-  "hsl(155 60% 45%)",    // Secondary green
-  "hsl(185 75% 45%)",    // Accent cyan
+  "hsl(221 83% 53%)",    // Primary blue
+  "hsl(142 76% 36%)",    // Secondary green
+  "hsl(173 58% 39%)",    // Teal
   "hsl(45 93% 47%)",     // Gold
   "hsl(280 70% 50%)",    // Purple
   "hsl(340 75% 55%)",    // Pink
@@ -56,11 +56,11 @@ const COLORS = [
 const chartConfig = {
   income: {
     label: "Money In",
-    color: "hsl(155 60% 45%)", // Secondary green for income
+    color: "hsl(142 76% 36%)", // Secondary green for income
   },
   expenses: {
     label: "Money Out",
-    color: "hsl(217 91% 48%)", // Primary blue for expenses
+    color: "hsl(221 83% 53%)", // Primary blue for expenses
   },
 } satisfies ChartConfig;
 

@@ -22,7 +22,7 @@ export function Navbar() {
       <div className="flex h-16 items-center justify-between px-6 w-full">
         <div className="flex items-center gap-3">
           <SidebarTrigger />
-          <span className="font-display text-xl font-bold tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <span className="font-display text-xl font-bold tracking-tight text-primary">
             Wealth
           </span>
         </div>
