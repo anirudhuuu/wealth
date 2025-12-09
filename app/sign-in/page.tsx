@@ -54,7 +54,7 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col lg:flex-row bg-white dark:bg-gray-900">
+    <div className="flex min-h-screen flex-col lg:flex-row mesh-gradient">
       {/* Left Section - Illustration */}
       <div className="hidden w-1/2 lg:flex">
         <LogoIllustration />
@@ -74,24 +74,24 @@ export default function SignInPage() {
                 className="w-full h-[150px] object-contain"
               />
             </div>
-            <h1 className="mb-1 text-4xl font-bold text-gray-900 dark:text-white">
+            <h1 className="font-display mb-2 text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               Wealth
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
+            <p className="text-lg text-foreground/80 italic">
               Don't let money control you.
             </p>
           </div>
 
           {/* Error Message */}
           {error && (
-            <div className="mb-8 rounded-md bg-red-50 p-4 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+            <div className="mb-8 rounded-lg bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive">
               {error}
             </div>
           )}
 
           {/* Footer Text */}
           <div className="mb-8 text-center">
-            <p className="text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+            <p className="text-sm leading-relaxed text-muted-foreground">
               Track investments, categorize expenses and monitor your financial
               health with charts. Secure and completely free.
             </p>
@@ -131,18 +131,18 @@ export default function SignInPage() {
             )}
           </Button>
 
-          <p className="mt-4 text-xs text-gray-500 dark:text-gray-400 text-center">
+          <p className="mt-4 text-xs text-muted-foreground text-center">
             By continuing, you accept our{" "}
             <Link
               href="/terms"
-              className="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+              className="underline hover:text-primary transition-colors"
             >
               Terms of Service
             </Link>{" "}
             and{" "}
             <Link
               href="/privacy"
-              className="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+              className="underline hover:text-primary transition-colors"
             >
               Privacy Policy
             </Link>

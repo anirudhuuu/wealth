@@ -2,19 +2,30 @@ import { QueryProvider } from "@/components/providers/query-provider";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans, JetBrains_Mono, Fraunces } from "next/font/google";
 import type React from "react";
 import { Suspense } from "react";
 import "./globals.css";
 
-const geistSans = Geist({
+// Body font - DM Sans (clean, modern, distinctive)
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
+  variable: "--font-dm-sans",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
+// Mono font - JetBrains Mono (distinctive, great for numbers/data)
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-geist-mono",
+  variable: "--font-jetbrains-mono",
+  display: "swap",
+});
+
+// Display font - Fraunces (elegant serif for headlines)
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -44,7 +55,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={`${dmSans.variable} ${jetbrainsMono.variable} ${fraunces.variable}`}
       suppressHydrationWarning
     >
       <body className="font-sans antialiased">

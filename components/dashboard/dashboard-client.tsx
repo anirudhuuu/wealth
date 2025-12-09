@@ -29,8 +29,10 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
       <div>
         <div className="flex items-center justify-between mt-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Summary</h1>
-            <p className="text-muted-foreground">
+            <h1 className="font-display text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Financial Summary
+            </h1>
+            <p className="text-muted-foreground text-lg mt-1">
               Overview of your financial health
             </p>
           </div>
@@ -55,7 +57,7 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
               </CardHeader>
               <CardContent>
                 <div
-                  className="text-2xl font-bold truncate"
+                  className="font-mono text-2xl font-bold truncate"
                   title={formatCurrency(kpis.totalIncome)}
                 >
                   {formatCurrency(kpis.totalIncome)}
@@ -72,7 +74,7 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
               </CardHeader>
               <CardContent>
                 <div
-                  className="text-2xl font-bold truncate"
+                  className="font-mono text-2xl font-bold truncate"
                   title={formatCurrency(kpis.totalExpenses)}
                 >
                   {formatCurrency(kpis.totalExpenses)}
@@ -89,13 +91,13 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
               </CardHeader>
               <CardContent>
                 <div
-                  className="text-2xl font-bold truncate"
+                  className="font-mono text-2xl font-bold truncate"
                   title={formatCurrency(kpis.netSavings)}
                 >
                   {formatCurrency(kpis.netSavings)}
                 </div>
                 <p
-                  className="text-xs text-muted-foreground truncate"
+                  className="font-mono text-xs text-muted-foreground truncate"
                   title={`${kpis.savingsRate.toFixed(1)}% savings rate`}
                 >
                   {kpis.savingsRate.toFixed(1)}% savings rate
@@ -112,7 +114,7 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
               </CardHeader>
               <CardContent>
                 <div
-                  className="text-2xl font-bold truncate"
+                  className="font-mono text-2xl font-bold truncate"
                   title={formatCurrency(kpis.totalAssets)}
                 >
                   {formatCurrency(kpis.totalAssets)}
@@ -132,7 +134,7 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
               </CardHeader>
               <CardContent>
                 <div
-                  className="text-2xl font-bold truncate"
+                  className="font-mono text-2xl font-bold truncate"
                   title={formatCurrency(kpis.totalAssetValue)}
                 >
                   {formatCurrency(kpis.totalAssetValue)}
@@ -156,8 +158,8 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
               </CardHeader>
               <CardContent>
                 <div
-                  className={`flex items-center gap-2 text-2xl font-bold ${
-                    kpis.totalProfit >= 0 ? "text-green-600" : "text-red-600"
+                  className={`flex items-center gap-2 font-mono text-2xl font-bold ${
+                    kpis.totalProfit >= 0 ? "text-secondary" : "text-destructive"
                   }`}
                 >
                   {kpis.totalProfit >= 0 ? (
@@ -188,10 +190,10 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
               </CardHeader>
               <CardContent>
                 <div
-                  className={`flex items-center gap-2 text-2xl font-bold ${
+                  className={`flex items-center gap-2 font-mono text-2xl font-bold ${
                     kpis.avgReturnPercentage >= 0
-                      ? "text-green-600"
-                      : "text-red-600"
+                      ? "text-secondary"
+                      : "text-destructive"
                   }`}
                   title={`${
                     kpis.avgReturnPercentage >= 0 ? "+" : ""

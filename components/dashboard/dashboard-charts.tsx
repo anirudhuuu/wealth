@@ -43,24 +43,24 @@ interface DashboardChartsProps {
 }
 
 const COLORS = [
-  "#3b82f6",
-  "#10b981",
-  "#f59e0b",
-  "#f59e0b", // Changed from red to amber
-  "#8b5cf6",
-  "#ec4899",
-  "#14b8a6",
-  "#f97316",
+  "hsl(217 91% 48%)",    // Primary blue
+  "hsl(155 60% 45%)",    // Secondary green
+  "hsl(185 75% 45%)",    // Accent cyan
+  "hsl(45 93% 47%)",     // Gold
+  "hsl(280 70% 50%)",    // Purple
+  "hsl(340 75% 55%)",    // Pink
+  "hsl(25 85% 55%)",     // Orange
+  "hsl(200 80% 45%)",    // Sky blue
 ];
 
 const chartConfig = {
   income: {
     label: "Money In",
-    color: "#10b981", // Green color for income
+    color: "hsl(155 60% 45%)", // Secondary green for income
   },
   expenses: {
     label: "Money Out",
-    color: "#f59e0b", // Amber color for expenses
+    color: "hsl(217 91% 48%)", // Primary blue for expenses
   },
 } satisfies ChartConfig;
 
