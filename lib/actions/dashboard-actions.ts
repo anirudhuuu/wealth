@@ -117,13 +117,14 @@ export async function getDashboardData(
   // Calculate average return percentage (only for assets with valid purchase values)
   let validAssetsCount = 0;
   const gainPercentage = assetData.reduce((sum: number, asset) => {
+    // Skip assets with null or zero purchase value
+    if (asset.purchase_value === null || asset.purchase_value === 0) {
+      return sum;
+    }
     const purchaseValue = Number(asset.purchase_value);
-    if (purchaseValue === 0) return sum;
+    const currentValue = Number(asset.current_value);
     validAssetsCount++;
-    return (
-      sum +
-      ((Number(asset.current_value) - purchaseValue) / purchaseValue) * 100
-    );
+    return sum + ((currentValue - purchaseValue) / purchaseValue) * 100;
   }, 0);
 
   const avgReturnPercentage =

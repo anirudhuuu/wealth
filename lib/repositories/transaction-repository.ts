@@ -1,4 +1,4 @@
-import { formatDateForDatabase } from "@/lib/utils";
+import { formatDateForDatabase, parseDateFromDatabase } from "@/lib/utils";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { ValidationError } from "../errors";
 import {
@@ -201,6 +201,9 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       throw new ValidationError("Transaction amount must be greater than 0");
     }
 
+    // Get current transaction to check for existing template_id
+    const currentTransaction = await this.getById(id, userId);
+
     const updateData: Partial<Transaction> = {};
 
     if (input.ledgerId !== undefined) {
@@ -227,42 +230,114 @@ export class TransactionRepository extends BaseRepository<Transaction> {
 
     // Handle recurring transaction logic
     if (input.isRecurring && input.recurringFrequency) {
-      // User wants to make this recurring - create a recurring template
-      const recurringData = {
-        user_id: userId,
-        ledger_id: input.ledgerId || updateData.ledger_id,
-        description: input.description?.trim() || updateData.description,
-        category: input.category?.trim() || updateData.category,
-        amount: input.amount || updateData.amount,
-        type: input.type || updateData.type,
-        notes: input.notes || updateData.notes,
-        frequency: input.recurringFrequency,
-        interval_count: 1,
-        start_date: formatDateForDatabase(input.date || new Date()),
-        end_date: input.recurringEndDate
-          ? formatDateForDatabase(input.recurringEndDate)
-          : null,
-        next_due_date: formatDateForDatabase(input.date || new Date()),
-        is_active: true,
-      };
+      // Validate required fields for recurring transaction
+      const ledgerId =
+        input.ledgerId || updateData.ledger_id || currentTransaction.ledger_id;
+      const description =
+        input.description?.trim() ||
+        updateData.description ||
+        currentTransaction.description;
+      const category =
+        input.category?.trim() ||
+        updateData.category ||
+        currentTransaction.category;
+      const amount =
+        input.amount !== undefined
+          ? input.amount
+          : updateData.amount !== undefined
+          ? updateData.amount
+          : currentTransaction.amount;
+      const type = input.type || updateData.type || currentTransaction.type;
+      // Use input date if provided, otherwise use current transaction date
+      const date = input.date || parseDateFromDatabase(currentTransaction.date);
 
-      // Create recurring transaction first
-      const { data: recurringTxn, error: recurringError } = await this.supabase
-        .from("recurring_transactions")
-        .insert(recurringData)
-        .select()
-        .single();
-
-      if (recurringError) {
+      if (!ledgerId) {
         throw new ValidationError(
-          `Failed to create recurring transaction: ${recurringError.message}`
+          "Ledger ID is required for recurring transactions"
+        );
+      }
+      if (!description) {
+        throw new ValidationError(
+          "Description is required for recurring transactions"
+        );
+      }
+      if (!category) {
+        throw new ValidationError(
+          "Category is required for recurring transactions"
+        );
+      }
+      if (amount <= 0) {
+        throw new ValidationError(
+          "Amount must be greater than 0 for recurring transactions"
+        );
+      }
+      if (!type) {
+        throw new ValidationError(
+          "Type is required for recurring transactions"
         );
       }
 
-      // Add template_id to the transaction
-      updateData.template_id = recurringTxn.id;
+      const recurringData = {
+        user_id: userId,
+        ledger_id: ledgerId,
+        description: description,
+        category: category,
+        amount: amount,
+        type: type,
+        notes:
+          input.notes !== undefined
+            ? input.notes
+            : updateData.notes !== undefined
+            ? updateData.notes
+            : currentTransaction.notes,
+        frequency: input.recurringFrequency,
+        interval_count: 1,
+        start_date: formatDateForDatabase(date),
+        end_date: input.recurringEndDate
+          ? formatDateForDatabase(input.recurringEndDate)
+          : null,
+        next_due_date: formatDateForDatabase(date),
+        is_active: true,
+      };
+
+      // If transaction already has a template_id, update the existing template
+      if (currentTransaction.template_id) {
+        const { error: recurringError } = await this.supabase
+          .from("recurring_transactions")
+          .update(recurringData)
+          .eq("id", currentTransaction.template_id)
+          .eq("user_id", userId);
+
+        if (recurringError) {
+          throw new ValidationError(
+            `Failed to update recurring transaction: ${recurringError.message}`
+          );
+        }
+
+        // Keep the existing template_id
+        updateData.template_id = currentTransaction.template_id;
+      } else {
+        // Create new recurring transaction template
+        const { data: recurringTxn, error: recurringError } =
+          await this.supabase
+            .from("recurring_transactions")
+            .insert(recurringData)
+            .select()
+            .single();
+
+        if (recurringError) {
+          throw new ValidationError(
+            `Failed to create recurring transaction: ${recurringError.message}`
+          );
+        }
+
+        // Add template_id to the transaction
+        updateData.template_id = recurringTxn.id;
+      }
     } else if (input.isRecurring === false) {
       // User explicitly turned OFF recurring - remove template_id
+      // Note: We don't delete the template, just remove the association
+      // The template can be cleaned up separately if needed
       updateData.template_id = null;
     }
 
