@@ -91,39 +91,53 @@ export function DashboardCharts({
   // Prepare monthly trend data
   const monthlyData: Record<
     string,
-    { month: string; income: number; expenses: number }
+    { monthKey: string; month: string; income: number; expenses: number }
   > = {};
 
   transactions.forEach((txn) => {
-    const date = parseDateFromDatabase(txn.date);
-    const monthKey = `${date.getFullYear()}-${String(
-      date.getMonth() + 1
-    ).padStart(2, "0")}`;
-    const monthLabel = date.toLocaleDateString("en-US", {
-      month: "short",
-      year: "numeric",
-    });
+    try {
+      const date = parseDateFromDatabase(txn.date);
+      const monthKey = `${date.getFullYear()}-${String(
+        date.getMonth() + 1
+      ).padStart(2, "0")}`;
+      const monthLabel = date.toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
+      });
 
-    if (!monthlyData[monthKey]) {
-      monthlyData[monthKey] = { month: monthLabel, income: 0, expenses: 0 };
-    }
+      if (!monthlyData[monthKey]) {
+        monthlyData[monthKey] = {
+          monthKey,
+          month: monthLabel,
+          income: 0,
+          expenses: 0,
+        };
+      }
 
-    if (txn.type === "income") {
-      monthlyData[monthKey].income += Number(txn.amount);
-    } else {
-      monthlyData[monthKey].expenses += Number(txn.amount);
+      if (txn.type === "income") {
+        monthlyData[monthKey].income += Number(txn.amount);
+      } else {
+        monthlyData[monthKey].expenses += Number(txn.amount);
+      }
+    } catch (error) {
+      // Skip transactions with invalid dates to prevent component crash
+      console.error(`Invalid date for transaction ${txn.id}:`, error);
     }
   });
 
   const monthlyChartData = Object.values(monthlyData).sort((a, b) => {
-    const dateA = new Date(a.month);
-    const dateB = new Date(b.month);
-    return dateA.getTime() - dateB.getTime();
+    // Sort by monthKey (YYYY-MM format) which is reliable for comparison
+    return a.monthKey.localeCompare(b.monthKey);
   });
 
   // Filter data based on selected time range
   const filteredMonthlyData = monthlyChartData.filter((item) => {
-    const itemDate = new Date(item.month);
+    // Parse monthKey (YYYY-MM) to create a proper date for comparison
+    const parts = item.monthKey.split("-");
+    if (parts.length !== 2) return false; // Invalid format, skip
+    const [year, month] = parts.map(Number);
+    if (isNaN(year) || isNaN(month) || month < 1 || month > 12) return false; // Invalid values, skip
+    const itemDate = new Date(year, month - 1, 1);
     const referenceDate = new Date();
     let monthsToSubtract = 12;
 
@@ -135,6 +149,7 @@ export function DashboardCharts({
 
     const startDate = new Date(referenceDate);
     startDate.setMonth(startDate.getMonth() - monthsToSubtract);
+    startDate.setDate(1); // Set to first day of month for accurate comparison
     return itemDate >= startDate;
   });
 

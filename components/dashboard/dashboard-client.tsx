@@ -165,9 +165,9 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
                   }`}
                 >
                   {kpis.totalProfit >= 0 ? (
-                    <TrendingUp className="h-5 w-5 flex-shrink-0" />
+                    <TrendingUp className="h-5 w-5 shrink-0" />
                   ) : (
-                    <TrendingDown className="h-5 w-5 flex-shrink-0" />
+                    <TrendingDown className="h-5 w-5 shrink-0" />
                   )}
                   <span
                     className="truncate"
@@ -201,7 +201,7 @@ export function DashboardClient({ user, dashboardData }: DashboardClientProps) {
                     kpis.avgReturnPercentage >= 0 ? "+" : ""
                   }${kpis.avgReturnPercentage.toFixed(2)}%`}
                 >
-                  <TrendingUpDown className="h-5 w-5 flex-shrink-0" />
+                  <TrendingUpDown className="h-5 w-5 shrink-0" />
                   <span className="truncate">
                     {kpis.avgReturnPercentage >= 0 ? "+" : ""}
                     {kpis.avgReturnPercentage.toFixed(2)}%

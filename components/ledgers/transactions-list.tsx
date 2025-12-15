@@ -193,13 +193,13 @@ export function TransactionsList({
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between gap-2">
-            <CardTitle className="text-lg sm:text-xl flex-shrink-0">
+            <CardTitle className="text-lg sm:text-xl shrink-0">
               All Payments
             </CardTitle>
             <Button
               size="sm"
               onClick={() => setShowAddDialog(true)}
-              className="flex-shrink-0"
+              className="shrink-0"
             >
               <Plus className="mr-1 sm:mr-2 h-4 w-4" />
               Add
@@ -229,7 +229,7 @@ export function TransactionsList({
                 value={selectedLedgerId}
                 onValueChange={handleLedgerFilterChange}
               >
-                <SelectTrigger className="w-[120px] sm:w-[140px] flex-shrink-0">
+                <SelectTrigger className="w-[120px] sm:w-[140px] shrink-0">
                   <SelectValue placeholder="All" />
                 </SelectTrigger>
                 <SelectContent>
@@ -252,7 +252,7 @@ export function TransactionsList({
                   setCurrentPage(1);
                 }}
               >
-                <SelectTrigger className="w-[90px] sm:w-[100px] flex-shrink-0">
+                <SelectTrigger className="w-[90px] sm:w-[100px] shrink-0">
                   <SelectValue placeholder="Date" />
                 </SelectTrigger>
                 <SelectContent>
@@ -271,7 +271,7 @@ export function TransactionsList({
                   setSortOrder(sortOrder === "asc" ? "desc" : "asc");
                   setCurrentPage(1);
                 }}
-                className="w-[40px] sm:w-[44px] h-9 flex-shrink-0 p-0"
+                className="w-[40px] sm:w-[44px] h-9 shrink-0 p-0"
                 title={
                   sortOrder === "asc" ? "Sort ascending" : "Sort descending"
                 }
@@ -333,7 +333,7 @@ export function TransactionsList({
                     <div className="flex items-start justify-between gap-3 sm:gap-4 min-w-0">
                       <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0 overflow-hidden">
                         <div
-                          className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full flex-shrink-0 relative ${
+                          className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full shrink-0 relative ${
                             txn.type === "income"
                               ? "bg-secondary/10 text-secondary"
                               : "bg-primary/10 text-primary"
@@ -361,7 +361,7 @@ export function TransactionsList({
                               variant={
                                 txn.type === "income" ? "default" : "secondary"
                               }
-                              className={`text-xs flex-shrink-0 ${
+                              className={`text-xs shrink-0 ${
                                 txn.type === "income"
                                   ? "bg-secondary/10 text-secondary hover:bg-secondary/20"
                                   : "bg-primary/10 text-primary hover:bg-primary/20"
@@ -389,7 +389,7 @@ export function TransactionsList({
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col items-end gap-2 sm:gap-3 min-w-0 flex-shrink-0">
+                      <div className="flex flex-col items-end gap-2 sm:gap-3 min-w-0 shrink-0">
                         <div
                           className={`text-sm sm:text-lg font-bold truncate max-w-[100px] sm:max-w-none ${
                             txn.type === "income"
@@ -477,7 +477,7 @@ export function TransactionsList({
                           <span className="text-sm text-muted-foreground">
                             Description:
                           </span>
-                          <p className="text-sm mt-2 p-3 bg-muted rounded-md break-words">
+                          <p className="text-sm mt-2 p-3 bg-muted rounded-md wrap-break-word">
                             {txn.description}
                           </p>
                         </div>
@@ -486,7 +486,7 @@ export function TransactionsList({
                             <span className="text-sm text-muted-foreground">
                               Category:
                             </span>
-                            <p className="text-sm mt-2 p-3 bg-muted rounded-md break-words">
+                            <p className="text-sm mt-2 p-3 bg-muted rounded-md wrap-break-word">
                               {txn.category}
                             </p>
                           </div>
@@ -728,13 +728,13 @@ export function TransactionsList({
       {/* Pagination Controls */}
       <div className="mt-4 flex flex-row items-center justify-between gap-2">
         {totalItems > 0 && (
-          <div className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex-shrink-0">
+          <div className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap shrink-0">
             Viewing {startIndex + 1}-{Math.min(endIndex, totalItems)} of{" "}
             {totalItems} payments
           </div>
         )}
 
-        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
             Per page:
           </span>

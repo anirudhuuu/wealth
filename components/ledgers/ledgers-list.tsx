@@ -394,7 +394,7 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                           </span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                         <>
                           <Button
                             variant="ghost"
@@ -440,7 +440,7 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                       <div className="mt-4 space-y-3 border-t pt-4">
                         <div className="grid grid-cols-2 gap-3 text-sm">
                           <div className="flex justify-between min-w-0">
-                            <span className="text-muted-foreground flex-shrink-0">
+                            <span className="text-muted-foreground shrink-0">
                               Income:
                             </span>
                             <span
@@ -451,7 +451,7 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                             </span>
                           </div>
                           <div className="flex justify-between min-w-0">
-                            <span className="text-muted-foreground flex-shrink-0">
+                            <span className="text-muted-foreground shrink-0">
                               Expenses:
                             </span>
                             <span
@@ -463,7 +463,7 @@ export function LedgersList({ ledgers, transactions }: LedgersListProps) {
                           </div>
                         </div>
                         <div className="flex justify-between border-t pt-3 min-w-0">
-                          <span className="text-sm font-medium flex-shrink-0">
+                          <span className="text-sm font-medium shrink-0">
                             Net:
                           </span>
                           <span

@@ -101,8 +101,14 @@ export function AssetsList({ assets }: AssetsListProps) {
           bValue = Number(b.current_value);
           break;
         case "gain":
-          aValue = Number(a.current_value) - Number(a.purchase_value);
-          bValue = Number(b.current_value) - Number(b.purchase_value);
+          aValue =
+            a.purchase_value !== null
+              ? Number(a.current_value) - Number(a.purchase_value)
+              : Number(a.current_value);
+          bValue =
+            b.purchase_value !== null
+              ? Number(b.current_value) - Number(b.purchase_value)
+              : Number(b.current_value);
           break;
         case "type":
           aValue = a.type.toLowerCase();
@@ -215,7 +221,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                     setSortBy(value)
                   }
                 >
-                  <SelectTrigger className="w-[120px] flex-shrink-0">
+                  <SelectTrigger className="w-[120px] shrink-0">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
@@ -232,7 +238,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                   onClick={() =>
                     setSortOrder(sortOrder === "asc" ? "desc" : "asc")
                   }
-                  className="w-[40px] sm:w-[44px] h-9 flex-shrink-0 p-0"
+                  className="w-[40px] sm:w-[44px] h-9 shrink-0 p-0"
                   title={
                     sortOrder === "asc" ? "Sort ascending" : "Sort descending"
                   }
@@ -287,10 +293,16 @@ export function AssetsList({ assets }: AssetsListProps) {
             ) : (
               filteredAndSortedAssets.map((asset) => {
                 const currentValue = Number(asset.current_value);
-                const purchaseValue = Number(asset.purchase_value);
-                const gain = currentValue - purchaseValue;
+                const purchaseValue =
+                  asset.purchase_value !== null
+                    ? Number(asset.purchase_value)
+                    : null;
+                const gain =
+                  purchaseValue !== null ? currentValue - purchaseValue : null;
                 const gainPercentage =
-                  purchaseValue > 0 ? (gain / purchaseValue) * 100 : 0;
+                  purchaseValue !== null && purchaseValue > 0
+                    ? ((currentValue - purchaseValue) / purchaseValue) * 100
+                    : 0;
                 const isExpanded = expandedAssets.has(asset.id);
 
                 return (
@@ -305,7 +317,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                           variant="ghost"
                           size="sm"
                           onClick={() => toggleAssetExpansion(asset.id)}
-                          className="h-6 w-6 p-0 hover:bg-transparent flex-shrink-0"
+                          className="h-6 w-6 p-0 hover:bg-transparent shrink-0"
                         >
                           {isExpanded ? (
                             <ChevronUp className="h-4 w-4" />
@@ -326,38 +338,50 @@ export function AssetsList({ assets }: AssetsListProps) {
                           )}
                         </h3>
                       </div>
-                      <div className="text-right min-w-0 flex-shrink-0">
-                        <div
-                          className={`flex items-center gap-1 text-base md:text-lg font-bold ${
-                            gain >= 0 ? "text-secondary" : "text-destructive"
-                          }`}
-                        >
-                          {gain >= 0 ? (
-                            <TrendingUp className="h-4 w-4 flex-shrink-0" />
-                          ) : (
-                            <TrendingDown className="h-4 w-4 flex-shrink-0" />
-                          )}
-                          <span
-                            className="truncate"
-                            title={`${gain >= 0 ? "+" : ""}${formatCurrency(
-                              Math.abs(gain)
-                            )}`}
-                          >
-                            {gain >= 0 ? "+" : ""}
-                            {formatCurrency(Math.abs(gain))}
-                          </span>
-                        </div>
-                        <div
-                          className={`text-xs md:text-sm truncate ${
-                            gain >= 0 ? "text-secondary" : "text-destructive"
-                          }`}
-                          title={`${
-                            gain >= 0 ? "+" : ""
-                          }${gainPercentage.toFixed(2)}%`}
-                        >
-                          {gain >= 0 ? "+" : ""}
-                          {gainPercentage.toFixed(2)}%
-                        </div>
+                      <div className="text-right min-w-0 shrink-0">
+                        {gain !== null ? (
+                          <>
+                            <div
+                              className={`flex items-center gap-1 text-base md:text-lg font-bold ${
+                                gain >= 0
+                                  ? "text-secondary"
+                                  : "text-destructive"
+                              }`}
+                            >
+                              {gain >= 0 ? (
+                                <TrendingUp className="h-4 w-4 shrink-0" />
+                              ) : (
+                                <TrendingDown className="h-4 w-4 shrink-0" />
+                              )}
+                              <span
+                                className="truncate"
+                                title={`${gain >= 0 ? "+" : ""}${formatCurrency(
+                                  Math.abs(gain)
+                                )}`}
+                              >
+                                {gain >= 0 ? "+" : ""}
+                                {formatCurrency(Math.abs(gain))}
+                              </span>
+                            </div>
+                            <div
+                              className={`text-xs md:text-sm truncate ${
+                                gain >= 0
+                                  ? "text-secondary"
+                                  : "text-destructive"
+                              }`}
+                              title={`${
+                                gain >= 0 ? "+" : ""
+                              }${gainPercentage.toFixed(2)}%`}
+                            >
+                              {gain >= 0 ? "+" : ""}
+                              {gainPercentage.toFixed(2)}%
+                            </div>
+                          </>
+                        ) : (
+                          <div className="text-xs md:text-sm text-muted-foreground">
+                            No purchase value
+                          </div>
+                        )}
                       </div>
                     </div>
                     {/* Asset type badge */}
@@ -373,7 +397,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                     <div className="w-full">
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between items-center w-full min-w-0">
-                          <span className="text-muted-foreground flex-shrink-0">
+                          <span className="text-muted-foreground shrink-0">
                             Current Worth:
                           </span>
                           <span
@@ -384,14 +408,20 @@ export function AssetsList({ assets }: AssetsListProps) {
                           </span>
                         </div>
                         <div className="flex justify-between items-center w-full min-w-0">
-                          <span className="text-muted-foreground flex-shrink-0">
+                          <span className="text-muted-foreground shrink-0">
                             Original Cost:
                           </span>
                           <span
                             className="font-medium truncate ml-2"
-                            title={formatCurrency(purchaseValue)}
+                            title={
+                              purchaseValue !== null
+                                ? formatCurrency(purchaseValue)
+                                : "N/A"
+                            }
                           >
-                            {formatCurrency(purchaseValue)}
+                            {purchaseValue !== null
+                              ? formatCurrency(purchaseValue)
+                              : "N/A"}
                           </span>
                         </div>
                       </div>
@@ -403,7 +433,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                               <span className="text-sm text-muted-foreground">
                                 Investment Name:
                               </span>
-                              <p className="text-sm mt-1 p-2 bg-muted rounded-md break-words">
+                              <p className="text-sm mt-1 p-2 bg-muted rounded-md wrap-break-word">
                                 {asset.name}
                               </p>
                             </div>
@@ -441,15 +471,29 @@ export function AssetsList({ assets }: AssetsListProps) {
                               </span>
                               <span
                                 className={`font-medium truncate ${
-                                  gain >= 0 ? "text-secondary" : "text-destructive"
+                                  gain !== null
+                                    ? gain >= 0
+                                      ? "text-secondary"
+                                      : "text-destructive"
+                                    : "text-muted-foreground"
                                 }`}
-                                title={`${gain >= 0 ? "+" : ""}${formatCurrency(
-                                  Math.abs(gain)
-                                )} (${gainPercentage.toFixed(2)}%)`}
+                                title={
+                                  gain !== null
+                                    ? `${gain >= 0 ? "+" : ""}${formatCurrency(
+                                        Math.abs(gain)
+                                      )} (${gainPercentage.toFixed(2)}%)`
+                                    : "No purchase value"
+                                }
                               >
-                                {gain >= 0 ? "+" : ""}
-                                {formatCurrency(Math.abs(gain))} (
-                                {gainPercentage.toFixed(2)}%)
+                                {gain !== null ? (
+                                  <>
+                                    {gain >= 0 ? "+" : ""}
+                                    {formatCurrency(Math.abs(gain))} (
+                                    {gainPercentage.toFixed(2)}%)
+                                  </>
+                                ) : (
+                                  "N/A"
+                                )}
                               </span>
                             </div>
                           </div>
@@ -458,7 +502,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                               <span className="text-sm text-muted-foreground">
                                 Notes:
                               </span>
-                              <p className="text-sm mt-1 p-2 bg-muted rounded-md break-words">
+                              <p className="text-sm mt-1 p-2 bg-muted rounded-md wrap-break-word">
                                 {asset.notes.length > 100 ? (
                                   <>
                                     {asset.notes.substring(0, 100)}...
@@ -475,7 +519,7 @@ export function AssetsList({ assets }: AssetsListProps) {
                                   <span className="text-sm text-muted-foreground">
                                     Full Notes:
                                   </span>
-                                  <p className="text-sm mt-1 p-2 bg-muted rounded-md break-words">
+                                  <p className="text-sm mt-1 p-2 bg-muted rounded-md wrap-break-word">
                                     {asset.notes}
                                   </p>
                                 </div>
