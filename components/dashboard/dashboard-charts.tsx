@@ -43,14 +43,14 @@ interface DashboardChartsProps {
 }
 
 const COLORS = [
-  "hsl(221 83% 53%)",    // Primary blue
-  "hsl(142 76% 36%)",    // Secondary green
-  "hsl(173 58% 39%)",    // Teal
-  "hsl(45 93% 47%)",     // Gold
-  "hsl(280 70% 50%)",    // Purple
-  "hsl(340 75% 55%)",    // Pink
-  "hsl(25 85% 55%)",     // Orange
-  "hsl(200 80% 45%)",    // Sky blue
+  "hsl(221 83% 53%)", // Primary blue
+  "hsl(142 76% 36%)", // Secondary green
+  "hsl(173 58% 39%)", // Teal
+  "hsl(45 93% 47%)", // Gold
+  "hsl(280 70% 50%)", // Purple
+  "hsl(340 75% 55%)", // Pink
+  "hsl(25 85% 55%)", // Orange
+  "hsl(200 80% 45%)", // Sky blue
 ];
 
 const chartConfig = {
@@ -314,11 +314,10 @@ export function DashboardCharts({
                   className="fill-background"
                   stroke="none"
                   fontSize={12}
-                  formatter={(value: React.ReactNode) => {
+                  formatter={(value: any): string => {
                     const categoryName = typeof value === "string" ? value : "";
-                    return (
-                      categoryChartConfig[categoryName]?.label || categoryName
-                    );
+                    const label = categoryChartConfig[categoryName]?.label;
+                    return typeof label === "string" ? label : categoryName;
                   }}
                 />
               </Pie>
