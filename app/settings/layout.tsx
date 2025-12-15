@@ -5,11 +5,11 @@ import type React from "react";
 export const metadata: Metadata = {
   title: "Settings - Wealth",
   description:
-    "Manage your account settings and preferences for Wealth expense tracker",
+    "Manage your account settings and preferences for Wealth personal finance manager",
   openGraph: {
     title: "Settings - Wealth",
     description:
-      "Manage your account settings and preferences for Wealth expense tracker",
+      "Manage your account settings and preferences for Wealth personal finance manager",
   },
 };
 
