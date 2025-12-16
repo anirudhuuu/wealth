@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  CreditCard,
   LayoutDashboard,
   Settings,
   Target,
@@ -47,6 +48,11 @@ const items = [
     title: "Goals",
     url: "/goals",
     icon: Target,
+  },
+  {
+    title: "Debts",
+    url: "/debts",
+    icon: CreditCard,
   },
   {
     title: "Settings",
