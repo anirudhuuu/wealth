@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useDeleteDebt, useDebtPayments } from "@/hooks/use-debts";
-import type { Debt } from "@/lib/types";
+import type { Debt, Ledger } from "@/lib/types";
 import { formatCurrency, formatDate, parseDateFromDatabase } from "@/lib/utils";
 import { Edit, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -26,7 +26,7 @@ import { EditDebtDialog } from "./edit-debt-dialog";
 interface DebtCardProps {
   debt: Debt;
   onEdit: (debt: Debt) => void;
-  ledgers: Array<{ id: string; name: string; type: string }>;
+  ledgers: Ledger[];
 }
 
 export function DebtCard({ debt, onEdit, ledgers }: DebtCardProps) {
