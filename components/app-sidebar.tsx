@@ -1,6 +1,12 @@
 "use client";
 
-import { LayoutDashboard, Settings, TrendingUp, Wallet } from "lucide-react";
+import {
+  LayoutDashboard,
+  Settings,
+  Target,
+  TrendingUp,
+  Wallet,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -36,6 +42,11 @@ const items = [
     title: "Savings",
     url: "/assets",
     icon: TrendingUp,
+  },
+  {
+    title: "Goals",
+    url: "/goals",
+    icon: Target,
   },
   {
     title: "Settings",
