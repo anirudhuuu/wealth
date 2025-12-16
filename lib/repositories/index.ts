@@ -1,5 +1,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { AssetRepository } from "./asset-repository";
+import { GoalContributionRepository } from "./goal-contribution-repository";
+import { GoalRepository } from "./goal-repository";
 import { LedgerRepository } from "./ledger-repository";
 import { TransactionRepository } from "./transaction-repository";
 import { UserRepository } from "./user-repository";
@@ -27,6 +29,14 @@ export class RepositoryFactory {
     return new AssetRepository(this.supabase);
   }
 
+  getGoalRepository(): GoalRepository {
+    return new GoalRepository(this.supabase);
+  }
+
+  getGoalContributionRepository(): GoalContributionRepository {
+    return new GoalContributionRepository(this.supabase);
+  }
+
   getTransactionRepository(): TransactionRepository {
     return new TransactionRepository(this.supabase);
   }
@@ -43,6 +53,8 @@ export function createRepositories(supabase: SupabaseClient) {
   return {
     ledgers: factory.getLedgerRepository(),
     assets: factory.getAssetRepository(),
+    goals: factory.getGoalRepository(),
+    goalContributions: factory.getGoalContributionRepository(),
     transactions: factory.getTransactionRepository(),
     users: factory.getUserRepository(),
   };
@@ -51,6 +63,8 @@ export function createRepositories(supabase: SupabaseClient) {
 // Export all repository types and interfaces
 export * from "./asset-repository";
 export * from "./base-repository";
+export * from "./goal-contribution-repository";
+export * from "./goal-repository";
 export * from "./ledger-repository";
 export * from "./transaction-repository";
 export * from "./user-repository";
