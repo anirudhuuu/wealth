@@ -14,13 +14,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { useDeleteGoal } from "@/hooks/use-goals";
+import { useDeleteGoal, useGoalContributions } from "@/hooks/use-goals";
 import type { Goal } from "@/lib/types";
 import { formatCurrency, formatDate, parseDateFromDatabase } from "@/lib/utils";
 import { Edit, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { AddContributionDialog } from "./add-contribution-dialog";
 import { EditGoalDialog } from "./edit-goal-dialog";
+import { GoalContributionsList } from "./goal-contributions-list";
 
 interface GoalCardProps {
   goal: Goal;
@@ -32,6 +33,7 @@ export function GoalCard({ goal, onEdit }: GoalCardProps) {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [deletingGoalId, setDeletingGoalId] = useState<string | null>(null);
   const deleteGoalMutation = useDeleteGoal();
+  const { data: contributions = [] } = useGoalContributions(goal.id);
 
   const targetAmount = Number(goal.target_amount);
   const currentAmount = Number(goal.current_amount);
@@ -154,6 +156,13 @@ export function GoalCard({ goal, onEdit }: GoalCardProps) {
             </div>
           </div>
         )}
+
+        {/* Contributions List */}
+        <GoalContributionsList
+          goalId={goal.id}
+          contributions={contributions}
+          currency={goal.currency}
+        />
 
         {/* Actions */}
         <div className="flex items-center justify-end gap-2 pt-2 border-t">

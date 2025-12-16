@@ -3,6 +3,7 @@ import {
   createGoal as createGoalAction,
   deleteContribution as deleteContributionAction,
   deleteGoal as deleteGoalAction,
+  getGoalContributions as getGoalContributionsAction,
   updateContribution as updateContributionAction,
   updateGoal as updateGoalAction,
 } from "@/lib/actions/goal-actions";
@@ -12,7 +13,7 @@ import type {
   UpdateGoalContributionInput,
   UpdateGoalInput,
 } from "@/lib/types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -66,11 +67,16 @@ export function useDeleteGoal() {
 // Hooks for contribution mutations
 export function useAddContribution() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (input: CreateGoalContributionInput) =>
       addContributionAction(input),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      // Invalidate and refetch contributions for this goal
+      queryClient.invalidateQueries({
+        queryKey: ["goal-contributions", variables.goalId],
+      });
       router.refresh();
       toast.success("Contribution added successfully");
     },
@@ -82,6 +88,7 @@ export function useAddContribution() {
 
 export function useUpdateContribution() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({
@@ -93,7 +100,11 @@ export function useUpdateContribution() {
       goalId: string;
       input: UpdateGoalContributionInput;
     }) => updateContributionAction(id, goalId, input),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      // Invalidate and refetch contributions for this goal
+      queryClient.invalidateQueries({
+        queryKey: ["goal-contributions", variables.goalId],
+      });
       router.refresh();
       toast.success("Contribution updated successfully");
     },
@@ -105,16 +116,30 @@ export function useUpdateContribution() {
 
 export function useDeleteContribution() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ id, goalId }: { id: string; goalId: string }) =>
       deleteContributionAction(id, goalId),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      // Invalidate and refetch contributions for this goal
+      queryClient.invalidateQueries({
+        queryKey: ["goal-contributions", variables.goalId],
+      });
       router.refresh();
       toast.success("Contribution deleted successfully");
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to delete contribution");
     },
+  });
+}
+
+// Hook for fetching contributions
+export function useGoalContributions(goalId: string) {
+  return useQuery({
+    queryKey: ["goal-contributions", goalId],
+    queryFn: () => getGoalContributionsAction(goalId),
+    enabled: !!goalId,
   });
 }
