@@ -258,3 +258,158 @@ export interface GoalProgress {
   isCompleted: boolean;
   isOverdue: boolean;
 }
+
+export interface Debt {
+  id: string;
+  user_id: string;
+  ledger_id: string | null;
+  name: string;
+  creditor_name: string | null;
+  principal_amount: number;
+  current_balance: number;
+  interest_rate: number;
+  interest_type: "simple" | "compound" | "fixed" | "variable";
+  compounding_frequency: "daily" | "monthly" | "yearly" | null;
+  currency: string;
+  start_date: string;
+  maturity_date: string | null;
+  minimum_payment: number | null;
+  payment_frequency: "weekly" | "biweekly" | "monthly" | "yearly";
+  next_payment_date: string | null;
+  payoff_strategy: "snowball" | "avalanche" | "custom" | "minimum_only";
+  status: "active" | "paid_off" | "defaulted" | "paused";
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DebtPayment {
+  id: string;
+  debt_id: string;
+  user_id: string;
+  transaction_id: string | null;
+  amount: number;
+  principal_paid: number;
+  interest_paid: number;
+  payment_date: string;
+  is_scheduled: boolean;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DebtSchedule {
+  id: string;
+  debt_id: string;
+  user_id: string;
+  scheduled_date: string;
+  scheduled_amount: number;
+  status: "pending" | "paid" | "missed" | "skipped";
+  payment_id: string | null;
+  reminder_sent: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateDebtInput {
+  ledgerId?: string | null;
+  name: string;
+  creditorName?: string | null;
+  principalAmount: number;
+  interestRate: number;
+  interestType: "simple" | "compound" | "fixed" | "variable";
+  compoundingFrequency?: "daily" | "monthly" | "yearly" | null;
+  currency?: string;
+  startDate: Date;
+  maturityDate?: Date | null;
+  minimumPayment?: number | null;
+  paymentFrequency: "weekly" | "biweekly" | "monthly" | "yearly";
+  nextPaymentDate?: Date | null;
+  payoffStrategy?: "snowball" | "avalanche" | "custom" | "minimum_only";
+  notes?: string | null;
+}
+
+export interface UpdateDebtInput {
+  ledgerId?: string | null;
+  name?: string;
+  creditorName?: string | null;
+  principalAmount?: number;
+  interestRate?: number;
+  interestType?: "simple" | "compound" | "fixed" | "variable";
+  compoundingFrequency?: "daily" | "monthly" | "yearly" | null;
+  currency?: string;
+  startDate?: Date;
+  maturityDate?: Date | null;
+  minimumPayment?: number | null;
+  paymentFrequency?: "weekly" | "biweekly" | "monthly" | "yearly";
+  nextPaymentDate?: Date | null;
+  payoffStrategy?: "snowball" | "avalanche" | "custom" | "minimum_only";
+  status?: "active" | "paid_off" | "defaulted" | "paused";
+  notes?: string | null;
+}
+
+export interface CreateDebtPaymentInput {
+  debtId: string;
+  transactionId?: string | null;
+  amount: number;
+  principalPaid: number;
+  interestPaid: number;
+  paymentDate: Date;
+  isScheduled?: boolean;
+  notes?: string | null;
+}
+
+export interface UpdateDebtPaymentInput {
+  amount?: number;
+  principalPaid?: number;
+  interestPaid?: number;
+  paymentDate?: Date;
+  isScheduled?: boolean;
+  notes?: string | null;
+}
+
+export interface DebtFilters {
+  status?: "active" | "paid_off" | "defaulted" | "paused";
+  currency?: string;
+  payoffStrategy?: "snowball" | "avalanche" | "custom" | "minimum_only";
+  ledgerId?: string;
+}
+
+export interface DebtProgress {
+  percentagePaid: number;
+  amountRemaining: number;
+  totalPaid: number;
+  totalInterestPaid: number;
+  projectedPayoffDate: Date | null;
+  daysRemaining: number | null;
+  isPaidOff: boolean;
+  interestSaved: number;
+}
+
+export interface PayoffStrategy {
+  strategy: "snowball" | "avalanche";
+  totalMonths: number;
+  totalInterest: number;
+  totalPayments: number;
+  payoffOrder: Array<{
+    debtId: string;
+    debtName: string;
+    payoffMonth: number;
+    totalPaid: number;
+    interestPaid: number;
+  }>;
+}
+
+export interface InterestCalculation {
+  principal: number;
+  rate: number;
+  timeInYears: number;
+  interestAmount: number;
+  totalAmount: number;
+  breakdown: Array<{
+    period: number;
+    principal: number;
+    interest: number;
+    total: number;
+  }>;
+}
